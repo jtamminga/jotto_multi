@@ -1,26 +1,22 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { JoinRoom, PickWord } from './screens'
+import { useGame } from './core/hooks/useGame'
+import { AppState } from './core'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+// styles
+import './App.css'
+
+const stateToScreen: Record<AppState, JSX.Element> = {
+  'joining_room': <JoinRoom />,
+  'joined_room': <span>Joined Room</span>,
+  'picking_word': <PickWord />,
+  'picked_word': <span>Picked Word</span>,
+  'ingame': <span>In Game</span>
 }
 
-export default App;
+export default function App() {
+  const { gameFlow } = useGame()
+
+  return stateToScreen[gameFlow.state]
+}
+
+ 
