@@ -1,14 +1,22 @@
 import * as Base from './base'
 import { AppState } from 'src/core'
 
-export type Type = 'state_change'
+export type AppEventType = 'state_change'
+
+//
+// events
+//
 
 export interface AppStateChangeEvent extends Base.Event {
   domain: 'app'
-  type: Type
+  type: AppEventType
   state: AppState
   preState: AppState
 }
+
+//
+// factories
+//
 
 export function createStateChange(state: AppState, preState: AppState): AppStateChangeEvent {
   return {

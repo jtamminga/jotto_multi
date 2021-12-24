@@ -1,15 +1,23 @@
 import { filter } from 'rxjs'
-import { EventBus, AppState, JottoSocket, createPickedWord } from 'src/core'
+import { EventBus, AppState, JottoSocket, SocketGuessResult, IllegalStateException, GuessResult, GameConfig, SocketGameSummary } from 'src/core'
+import { createGuess, createPickedWord } from 'src/core/events'
 import { Game } from 'src/models'
 import * as AppEvents from 'src/core/events/app'
+import { Players } from './players'
 
+/**
+ * Handles game flow related functions.
+ * If it effects the flow of the game it should be here.
+ */
 export class GameFlow {
 
   private _state: AppState
+  private _game: Game | undefined
 
   constructor(
     private _socket: JottoSocket,
-    private _bus: EventBus
+    private _bus: EventBus,
+    private _players: Players
   ) {
     this._state = 'joining_room'
 
@@ -31,6 +39,14 @@ export class GameFlow {
     return this._state
   }
 
+  public get game(): Game {
+    if (!this._game) {
+      throw new IllegalStateException('There is no game')
+    }
+
+    return this._game
+  }
+
   //
   // public functions 
   //
@@ -45,6 +61,11 @@ export class GameFlow {
     this._socket.emit('submit_word', word)
     this.updateState('picked_word')
     this._bus.publish(createPickedWord(word))
+  }
+
+  public backToRoom() {
+    // this._socket.emit('')
+    this.updateState('joined_room')
   }
 
   //
@@ -63,6 +84,7 @@ export class GameFlow {
   private setupListeners() {
     this._socket.on('word_picking', this.onWorkPicking)
     this._socket.on('game_start', this.onGameStart)
+    this._socket.on('guess', this.onGuess)
     this._socket.on('end_game_summary', this.onGameEnd)
   }
 
@@ -74,12 +96,37 @@ export class GameFlow {
     this.updateState('picking_word')
   }
 
-  private onGameStart = () => {
+  private onGameStart = (gameConfig: GameConfig) => {
+    this._game = new Game(this._players.all, gameConfig)
     this.updateState('ingame')
   }
 
-  private onGameEnd = () => {
+  private onGuess = ({ id, word, common, won, from, to}: SocketGuessResult) => {
+    if (!this._game) {
+      throw new IllegalStateException('game not created yet')
+    }
 
+    const result: GuessResult = {
+      id,
+      word,
+      common,
+      won,
+      from: this._players.get(from),
+      to: this._players.get(to)
+    }
+
+    this._game.addGuess(result)
+    this._bus.publish(createGuess(result))
+  }
+
+  private onGameEnd = (gameSummary: SocketGameSummary) => {
+    const playerSummaries = gameSummary.playerSummaries.map(s => ({
+      ...s, player: this._players.get(s.userId)
+    }))
+
+    this._game!.gameOver({ playerSummaries })
+
+    this.updateState('game_summary')
   }
 
 }

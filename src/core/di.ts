@@ -15,7 +15,7 @@ export const socket = jottoSocketDecorator(io(URL, { autoConnect: false }))
 export const eventBus = new EventBus()
 
 // managers
-export const gameFlow = new GameFlow(socket, eventBus)
 export const players = new Players(socket, eventBus)
+export const gameFlow = new GameFlow(socket, eventBus, players)
 
 console.debug('dependences setup')

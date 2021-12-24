@@ -1,24 +1,48 @@
 import * as Base from './base'
 import { Player } from 'src/models'
+import { Guess } from 'src/core'
  
 // types
-export type Type = 'connected' | 'disconnected' | 'ready' | 'picked_word'
+export type PlayerEventType =
+  | 'change'
+  | 'connected'
+  | 'disconnected'
+  | 'ready'
+  | 'picked_word'
+  | 'submit_guess'
+  | 'won'
 
-// event
+export type PlayerProp =
+  | 'won'
+  | 'word'
+  | 'guesses'
+
+//
+// events
+//
+
 export interface PlayerEvent extends Base.Event {
   domain: 'player'
-  type: Type
+  type: PlayerEventType
   player: Player
 }
 
-export interface PickedWordEvent extends Base.Event {
+export interface PlayerChangeEvent extends PlayerEvent {
+  prop: PlayerProp
+}
+
+export interface WordEvent extends Base.Event {
   domain: 'player'
-  type: 'picked_word'
+  type: 'picked_word' | 'submit_guess'
+  id?: string
   word: string
 }
 
+//
 // factories
-function create(player: Player, type: Type): PlayerEvent {
+//
+
+function create(player: Player, type: PlayerEventType): PlayerEvent {
   return {
     ...Base.create('player', type) as PlayerEvent,
     player
@@ -37,10 +61,29 @@ export function createReady(player: Player): PlayerEvent {
   return create(player, 'ready')
 }
 
-export function createPickedWord(word: string): PickedWordEvent {
+export function createWon(player: Player): PlayerEvent {
+  return create(player, 'won')
+}
+
+export function createPickedWord(word: string): WordEvent {
   return {
-    ...Base.create('player', 'picked_word') as PickedWordEvent,
+    ...Base.create('player', 'picked_word') as WordEvent,
     word
+  }
+}
+
+export function createSubmitGuess(guess: Guess): WordEvent {
+  return {
+    ...Base.create('player', 'submit_guess') as WordEvent,
+    word: guess.word,
+    id: guess.id
+  }
+}
+
+export function createPlayerChange(player: Player, prop: PlayerProp): PlayerChangeEvent {
+  return {
+    ...create(player, 'change'),
+    prop
   }
 }
 
@@ -48,6 +91,11 @@ export function createPickedWord(word: string): PickedWordEvent {
 // guards
 //
 
-export function isPickedWordEvent(event: Base.Event): event is PickedWordEvent {
-  return event.domain === 'player' && event.type === 'picked_word'
+export function isWordEvent(event: Base.Event): event is WordEvent {
+  return event.domain === 'player' &&
+    (event.type === 'picked_word' || event.type === 'submit_guess')
+}
+
+export function isPlayerChange(event: Base.Event): event is PlayerChangeEvent {
+  return event.domain === 'player' && event.type === 'change'
 }

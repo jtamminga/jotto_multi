@@ -1,5 +1,6 @@
-import * as AppEvents from './app'
-import * as PlayerEvents from './player'
+import { AppEventType } from './app'
+import { PlayerEventType } from './player'
+import { GameEventType } from './game'
 
 // domains
 export type Domain = 
@@ -9,8 +10,9 @@ export type Domain =
 
 // event types
 export type EventType =
-  | AppEvents.Type
-  | PlayerEvents.Type
+  | AppEventType
+  | PlayerEventType
+  | GameEventType
 
 export interface Event {
   domain: Domain

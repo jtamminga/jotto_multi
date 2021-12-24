@@ -4,23 +4,23 @@ import * as PlayerEvents from 'src/core/events/player'
 import { Me, Player } from 'src/models'
 
 export class Players {
-  private _players: Player[]
 
   // this user and player
   private _userId: string | undefined
   private _player: Me | undefined
+
+  // collection of all players
+  private _players: Player[] = []
   
   constructor(
     private _socket: JottoSocket,
     private _bus: EventBus
   ) {
-    this._players = []
-
     this.setupListeners()
 
     this._bus.events$
-      .pipe(filter(PlayerEvents.isPickedWordEvent))
-      .subscribe(e => this.me.setWord(e.word))
+      .pipe(filter(PlayerEvents.isWordEvent))
+      .subscribe(this.onWordEvent)
   }
 
   private setupListeners() {
@@ -43,6 +43,24 @@ export class Players {
     return this._player
   }
 
+  get all(): Player[] {
+    return this._players
+  }
+
+  //
+  // public functions
+  //
+
+  public get(userId: string): Player {
+    const player = this._players.find(p => p.userId === userId)
+
+    if (!player) {
+      throw new Error('Player not found')
+    }
+
+    return player
+  }
+
   //
   // Listeners
   //
@@ -59,7 +77,7 @@ export class Players {
 
     for(const user of users) {
       if (user.userId === this._userId) {
-        const me = new Me(user, this._bus)
+        const me = new Me(user)
         this._player = me
         this._players.push(me)
       } else {
@@ -104,5 +122,18 @@ export class Players {
 
     player.ready = true
     this._bus.publish(PlayerEvents.createReady(player))
+  }
+
+  private onWordEvent = (event: PlayerEvents.WordEvent) => {
+    // e => this.me.setWord(e.word)
+    switch(event.type) {
+      case 'picked_word':
+        this.me.setWord(event.word)
+        break
+      case 'submit_guess':
+        const { id, word } = event
+        this._socket.emit('submit_guess', { id, word })
+        break
+    }
   }
 }

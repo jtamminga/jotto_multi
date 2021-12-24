@@ -1,3 +1,5 @@
+import { Player } from 'src/models'
+
 export interface User {
   userId: string;
   sessionId: string;
@@ -13,5 +15,55 @@ export type AppState =
   | 'picking_word'
   | 'picked_word'
   | 'ingame'
+  | 'game_summary'
+
+export type GameState =
+  | 'playing'
+  | 'over'
+
+export interface GameConfig {
+  opponents: { id: string, opponentId: string }[]
+}
+
+export interface SocketGuessResult {
+  id: string
+  word: string
+  common: number
+  won: boolean
+  from: string
+  to: string
+}
+
+export interface Guess {
+  id: string
+  word: string
+  common?: number
+}
+
+export interface GuessResult extends Guess {
+  common: number
+  won: boolean
+  from: Player
+  to: Player
+}
+
+export interface SocketPlayerSummary {
+  userId: string
+  place: number
+  word: string
+  numGuesses: number
+}
+
+export interface PlayerSummary extends Omit<SocketPlayerSummary, 'userId'> {
+  player: Player
+}
+
+export interface SocketGameSummary {
+  playerSummaries: SocketPlayerSummary[]
+}
+
+export interface GameSummary {
+  playerSummaries: PlayerSummary[]
+}
 
 export class IllegalStateException extends Error { }
