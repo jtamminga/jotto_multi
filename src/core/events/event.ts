@@ -1,17 +1,20 @@
 import { AppEventType } from './app'
 import { PlayerEventType } from './player'
+import { PlayersEventType } from './players'
 import { GameEventType } from './game'
 
 // domains
 export type Domain = 
   | 'app'
   | 'player'
+  | 'players'
   | 'game'
 
 // event types
 export type EventType =
   | AppEventType
   | PlayerEventType
+  | PlayersEventType
   | GameEventType
 
 export interface Event {

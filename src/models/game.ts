@@ -1,7 +1,7 @@
 import { Player } from './player'
-import { GameConfig, GameState, GameSummary, GuessResult, IllegalStateException } from 'src/core'
+import { Disposable, GameConfig, GameState, GameSummary, GuessResult, IllegalStateException } from 'src/core'
 
-export class Game {
+export class Game implements Disposable {
 
   private _state: GameState
   private _guesses: GuessResult[] = []
@@ -40,6 +40,10 @@ export class Game {
   public gameOver(gameSummary: GameSummary) {
     this._state = 'over'
     this._summary = gameSummary
+  }
+
+  public dispose(): void {
+    this._players.forEach(player => player.dispose())
   }
 
   //

@@ -1,4 +1,4 @@
-export function useQueryParams() {
+export function useQueryParams<T extends object>(): Partial<T> {
   const params = new URLSearchParams(
     window ? window.location.search : {}
   )
@@ -7,5 +7,5 @@ export function useQueryParams() {
       get(target, prop) {
           return target.get(prop as string)
       },
-  });
+  }) as T;
 }

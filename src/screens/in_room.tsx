@@ -1,16 +1,25 @@
 import { useQueryParams } from 'src/core/hooks'
 import { gameFlow } from 'src/core/di'
+import { PlayerStatus } from 'src/components'
+
+type URLParams = { host: boolean }
 
 export function InRoom() {
 
-  const { host } = useQueryParams()
+  const { host } = useQueryParams<URLParams>()
+
+  console.log('host', host)
 
   return (
     <div>
-      <button
-        type="button"
-        onClick={() => {}}
-      >Start</button>
+      <PlayerStatus />
+
+      { host && 
+        <button
+          type="button"
+          onClick={() => gameFlow.start()}
+        >Start</button>
+      }
     </div>
   )
 }

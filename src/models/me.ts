@@ -1,7 +1,7 @@
 import { Guess, GuessResult, User } from 'src/core'
 import { Player } from './player'
 import { eventBus as bus } from 'src/core/di'
-import { createPlayerChange, createSubmitGuess, GuessEvent } from 'src/core/events'
+import { createGuessResult, createPickedWord, createSubmitGuess, GuessEvent } from 'src/core/events'
 import { v4 as createId } from 'uuid'
 
 export class Me extends Player {
@@ -30,13 +30,13 @@ export class Me extends Player {
 
   public setWord(word: string) {
     this._word = word
-    bus.publish(createPlayerChange(this, 'word'))
+    bus.publish(createPickedWord(this, 'word'))
   }
 
   public guess(word: string) {
     const guess: Guess = { id: createId(), word }
     this._guesses.push(guess)
-    bus.publish(createSubmitGuess(guess))
+    bus.publish(createSubmitGuess(this, guess))
   }
 
   //
@@ -60,6 +60,6 @@ export class Me extends Player {
     }
 
     guess.common = result.common
-    bus.publish(createPlayerChange(this, 'guesses'))
+    bus.publish(createGuessResult(this))
   }
 }

@@ -14,6 +14,8 @@ export const socket = jottoSocketDecorator(io(URL, { autoConnect: false }))
 
 export const eventBus = new EventBus()
 
+// eventBus.events$.subscribe(e => console.debug('events', e))
+
 // managers
 export const players = new Players(socket, eventBus)
 export const gameFlow = new GameFlow(socket, eventBus, players)

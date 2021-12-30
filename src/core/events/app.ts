@@ -1,4 +1,4 @@
-import * as Base from './base'
+import * as Base from './event'
 import { AppState } from 'src/core'
 
 export type AppEventType = 'state_change'

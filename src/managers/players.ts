@@ -1,7 +1,15 @@
 import { filter } from 'rxjs'
 import { EventBus, IllegalStateException, JottoSocket, SocketSession, User } from 'src/core'
-import * as PlayerEvents from 'src/core/events/player'
+import { WordEvent, isWordEvent } from 'src/core/events/player'
+import { GuessEvent, isGuessEvent } from 'src/core/events/game'
 import { Me, Player } from 'src/models'
+import {
+  createPlayerCreated,
+  createPlayerConnected,
+  createPlayerDisconnected,
+  createPlayerReady,
+  isPlayersEvent
+} from 'src/core/events/players'
 
 export class Players {
 
@@ -19,7 +27,7 @@ export class Players {
     this.setupListeners()
 
     this._bus.events$
-      .pipe(filter(PlayerEvents.isWordEvent))
+      .pipe(filter(isWordEvent))
       .subscribe(this.onWordEvent)
   }
 
@@ -35,12 +43,21 @@ export class Players {
   // getters & setters
   //
 
+  get change$() {
+    return this._bus.events$
+      .pipe(filter(isPlayersEvent))
+  }
+
   get me(): Me {
     if (this._player === undefined) {
       throw new IllegalStateException('Not in game yet.')
     }
 
     return this._player
+  }
+
+  get connected(): Player[] {
+    return this._players.filter(p => p.connected)
   }
 
   get all(): Player[] {
@@ -73,15 +90,18 @@ export class Players {
   }
 
   private onUsers = (users: User[]) => {
-    console.debug('onUsers')
+    console.debug('onUsers', users.map(u => u.username))
 
     for(const user of users) {
       if (user.userId === this._userId) {
         const me = new Me(user)
         this._player = me
         this._players.push(me)
+        this._bus.publish(createPlayerCreated(me))
       } else {
-        this._players.push(new Player(user))
+        const player = new Player(user)
+        this._players.push(player)
+        this._bus.publish(createPlayerCreated(player))
       }
     }
   }
@@ -97,7 +117,7 @@ export class Players {
       this._players.push(player)
     }
 
-    this._bus.publish(PlayerEvents.createConnected(player))
+    this._bus.publish(createPlayerConnected(player))
   }
 
   private onDisconnect = (userId: string) => {
@@ -109,7 +129,7 @@ export class Players {
     }
 
     player.connected = false
-    this._bus.publish(PlayerEvents.createDisconnected(player))
+    this._bus.publish(createPlayerDisconnected(player))
   }
 
   private onReady = (userId: string) => {
@@ -121,11 +141,14 @@ export class Players {
     }
 
     player.ready = true
-    this._bus.publish(PlayerEvents.createReady(player))
+    this._bus.publish(createPlayerReady(player))
   }
 
-  private onWordEvent = (event: PlayerEvents.WordEvent) => {
-    // e => this.me.setWord(e.word)
+  //
+  // bus handlers
+  //
+
+  private onWordEvent = (event: WordEvent) => {
     switch(event.type) {
       case 'picked_word':
         this.me.setWord(event.word)

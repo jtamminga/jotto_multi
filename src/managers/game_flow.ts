@@ -1,6 +1,6 @@
 import { filter } from 'rxjs'
 import { EventBus, AppState, JottoSocket, SocketGuessResult, IllegalStateException, GuessResult, GameConfig, SocketGameSummary } from 'src/core'
-import { createGuess, createPickedWord } from 'src/core/events'
+import { createGuessResult, createPickedWord } from 'src/core/events'
 import { Game } from 'src/models'
 import * as AppEvents from 'src/core/events/app'
 import { Players } from './players'
@@ -57,10 +57,14 @@ export class GameFlow {
     this.updateState('joined_room')
   }
 
+  public start() {
+    //
+  }
+
   public pickWord(word: string) {
     this._socket.emit('submit_word', word)
     this.updateState('picked_word')
-    this._bus.publish(createPickedWord(word))
+    this._bus.publish(createPickedWord(this._players.me, word))
   }
 
   public backToRoom() {
@@ -84,7 +88,7 @@ export class GameFlow {
   private setupListeners() {
     this._socket.on('word_picking', this.onWorkPicking)
     this._socket.on('game_start', this.onGameStart)
-    this._socket.on('guess', this.onGuess)
+    this._socket.on('guess_result', this.onGuessResult)
     this._socket.on('end_game_summary', this.onGameEnd)
   }
 
@@ -101,7 +105,7 @@ export class GameFlow {
     this.updateState('ingame')
   }
 
-  private onGuess = ({ id, word, common, won, from, to}: SocketGuessResult) => {
+  private onGuessResult = ({ id, word, common, won, from, to}: SocketGuessResult) => {
     if (!this._game) {
       throw new IllegalStateException('game not created yet')
     }
@@ -116,7 +120,7 @@ export class GameFlow {
     }
 
     this._game.addGuess(result)
-    this._bus.publish(createGuess(result))
+    this._bus.publish(createGuessResult(result))
   }
 
   private onGameEnd = (gameSummary: SocketGameSummary) => {

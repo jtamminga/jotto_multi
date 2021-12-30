@@ -1,9 +1,9 @@
-import { filter } from "rxjs"
-import { IllegalStateException, User } from "src/core"
+import { filter, Subscription } from "rxjs"
+import { Disposable, IllegalStateException, User } from "src/core"
 import { eventBus as bus } from 'src/core/di'
-import { createPlayerChange, GuessEvent, isGuessEvent, isPlayerChange } from "src/core/events"
+import { createWon, GuessEvent, isGuessEvent, isPlayerEvent } from "src/core/events"
 
-export class Player {
+export class Player implements Disposable {
   
   protected _userId: string
   protected _username: string
@@ -11,6 +11,7 @@ export class Player {
   protected _ready: boolean
   protected _won: boolean
   protected _opponent: Player | undefined
+  protected _subscription: Subscription
 
   constructor(user: User) {
     this._userId = user.userId
@@ -19,7 +20,7 @@ export class Player {
     this._ready = user.ready
     this._won = user.won
 
-    bus.events$
+    this._subscription = bus.events$
       .pipe(
         filter(isGuessEvent),
         filter(this.isMyGuess)
@@ -34,7 +35,7 @@ export class Player {
   get change$() {
     return bus.events$
       .pipe(
-        filter(isPlayerChange),
+        filter(isPlayerEvent),
         filter(e => e.player === this)
       )
   }
@@ -59,7 +60,7 @@ export class Player {
     return this._won
   }
 
-  public get opponent(): Player {
+  get opponent(): Player {
     if (!this._opponent) {
       throw new Error('Player does not have an opponent')
     }
@@ -87,6 +88,10 @@ export class Player {
     this._opponent = player
   }
 
+  public dispose(): void {
+    this._subscription.unsubscribe()
+  }
+
   //
   // handlers
   //
@@ -94,7 +99,7 @@ export class Player {
   protected onGuessResult(event: GuessEvent) {
     if (event.guessResult.won) {
       this._won = true
-      bus.publish(createPlayerChange(this, 'won'))
+      bus.publish(createWon(this))
     }
   }
 

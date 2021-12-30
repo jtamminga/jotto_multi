@@ -1,10 +1,9 @@
-import { Player } from 'src/models'
 import { GuessResult } from 'src/core'
-import * as Base from './base'
+import * as Base from './event'
 
 // types
 export type GameEventType =
-  | 'guess'
+  | 'guess_result'
 
 //
 // events
@@ -23,9 +22,9 @@ export interface GuessEvent extends GameEvent {
 // factories
 //
 
-export function createGuess(guessResult: GuessResult): GuessEvent {
+export function createGuessResult(guessResult: GuessResult): GuessEvent {
   return {
-    ...Base.create('game', 'guess') as GuessEvent,
+    ...Base.create('game', 'guess_result') as GuessEvent,
     guessResult
   }
 }
@@ -35,5 +34,5 @@ export function createGuess(guessResult: GuessResult): GuessEvent {
 //
 
 export function isGuessEvent(event: Base.Event): event is GuessEvent {
-  return event.domain === 'game' && event.type === 'guess'
+  return event.domain === 'game' && event.type === 'guess_result'
 }
