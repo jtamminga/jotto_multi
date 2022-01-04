@@ -19,6 +19,11 @@ export function GameSummary() {
         type="button"
         onClick={() => gameFlow.backToRoom()}
       >Done</button>
+
+      <button
+        type="button"
+        onClick={() => gameFlow.leave()}
+      >Finished</button>
     </div>
   )
 }

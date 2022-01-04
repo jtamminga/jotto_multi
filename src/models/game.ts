@@ -43,7 +43,7 @@ export class Game implements Disposable {
   }
 
   public dispose(): void {
-    this._players.forEach(player => player.dispose())
+    // this._players.forEach(player => player.dispose())
   }
 
   //

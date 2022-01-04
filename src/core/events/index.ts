@@ -1,4 +1,5 @@
 export * from './app'
 export * from './player'
+export * from './me'
 export * from './players'
 export * from './game'

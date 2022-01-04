@@ -1,5 +1,5 @@
 import { Game, GameSummary, InRoom, JoinRoom, PickWord } from './screens'
-import { useGame } from './core/hooks/useGame'
+import { useGameFlow } from './core/hooks'
 import { AppState } from './core'
 
 // styles
@@ -15,7 +15,7 @@ const stateToScreen: Record<AppState, JSX.Element> = {
 }
 
 export default function App() {
-  const { gameFlow } = useGame()
+  const { gameFlow } = useGameFlow()
 
   return stateToScreen[gameFlow.state]
 }

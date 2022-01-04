@@ -1,7 +1,7 @@
 import { filter, Subscription } from "rxjs"
 import { Disposable, IllegalStateException, User } from "src/core"
 import { eventBus as bus } from 'src/core/di'
-import { createWon, GuessEvent, isGuessEvent, isPlayerEvent } from "src/core/events"
+import { createPlayerWon, GuessEvent, isGuessEvent, isPlayerEvent } from "src/core/events"
 
 export class Player implements Disposable {
   
@@ -28,9 +28,11 @@ export class Player implements Disposable {
       .subscribe(e => this.onGuessResult(e))
   }
 
+
   //
   // getters & setters
-  //
+  // =================
+
 
   get change$() {
     return bus.events$
@@ -76,9 +78,11 @@ export class Player implements Disposable {
     this._ready = value
   }
 
+
   //
   // public functions
-  //
+  // ================
+
 
   public setOpponent(player: Player) {
     if (this._opponent) {
@@ -92,20 +96,24 @@ export class Player implements Disposable {
     this._subscription.unsubscribe()
   }
 
+
   //
   // handlers
-  //
+  // ========
+
 
   protected onGuessResult(event: GuessEvent) {
     if (event.guessResult.won) {
       this._won = true
-      bus.publish(createWon(this))
+      bus.publish(createPlayerWon(this))
     }
   }
 
+
   //
   // private functions
-  //
+  // =================
+
 
   private isMyGuess = (event: GuessEvent): boolean => {
     return event.guessResult.from == this

@@ -13,3 +13,13 @@ export function useMe() {
 
   return { me: players.me, updatedAt }
 }
+
+/**
+ * Not using the factory because players.me is not valid until
+ * game has started. Need to lazy eval or something.
+ */
+
+// export const useMe = createHook(
+//   players.me.change$,
+//   { me: players.me}
+// )

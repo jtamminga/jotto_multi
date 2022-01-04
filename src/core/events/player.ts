@@ -1,16 +1,34 @@
 import { Event } from './event'
 import { Player } from 'src/models'
-import { Guess } from 'src/core'
  
-// types
+
+/**
+ * Some thoughts:
+ * - maybe i should move all player.me to a seperate domain
+ * - maybe won should move to the players domain
+ */
 export type PlayerEventType =
-  | 'picked_word'
-  | 'submit_guess'
+
+  // player property changed
+  | 'change'
+
+  // if a player won
   | 'won'
+
+  // if player picked a word
+  | 'picked_word'
+
+  // if player submitted a guess
+  | 'submit_guess'
+
+export type PlayerProperty =
+  | 'guesses'
+
 
 //
 // events
-//
+// ======
+
 
 export interface PlayerEvent extends Event {
   domain: 'player'
@@ -18,16 +36,16 @@ export interface PlayerEvent extends Event {
   player: Player
 }
 
-export interface WordEvent extends PlayerEvent {
-  domain: 'player'
-  type: 'picked_word' | 'submit_guess'
-  id?: string
-  word: string
+export interface PlayerChangeEvent extends PlayerEvent {
+  type: 'change'
+  prop: PlayerProperty
 }
+
 
 //
 // factories
-//
+// =========
+
 
 function create(player: Player, type: PlayerEventType): PlayerEvent {
   return {
@@ -38,40 +56,28 @@ function create(player: Player, type: PlayerEventType): PlayerEvent {
   }
 }
 
-export function createWon(player: Player): PlayerEvent {
+export function createPlayerChange(player: Player, prop: PlayerProperty): PlayerChangeEvent {
+  return {
+    ...create(player, 'change'),
+    type: 'change',
+    prop
+  }
+}
+
+export function createPlayerWon(player: Player): PlayerEvent {
   return create(player, 'won')
 }
 
-export function createPickedWord(player: Player, word: string): WordEvent {
-  return {
-    domain: 'player',
-    type: 'picked_word',
-    timestamp: Date.now(),
-    player,
-    word
-  }
-}
-
-export function createSubmitGuess(player: Player, guess: Guess): WordEvent {
-  return {
-    domain: 'player',
-    type: 'submit_guess',
-    timestamp: Date.now(),
-    player,
-    word: guess.word,
-    id: guess.id
-  }
-}
 
 //
 // guards
-//
+// ======
+
 
 export function isPlayerEvent(event: Event): event is PlayerEvent {
   return event.domain === 'player'
 }
 
-export function isWordEvent(event: Event): event is WordEvent {
-  return event.domain === 'player' &&
-    (event.type === 'picked_word' || event.type === 'submit_guess')
+export function isPlayerChangeEvent(event: Event): event is PlayerChangeEvent {
+  return event.domain === 'player' && event.type === 'change'
 }

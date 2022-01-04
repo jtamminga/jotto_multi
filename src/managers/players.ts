@@ -1,7 +1,6 @@
 import { filter } from 'rxjs'
 import { EventBus, IllegalStateException, JottoSocket, SocketSession, User } from 'src/core'
-import { WordEvent, isWordEvent } from 'src/core/events/player'
-import { GuessEvent, isGuessEvent } from 'src/core/events/game'
+import { WordEvent, isWordEvent, SubmitGuessEvent } from 'src/core/events/me'
 import { Me, Player } from 'src/models'
 import {
   createPlayerCreated,
@@ -10,6 +9,8 @@ import {
   createPlayerReady,
   isPlayersEvent
 } from 'src/core/events/players'
+import { GameEvent, isGameEvent } from 'src/core/events/game'
+import { createAuth } from 'src/core/events/app'
 
 export class Players {
 
@@ -29,6 +30,10 @@ export class Players {
     this._bus.events$
       .pipe(filter(isWordEvent))
       .subscribe(this.onWordEvent)
+
+    this._bus.events$
+      .pipe(filter(isGameEvent))
+      .subscribe(this.onGameEvent)
   }
 
   private setupListeners() {
@@ -39,9 +44,11 @@ export class Players {
     this._socket.on('user_ready', this.onReady)
   }
 
+
   //
   // getters & setters
-  //
+  // =================
+
 
   get change$() {
     return this._bus.events$
@@ -64,12 +71,14 @@ export class Players {
     return this._players
   }
 
+
   //
   // public functions
-  //
+  // ================
+
 
   public get(userId: string): Player {
-    const player = this._players.find(p => p.userId === userId)
+    const player = this.find(userId)
 
     if (!player) {
       throw new Error('Player not found')
@@ -78,19 +87,26 @@ export class Players {
     return player
   }
 
+
   //
-  // Listeners
-  //
+  // listeners
+  // =========
+
 
   private onSession = ({ sessionId, userId }: SocketSession) => {
     console.debug('onSession')  
     this._socket.userId = userId
     this._socket.updateAuth({ sessionId })
     this._userId = userId
+    this._bus.publish(createAuth(sessionId))
   }
 
   private onUsers = (users: User[]) => {
     console.debug('onUsers', users.map(u => u.username))
+
+    // first clear players from previous play throughs
+    this._players.forEach(p => p.dispose())
+    this._players = []
 
     for(const user of users) {
       if (user.userId === this._userId) {
@@ -107,7 +123,7 @@ export class Players {
   }
 
   private onConnect = (user: User) => {
-    console.debug('onConnect', user.userId)
+    console.debug('onConnect', user.username)
     let player = this._players.find(p => p.userId === user.userId)
 
     if (player) {
@@ -122,10 +138,10 @@ export class Players {
 
   private onDisconnect = (userId: string) => {
     console.debug('onDisconnect', userId)
-    const player = this._players.find(p => p.userId === userId)
-      
+    const player = this.find(userId)
+
     if (!player) {
-      throw new IllegalStateException('Player doesn\'t exist.')
+      return
     }
 
     player.connected = false
@@ -134,19 +150,17 @@ export class Players {
 
   private onReady = (userId: string) => {
     console.debug('onReady', userId)
-    const player = this._players.find(p => p.userId === userId)
-
-    if (!player) {
-      throw new IllegalStateException('Player doesn\'t exist.')
-    }
+    const player = this.get(userId)
 
     player.ready = true
     this._bus.publish(createPlayerReady(player))
   }
 
+
   //
   // bus handlers
-  //
+  // ============
+
 
   private onWordEvent = (event: WordEvent) => {
     switch(event.type) {
@@ -154,9 +168,28 @@ export class Players {
         this.me.setWord(event.word)
         break
       case 'submit_guess':
-        const { id, word } = event
+        const { id, word } = event as SubmitGuessEvent
         this._socket.emit('submit_guess', { id, word })
         break
     }
+  }
+
+  private onGameEvent = (event: GameEvent) => {
+    switch(event.type) {
+      case 'leave':
+        this._players.forEach(p => p.dispose())
+        this._players = []
+        break
+    }
+  }
+
+
+  //
+  // private functions
+  // =================
+
+
+  private find(userId: string): Player | undefined {
+    return this._players.find(p => p.userId === userId)
   }
 }

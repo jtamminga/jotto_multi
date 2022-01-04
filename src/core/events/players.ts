@@ -1,16 +1,29 @@
 import { Player } from 'src/models'
 import { Event } from './event'
 
-// types
+
 export type PlayersEventType =
+
+  // player instance created
   | 'created'
+
+  // player connected
   | 'connected'
+
+  // player disconnected
   | 'disconnected'
+
+  // player picked a word (therefore ready)
   | 'ready'
+
+  // intentional disconnect 
+  | 'leave'
+
 
 //
 // events
-//
+// ======
+
 
 export interface PlayersEvent extends Event {
   domain: 'players'
@@ -18,9 +31,11 @@ export interface PlayersEvent extends Event {
   player: Player
 }
 
+
 //
 // factories
-//
+// =========
+
 
 function create(player: Player, type: PlayersEventType): PlayersEvent {
   return {
@@ -47,9 +62,15 @@ export function createPlayerReady(player: Player): PlayersEvent {
   return create(player, 'ready')
 }
 
+export function createPlayerLeave(player: Player): PlayersEvent {
+  return create(player, 'leave')
+}
+
+
 //
 // guards
-//
+// ======
+
 
 export function isPlayersEvent(event: Event): event is PlayersEvent {
   return event.domain === 'players'

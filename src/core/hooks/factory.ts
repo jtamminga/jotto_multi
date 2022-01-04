@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Observable } from 'rxjs'
-import { Event } from 'src/core/events/base'
+import { Event } from 'src/core/events/event'
 
 export function createHook<T extends Event, K>(
   observer: Observable<T>,

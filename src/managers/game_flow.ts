@@ -1,6 +1,7 @@
 import { filter } from 'rxjs'
 import { EventBus, AppState, JottoSocket, SocketGuessResult, IllegalStateException, GuessResult, GameConfig, SocketGameSummary } from 'src/core'
-import { createGuessResult, createPickedWord } from 'src/core/events'
+import { createGuessResult, createLeaveGame } from 'src/core/events/game'
+import { createPickedWord } from 'src/core/events/me'
 import { Game } from 'src/models'
 import * as AppEvents from 'src/core/events/app'
 import { Players } from './players'
@@ -58,18 +59,30 @@ export class GameFlow {
   }
 
   public start() {
-    //
+    this._socket.emit('start_game')
   }
 
   public pickWord(word: string) {
     this._socket.emit('submit_word', word)
     this.updateState('picked_word')
-    this._bus.publish(createPickedWord(this._players.me, word))
+    this._bus.publish(createPickedWord(word))
   }
 
   public backToRoom() {
-    // this._socket.emit('')
+    this._socket.emit('rejoin_room')
     this.updateState('joined_room')
+
+    this._game!.dispose()
+    this._game = undefined
+  }
+
+  public leave() {
+    this.updateState('joining_room')
+    this._socket.disconnect()
+    this._bus.publish(createLeaveGame())
+
+    this._game?.dispose()
+    this._game = undefined
   }
 
   //
@@ -101,7 +114,7 @@ export class GameFlow {
   }
 
   private onGameStart = (gameConfig: GameConfig) => {
-    this._game = new Game(this._players.all, gameConfig)
+    this._game = new Game(this._players.connected, gameConfig)
     this.updateState('ingame')
   }
 

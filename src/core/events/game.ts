@@ -1,15 +1,21 @@
 import { GuessResult } from 'src/core'
-import * as Base from './event'
+import { Event } from './event'
 
-// types
+
 export type GameEventType =
+
+  // result from the guess
   | 'guess_result'
+
+  // leave the game
+  | 'leave'
+
 
 //
 // events
-//
+// ======
 
-export interface GameEvent extends Base.Event {
+export interface GameEvent extends Event {
   domain: 'game'
   type: GameEventType
 }
@@ -18,21 +24,44 @@ export interface GuessEvent extends GameEvent {
   guessResult: GuessResult
 }
 
+
 //
 // factories
-//
+// =========
+
+
+function create(type: GameEventType): GameEvent {
+  return {
+    domain: 'game',
+    type,
+    timestamp: Date.now()
+  }
+}
 
 export function createGuessResult(guessResult: GuessResult): GuessEvent {
   return {
-    ...Base.create('game', 'guess_result') as GuessEvent,
+    ...create('guess_result'),
     guessResult
   }
 }
 
+export function createLeaveGame(): GameEvent {
+  return create('leave')
+}
+
+
 //
 // guards
-//
+// ======
 
-export function isGuessEvent(event: Base.Event): event is GuessEvent {
-  return event.domain === 'game' && event.type === 'guess_result'
+export function isGameEvent(event: Event): event is GameEvent {
+  return event.domain === 'game'
+}
+
+export function isGuessEvent(event: Event): event is GuessEvent {
+  return isGameEvent(event) && event.type === 'guess_result'
+}
+
+export function isLeaveGame(event: Event): event is GameEvent {
+  return isGameEvent(event) && event.type === 'leave'
 }

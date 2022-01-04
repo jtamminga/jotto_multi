@@ -1,5 +1,5 @@
 import { Observable, Subject } from 'rxjs'
-import { Event } from './events/base'
+import { Event } from './events/event'
 
 export class EventBus {
   private _subject: Subject<Event>
