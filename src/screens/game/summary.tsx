@@ -18,7 +18,7 @@ export function GameSummary() {
       <button
         type="button"
         onClick={() => gameFlow.backToRoom()}
-      >Done</button>
+      >Play Again</button>
 
       <button
         type="button"

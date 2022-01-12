@@ -1,10 +1,11 @@
 import { filter } from 'rxjs'
-import { EventBus, AppState, JottoSocket, SocketGuessResult, IllegalStateException, GuessResult, GameConfig, SocketGameSummary } from 'src/core'
+import { EventBus, AppState, JottoSocket, SocketGuessResult, IllegalStateException, GuessResult, SocketGameSummary, UserRestore, SocketGameConfig } from 'src/core'
 import { createGuessResult, createLeaveGame } from 'src/core/events/game'
 import { createPickedWord } from 'src/core/events/me'
 import { Game } from 'src/models'
-import * as AppEvents from 'src/core/events/app'
 import { Players } from './players'
+import * as AppEvents from 'src/core/events/app'
+import * as Transform from 'src/core/transforms'
 
 /**
  * Handles game flow related functions.
@@ -103,6 +104,7 @@ export class GameFlow {
     this._socket.on('game_start', this.onGameStart)
     this._socket.on('guess_result', this.onGuessResult)
     this._socket.on('end_game_summary', this.onGameEnd)
+    this._socket.on('restore', this.onRestore)
   }
 
   //
@@ -113,37 +115,50 @@ export class GameFlow {
     this.updateState('picking_word')
   }
 
-  private onGameStart = (gameConfig: GameConfig) => {
-    this._game = new Game(this._players.connected, gameConfig)
+  private onGameStart = (gameConfig: SocketGameConfig, _history?: SocketGuessResult[]) => {
+    const config = Transform.gameConfig(gameConfig)
+    const history = _history ? Transform.history(_history) : undefined
+    this._game = new Game(this._players.connected, config, history)
     this.updateState('ingame')
   }
 
-  private onGuessResult = ({ id, word, common, won, from, to}: SocketGuessResult) => {
+  private onGuessResult = (guessResult: SocketGuessResult) => {
     if (!this._game) {
       throw new IllegalStateException('game not created yet')
     }
 
-    const result: GuessResult = {
-      id,
-      word,
-      common,
-      won,
-      from: this._players.get(from),
-      to: this._players.get(to)
-    }
-
+    const result = Transform.guessResult(guessResult)
     this._game.addGuess(result)
     this._bus.publish(createGuessResult(result))
   }
 
   private onGameEnd = (gameSummary: SocketGameSummary) => {
-    const playerSummaries = gameSummary.playerSummaries.map(s => ({
-      ...s, player: this._players.get(s.userId)
-    }))
-
-    this._game!.gameOver({ playerSummaries })
-
+    const summary = Transform.gameSummary(gameSummary)
+    this._game!.gameOver(summary)
     this.updateState('game_summary')
+  }
+
+  private onRestore = (restore: UserRestore) => {
+    console.log('[gameflow] onrestore')
+
+    switch (restore.state) {
+      case 'in_room':
+        this.updateState('joined_room')
+        break
+      case 'picking_word':
+        this.updateState('picking_word')
+        break
+      case 'picked_word':
+        this.updateState('picked_word')
+        break
+      case 'playing':
+        this.onGameStart(restore.config!, restore.history)
+        break
+      case 'game_over':
+        this.onGameStart(restore.config!, restore.history)
+        this.onGameEnd(restore.gameSummary!)
+        break
+    }
   }
 
 }

@@ -16,7 +16,7 @@ export class Connection {
   ) {
     this._socket = jottoSocketDecorator(io(URL, { autoConnect: false }))
 
-    const sessionId = localStorage.getItem('session')
+    const sessionId = sessionStorage.getItem('session')
     if (sessionId) {
       console.info('connecting with session id...')
       this._socket.updateAuth({ sessionId })
@@ -38,7 +38,7 @@ export class Connection {
 
   private onLeaveGame = () => {
     if (this._socket.sessionId) {
-      localStorage.removeItem(this._socket.sessionId)
+      sessionStorage.removeItem(this._socket.sessionId)
     } else {
       console.warn('user leaving with no session id')
     }
@@ -47,7 +47,7 @@ export class Connection {
   }
 
   private onAuth = (event: AuthEvent) => {
-    localStorage.setItem('session', event.sessionId)
+    sessionStorage.setItem('session', event.sessionId)
     console.debug('saved session id')
   }
 

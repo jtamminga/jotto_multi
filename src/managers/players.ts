@@ -1,5 +1,5 @@
 import { filter } from 'rxjs'
-import { EventBus, IllegalStateException, JottoSocket, SocketSession, User } from 'src/core'
+import { EventBus, IllegalStateException, JottoSocket, SocketSession, User, UserRestore } from 'src/core'
 import { WordEvent, isWordEvent, SubmitGuessEvent } from 'src/core/events/me'
 import { Me, Player } from 'src/models'
 import {
@@ -42,6 +42,7 @@ export class Players {
     this._socket.on('user_connect', this.onConnect)
     this._socket.on('user_disconnect', this.onDisconnect)
     this._socket.on('user_ready', this.onReady)
+    this._socket.on('restore', this.onRestore)
   }
 
 
@@ -154,6 +155,13 @@ export class Players {
 
     player.ready = true
     this._bus.publish(createPlayerReady(player))
+  }
+
+  private onRestore = (restore: UserRestore) => {
+    console.debug('onRestore', restore)
+
+    this._userId = restore.userId
+    this.onUsers(restore.users)
   }
 
 

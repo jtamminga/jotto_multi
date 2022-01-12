@@ -21,13 +21,18 @@ export type GameState =
   | 'playing'
   | 'over'
 
-export interface GameConfig {
+export interface SocketGameConfig {
   opponents: { id: string, opponentId: string }[]
+}
+
+export interface GameConfig {
+  opponents: { player: Player, opponent: Player }[]
 }
 
 export interface SocketGuessResult {
   id: string
   word: string
+  date: number
   common: number
   won: boolean
   from: string
@@ -64,6 +69,23 @@ export interface SocketGameSummary {
 
 export interface GameSummary {
   playerSummaries: PlayerSummary[]
+}
+
+export type PlayerLobbyState =
+  | 'in_room'
+  | 'picking_word'
+  | 'picked_word'
+  | 'playing'
+  | 'game_over'
+
+export interface UserRestore {
+  userId: string
+  state: PlayerLobbyState
+  users: User[]
+  word?: string
+  config?: SocketGameConfig
+  gameSummary?: SocketGameSummary
+  history?: SocketGuessResult[]
 }
 
 export class IllegalStateException extends Error { }

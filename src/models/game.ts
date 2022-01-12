@@ -7,10 +7,20 @@ export class Game implements Disposable {
   private _guesses: GuessResult[] = []
   private _summary: GameSummary | undefined
 
-  constructor(private _players: Player[], private _config: GameConfig) {
+  constructor(
+    private _players: Player[],
+    private _config: GameConfig,
+    history?: GuessResult[]
+  ) {
     this._state = 'playing'
 
     this.processConfig()
+
+    if (history) {
+      this._guesses = history
+      this._players.forEach(player =>
+        player.restoreGuesses(history.filter(h => h.from === player)))
+    }
   }
 
   //
@@ -53,7 +63,7 @@ export class Game implements Disposable {
   private processConfig() {
     // set opponents
     for (let o of this._config.opponents) {
-      this.getPlayer(o.id).setOpponent(this.getPlayer(o.opponentId))
+      o.player.setOpponent(o.opponent)
     }
   }
   

@@ -1,5 +1,5 @@
 import { filter, Subscription } from "rxjs"
-import { Disposable, IllegalStateException, User } from "src/core"
+import { Disposable, GuessResult, IllegalStateException, User } from "src/core"
 import { eventBus as bus } from 'src/core/di'
 import { createPlayerWon, GuessEvent, isGuessEvent, isPlayerEvent } from "src/core/events"
 
@@ -90,6 +90,11 @@ export class Player implements Disposable {
     }
 
     this._opponent = player
+  }
+
+  public restoreGuesses(guesses: GuessResult[]) {
+    this._won = guesses.some(g => g.won)
+    bus.publish(createPlayerWon(this))
   }
 
   public dispose(): void {
