@@ -8,8 +8,6 @@ export function InRoom() {
 
   const { host } = useQueryParams<URLParams>()
 
-  console.log('host', host)
-
   return (
     <div>
       <PlayerStatus />

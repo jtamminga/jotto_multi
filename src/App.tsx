@@ -1,9 +1,9 @@
 import { Game, GameSummary, InRoom, JoinRoom, PickWord } from './screens'
-import { useGameFlow } from './core/hooks'
+import { useGameFlow, useQueryParams } from './core/hooks'
 import { AppState } from './core'
+import { Observer } from './screens/observer'
 
-// styles
-import './App.css'
+type URLParams = { obs: boolean }
 
 const stateToScreen: Record<AppState, JSX.Element> = {
   'joining_room': <JoinRoom />,
@@ -15,7 +15,13 @@ const stateToScreen: Record<AppState, JSX.Element> = {
 }
 
 export default function App() {
+
   const { gameFlow } = useGameFlow()
+  const { obs } = useQueryParams<URLParams>()
+
+  if (obs) {
+    return <Observer />
+  }
 
   return stateToScreen[gameFlow.state]
 }

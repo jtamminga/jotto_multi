@@ -1,11 +1,8 @@
-import { io } from 'socket.io-client'
-import { jottoSocketDecorator } from './socket'
 import { GameFlow, Players } from 'src/managers'
 import { EventBus } from './event_bus'
-import 'colors'
 import { Connection } from 'src/managers/connection'
 
-console.debug('setting up dependencies...'.gray)
+console.debug('setting up dependencies...')
 
 // setup bus
 export const eventBus = new EventBus()

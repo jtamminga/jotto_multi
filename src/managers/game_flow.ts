@@ -139,8 +139,6 @@ export class GameFlow {
   }
 
   private onRestore = (restore: UserRestore) => {
-    console.log('[gameflow] onrestore')
-
     switch (restore.state) {
       case 'in_room':
         this.updateState('joined_room')

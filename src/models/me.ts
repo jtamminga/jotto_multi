@@ -40,8 +40,6 @@ export class Me extends Player {
   }
 
   public restoreGuesses(guesses: GuessResult[]) {
-    console.log('[me] restoreGuesses')
-
     this._guesses = guesses
     bus.publish(createPlayerChange(this, 'guesses'))
     super.restoreGuesses(guesses)

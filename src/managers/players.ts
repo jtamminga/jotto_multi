@@ -162,6 +162,10 @@ export class Players {
 
     this._userId = restore.userId
     this.onUsers(restore.users)
+    
+    if (restore.word) {
+      this.me.setWord(restore.word)
+    }
   }
 
 
