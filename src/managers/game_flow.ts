@@ -1,5 +1,5 @@
-import { filter } from 'rxjs'
-import { EventBus, AppState, JottoSocket, SocketGuessResult, IllegalStateException, GuessResult, SocketGameSummary, UserRestore, SocketGameConfig } from 'src/core'
+import { filter, timer } from 'rxjs'
+import { EventBus, AppState, JottoSocket, SocketGuessResult, IllegalStateException, SocketGameSummary, UserRestore, SocketGameConfig } from 'src/core'
 import { createGuessResult, createLeaveGame } from 'src/core/events/game'
 import { createPickedWord } from 'src/core/events/me'
 import { Game } from 'src/models'
@@ -53,8 +53,8 @@ export class GameFlow {
   // public functions 
   //
 
-  public joinRoom(username: string) {
-    this._socket.updateAuth({ username })
+  public joinRoom(username: string, type: 'observer' | 'player') {
+    this._socket.updateAuth({ username, type })
     this._socket.connect()
     this.updateState('joined_room')
   }
@@ -119,7 +119,12 @@ export class GameFlow {
     const config = Transform.gameConfig(gameConfig)
     const history = _history ? Transform.history(_history) : undefined
     this._game = new Game(this._players.connected, config, history)
-    this.updateState('ingame')
+    if (history) {
+      this.updateState('ingame')
+    } else {
+      this.updateState('starting_game')
+      setTimeout(() => this.updateState('ingame'), 10_000) // 10 sec
+    }
   }
 
   private onGuessResult = (guessResult: SocketGuessResult) => {

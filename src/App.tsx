@@ -1,29 +1,45 @@
-import { Game, GameSummary, InRoom, JoinRoom, PickWord } from './screens'
-import { useGameFlow, useQueryParams } from './core/hooks'
-import { AppState } from './core'
-import { Observer } from './screens/observer'
-
-type URLParams = { obs: boolean }
-
-const stateToScreen: Record<AppState, JSX.Element> = {
-  'joining_room': <JoinRoom />,
-  'joined_room': <InRoom />,
-  'picking_word': <PickWord />,
-  'picked_word': <span>Picked Word</span>,
-  'ingame': <Game />,
-  'game_summary': <GameSummary />
-}
+import { Game, GameSummary, InRoom, JoinRoom, PickedWord, PickWord } from './screens'
+import { useGameFlow } from './core/hooks'
+import { ReactNode } from 'react'
 
 export default function App() {
 
   const { gameFlow } = useGameFlow()
-  const { obs } = useQueryParams<URLParams>()
 
-  if (obs) {
-    return <Observer />
+  let screen: ReactNode
+
+  switch (gameFlow.state) {
+    case 'joining_room':
+      screen = <JoinRoom />
+      break
+
+    case 'joined_room':
+      screen = <InRoom />
+      break
+
+    case 'picking_word':
+      screen = <PickWord />
+      break
+
+    case 'picked_word':
+    case 'starting_game':
+      screen = <PickedWord />
+      break
+
+    case 'ingame':
+      screen = <Game />
+      break
+
+    case 'game_summary':
+      screen = <GameSummary />
+      break
   }
 
-  return stateToScreen[gameFlow.state]
+  return (
+    <div className="container mx-auto max-w-screen-sm px-3">
+      {screen}
+    </div>
+  )
 }
 
  

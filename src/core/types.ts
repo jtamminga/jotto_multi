@@ -14,6 +14,7 @@ export type AppState =
   | 'joined_room'
   | 'picking_word'
   | 'picked_word'
+  | 'starting_game'
   | 'ingame'
   | 'game_summary'
 

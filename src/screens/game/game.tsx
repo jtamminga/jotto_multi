@@ -1,11 +1,25 @@
 import { useState } from 'react'
+import { Button, FiveWordChangeEvent, FiveWordInput } from 'src/components'
 import { players } from 'src/core/di'
 import { useMe } from 'src/core/hooks'
 
 export function Game() {
-  const [word, setWord] = useState('')
+  const [word, setWord] = useState<string>()
+  const [isValid, setIsValid] = useState(false)
 
   const { me } = useMe()
+
+  function onChange(e: FiveWordChangeEvent) {
+    setIsValid(e.isValid)
+    if (e.isValid) {
+      setWord(e.word)
+    }
+  }
+
+  function onGuess() {
+    players.me.guess(word!)
+    setWord(undefined)
+  }
 
   return (
     <div>
@@ -16,15 +30,19 @@ export function Game() {
         <div>against: {me.opponent.username}</div>
       </div>
 
-      <input
-        value={word}
-        onChange={e => setWord(e.target.value)}
-      />
+      <div className="flex justify-center mb-5">
+        <FiveWordInput
+          value={word}
+          onChange={onChange}
+        />
+      </div>
 
-      <button
-        type="button"
-        onClick={() => players.me.guess(word)}
-      >Submit</button>
+      <Button
+        text="Guess"
+        className="w-full"
+        disabled={!isValid}
+        onClick={onGuess}
+      />
 
       <div>
         <b>guesses:</b>

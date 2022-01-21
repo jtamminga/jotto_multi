@@ -8,8 +8,9 @@ export class Observer {
 
   }
 
-  public connect() {
-
+  public join(username: string) {
+    this._socket.updateAuth({ username, type: 'observer' })
+    this._socket.connect()
   }
 
 }

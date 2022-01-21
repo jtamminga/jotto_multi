@@ -1,20 +1,27 @@
 import { useState } from 'react'
+import { Button, Screen, FiveWordInput } from 'src/components'
 import { gameFlow } from 'src/core/di'
 
 export function PickWord() {
-  const [word, setWord] = useState('')
+  
+  const [word, setWord] = useState<string>()
 
   return (
-    <div>
-      <input
-        value={word}
-        onChange={e => setWord(e.target.value)}
-      />
+    <Screen title="Pick a word">
 
-      <button
-        type="button"
-        onClick={() => gameFlow.pickWord(word)}
-      >Submit</button>
-    </div>
+      <div className="flex justify-center mb-5">
+        <FiveWordInput
+          onChange={e => setWord(e.word)}
+        />
+      </div>
+
+      <Button
+        text="Submit"
+        className="w-full"
+        disabled={word === undefined}
+        onClick={() => gameFlow.pickWord(word!)}
+      ></Button>
+      
+    </Screen>
   )
 }

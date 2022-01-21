@@ -3,6 +3,7 @@ import { Socket } from 'socket.io-client';
 type Auth = {
   username?: string;
   sessionId?: string;
+  type?: 'player' | 'observer'
 }
 
 export type SocketSession = {

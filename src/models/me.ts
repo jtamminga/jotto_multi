@@ -1,7 +1,7 @@
 import { Guess, GuessResult, User } from 'src/core'
 import { Player } from './player'
 import { eventBus as bus } from 'src/core/di'
-import { createPlayerChange, createSubmitGuess, GuessEvent } from 'src/core/events'
+import { createPlayerChange, createPlayerReady, createSubmitGuess, GuessEvent } from 'src/core/events'
 import { v4 as createId } from 'uuid'
 
 export class Me extends Player {
@@ -30,6 +30,8 @@ export class Me extends Player {
 
   public setWord(word: string) {
     this._word = word
+    this._ready = true
+    bus.publish(createPlayerReady(this))
   }
 
   public guess(word: string) {

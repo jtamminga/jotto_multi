@@ -1,5 +1,20 @@
+import { useState } from 'react'
+import { observer } from 'src/core/di'
+
 export function Observer() {
+  const [username, setUsername] = useState('')
+
   return (
-    <h1>Observer</h1>
+    <div>
+      <input
+        value={username}
+        onChange={e => setUsername(e.target.value)}
+      />
+
+      <button
+        type="button"
+        onClick={() => observer.join(username)}
+      >Submit</button>
+    </div>
   )
 }
