@@ -1,5 +1,6 @@
-import { filter, timer } from 'rxjs'
-import { EventBus, AppState, JottoSocket, SocketGuessResult, IllegalStateException, SocketGameSummary, UserRestore, SocketGameConfig } from 'src/core'
+import { filter } from 'rxjs'
+import { UserRestore } from 'jotto_core'
+import { EventBus, AppState, JottoSocket, SocketGuessResult, IllegalStateException, SocketGameSummary, SocketGameConfig } from 'src/core'
 import { createGuessResult, createLeaveGame } from 'src/core/events/game'
 import { createPickedWord } from 'src/core/events/me'
 import { Game } from 'src/models'
@@ -60,17 +61,17 @@ export class GameFlow {
   }
 
   public start() {
-    this._socket.emit('start_game')
+    this._socket.emit('startGame')
   }
 
   public pickWord(word: string) {
-    this._socket.emit('submit_word', word)
+    this._socket.emit('submitWord', word)
     this.updateState('picked_word')
     this._bus.publish(createPickedWord(word))
   }
 
   public backToRoom() {
-    this._socket.emit('rejoin_room')
+    this._socket.emit('rejoinRoom')
     this.updateState('joined_room')
 
     this._game!.dispose()
@@ -100,10 +101,10 @@ export class GameFlow {
   }
 
   private setupListeners() {
-    this._socket.on('word_picking', this.onWorkPicking)
-    this._socket.on('game_start', this.onGameStart)
-    this._socket.on('guess_result', this.onGuessResult)
-    this._socket.on('end_game_summary', this.onGameEnd)
+    this._socket.on('wordPicking', this.onWorkPicking)
+    this._socket.on('gameStart', this.onGameStart)
+    this._socket.on('guessResult', this.onGuessResult)
+    this._socket.on('endGameSummary', this.onGameEnd)
     this._socket.on('restore', this.onRestore)
   }
 
@@ -112,7 +113,11 @@ export class GameFlow {
   //
 
   private onWorkPicking = () => {
-    this.updateState('picking_word')
+    if (this._players._me?.type === 'player') {
+      this.updateState('picking_word')
+    } else if (this._players._me?.type === 'observer') {
+      this.updateState('picked_word')
+    }
   }
 
   private onGameStart = (gameConfig: SocketGameConfig, _history?: SocketGuessResult[]) => {

@@ -1,4 +1,5 @@
-import { Socket } from 'socket.io-client';
+import { Socket } from 'socket.io-client'
+import { ClientToServerEvents, ServerToClientEvents } from 'jotto_core'
 
 type Auth = {
   username?: string;
@@ -11,7 +12,7 @@ export type SocketSession = {
   userId: string;
 }
 
-export abstract class JottoSocket extends Socket {
+export abstract class JottoSocket extends Socket<ServerToClientEvents, ClientToServerEvents> {
   sessionId?: string
   userId?: string
   username?: string

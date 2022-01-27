@@ -1,5 +1,6 @@
+import { PlayerState } from "jotto_core"
 import { filter, Subscription } from "rxjs"
-import { Disposable, GuessResult, IllegalStateException, User } from "src/core"
+import { Disposable, GuessResult, IllegalStateException } from "src/core"
 import { eventBus as bus } from 'src/core/di'
 import { createPlayerWon, GuessEvent, isGuessEvent, isPlayerEvent } from "src/core/events"
 
@@ -13,7 +14,7 @@ export class Player implements Disposable {
   protected _opponent: Player | undefined
   protected _subscription: Subscription
 
-  constructor(user: User) {
+  constructor(user: PlayerState) {
     this._userId = user.userId
     this._username = user.username
     this._connected = user.connected
