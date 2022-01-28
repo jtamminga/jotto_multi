@@ -13,9 +13,11 @@ export class Me extends Player {
     super(user)
   }
 
+
   //
   // getters & setters
-  //
+  // =================
+
 
   public get word(): string | undefined {
     return this._word
@@ -25,9 +27,17 @@ export class Me extends Player {
     return this._guesses
   }
 
+  public get guessResults(): GuessResult[] {
+    return this._guesses
+      .filter(g => g.common !== undefined)
+      .map(g => g as GuessResult)
+  }
+
+
   //
   // public functions
-  //
+  // ================
+
 
   public setWord(word: string) {
     this._word = word
@@ -48,27 +58,31 @@ export class Me extends Player {
     super.restoreGuesses(guesses)
   }
 
+
   //
   // handlers
-  //
+  // ========
+
 
   protected onGuessResult(event: GuessEvent) {
     super.onGuessResult(event)
     this.updateGuess(event.guessResult)
   }
 
+
   //
   // private functions
-  //
+  // =================
+
 
   private updateGuess(result: GuessResult) {
-    const guess = this._guesses.find(g => g.id === result.id)
+    const i = this._guesses.findIndex(g => g.id === result.id)
 
-    if (!guess) {
+    if (i === -1) {
       throw new Error('guess does not exist')
     }
 
-    guess.common = result.common
+    this._guesses[i] = result
     bus.publish(createPlayerChange(this, 'guesses'))
   }
 }

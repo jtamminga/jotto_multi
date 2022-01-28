@@ -12,6 +12,6 @@ export const eventBus = new EventBus()
 export const connection = new Connection(eventBus)
 export const players = new Players(connection.socket, eventBus)
 export const gameFlow = new GameFlow(connection.socket, eventBus, players)
-export const observer = new Observer(connection.socket)
+export const observer = new Observer(eventBus)
 
 console.debug('dependences setup')

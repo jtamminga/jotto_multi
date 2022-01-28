@@ -58,7 +58,7 @@ export function isGameEvent(event: Event): event is GameEvent {
   return event.domain === 'game'
 }
 
-export function isGuessEvent(event: Event): event is GuessEvent {
+export function isGuessResultEvent(event: Event): event is GuessEvent {
   return isGameEvent(event) && event.type === 'guess_result'
 }
 

@@ -16,6 +16,7 @@ export type AppState =
   | 'picked_word'
   | 'starting_game'
   | 'ingame'
+  | 'observing'
   | 'game_summary'
 
 export type GameState =

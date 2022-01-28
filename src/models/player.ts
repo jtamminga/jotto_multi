@@ -1,12 +1,13 @@
-import { PlayerState } from "jotto_core"
+import { PlayerState, UserType } from "jotto_core"
 import { filter, Subscription } from "rxjs"
 import { Disposable, GuessResult, IllegalStateException } from "src/core"
 import { eventBus as bus } from 'src/core/di'
-import { createPlayerWon, GuessEvent, isGuessEvent, isPlayerEvent } from "src/core/events"
+import { createPlayerWon, GuessEvent, isGuessResultEvent, isPlayerEvent } from "src/core/events"
 
 export class Player implements Disposable {
   
   protected _userId: string
+  protected _type: UserType
   protected _username: string
   protected _connected: boolean
   protected _ready: boolean
@@ -16,6 +17,7 @@ export class Player implements Disposable {
 
   constructor(user: PlayerState) {
     this._userId = user.userId
+    this._type = user.type
     this._username = user.username
     this._connected = user.connected
     this._ready = user.ready
@@ -23,7 +25,7 @@ export class Player implements Disposable {
 
     this._subscription = bus.events$
       .pipe(
-        filter(isGuessEvent),
+        filter(isGuessResultEvent),
         filter(this.isMyGuess)
       )
       .subscribe(e => this.onGuessResult(e))
@@ -45,6 +47,18 @@ export class Player implements Disposable {
 
   get userId(): string {
     return this._userId
+  }
+
+  get type(): UserType {
+    return this._type
+  }
+
+  get isPlaying(): boolean {
+    return this._type === 'player'
+  }
+
+  get isObserving(): boolean {
+    return this._type === 'observer'
   }
 
   get connected(): boolean {
@@ -70,6 +84,8 @@ export class Player implements Disposable {
 
     return this._opponent
   }
+
+  // setters
 
   set connected(value: boolean) {
     this._connected = value

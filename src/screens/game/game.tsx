@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { Button, FiveWordChangeEvent, FiveWordInput } from 'src/components'
 import { players } from 'src/core/di'
 import { useMe } from 'src/core/hooks'
+import { GuessResults } from './components/guess_results'
+import { Hud } from './components/hud'
+import { Observer } from './components/observer'
 
 export function Game() {
   const [word, setWord] = useState<string>()
@@ -23,12 +26,8 @@ export function Game() {
 
   return (
     <div>
-      <div>
-        <div>name: {me.username}</div>
-        <div>word: {me.word}</div>
-        <div>won: {me.won ? 'yes!' : 'not yet'}</div>
-        <div>against: {me.opponent.username}</div>
-      </div>
+      <Hud me={me} />
+      <Observer />
 
       <div className="flex justify-center mb-5">
         <FiveWordInput
@@ -44,15 +43,12 @@ export function Game() {
         onClick={onGuess}
       />
 
-      <div>
-        <b>guesses:</b>
-        <ol>
-          {me.guesses.map(guess =>
-            <li key={guess.id}>
-              word: {guess.word}, common: {guess.common}
-            </li>
-          )}
-        </ol>
+      <div className="mt-5">
+        <div className="text-center mb-3">
+          Guesses
+        </div>
+
+        <GuessResults guesses={me.guessResults} />
       </div>
     </div>
   )

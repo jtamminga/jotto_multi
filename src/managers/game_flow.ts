@@ -27,9 +27,11 @@ export class GameFlow {
     this.setupListeners()
   }
 
+
   //
   // getters & setters
-  //
+  // =================
+
 
   public get state$() {
     return this._bus.events$
@@ -50,9 +52,11 @@ export class GameFlow {
     return this._game
   }
 
+
   //
   // public functions 
-  //
+  // ================
+
 
   public joinRoom(username: string, type: 'observer' | 'player') {
     this._socket.updateAuth({ username, type })
@@ -87,9 +91,11 @@ export class GameFlow {
     this._game = undefined
   }
 
+
   //
   // private functions
-  //
+  // =================
+
 
   private updateState(state: AppState) {
     const preState = this._state
@@ -97,6 +103,14 @@ export class GameFlow {
 
     if (preState !== state) {
       this._bus.publish(AppEvents.createStateChange(this._state, preState))
+    }
+  }
+
+  private updateStateIf({ player, obs }: { player: AppState, obs: AppState}) {
+    if (this._players.me.isPlaying) {
+      this.updateState(player)
+    } else {
+      this.updateState(obs)
     }
   }
 
@@ -108,16 +122,14 @@ export class GameFlow {
     this._socket.on('restore', this.onRestore)
   }
 
+
   //
   // event handlers
-  //
+  // ==============
+
 
   private onWorkPicking = () => {
-    if (this._players._me?.type === 'player') {
-      this.updateState('picking_word')
-    } else if (this._players._me?.type === 'observer') {
-      this.updateState('picked_word')
-    }
+    this.updateStateIf({ player: 'picking_word', obs: 'picked_word'})
   }
 
   private onGameStart = (gameConfig: SocketGameConfig, _history?: SocketGuessResult[]) => {
@@ -128,7 +140,7 @@ export class GameFlow {
       this.updateState('ingame')
     } else {
       this.updateState('starting_game')
-      setTimeout(() => this.updateState('ingame'), 10_000) // 10 sec
+      setTimeout(() => this.updateStateIf({ player: 'ingame', obs: 'observing' }), 10_000) // 10 sec
     }
   }
 

@@ -18,6 +18,16 @@ export function Players(props: Props) {
           <PlayerItem key={player.userId} {...props} player={player} />
         )}
       </ul>
+      { players.observing.length > 0 &&
+        <>
+          <h4 className="font-medium mb-2">Observers</h4>
+          <ul>
+            {players.observing.map(player =>
+              <ObserverItem key={player.userId} player={player} />  
+            )}
+          </ul>
+        </>
+      }
     </div>
   )
 
@@ -44,6 +54,14 @@ function PlayerItem({ player, show }: PlayerProps) {
   return (
     <li className="flex items-center bg-slate-100 p-2 rounded mb-2">
       {content}
+    </li>
+  )
+}
+
+function ObserverItem({ player }: { player: Player}) {
+  return (
+    <li className="flex items-center bg-orange-100 p-2 rounded mb-2">
+      {renderPlayer(player)}
     </li>
   )
 }

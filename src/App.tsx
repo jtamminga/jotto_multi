@@ -1,4 +1,4 @@
-import { Game, GameSummary, InRoom, JoinRoom, PickedWord, PickWord } from './screens'
+import { Game, GameSummary, InRoom, JoinRoom, Observing, PickedWord, PickWord } from './screens'
 import { useGameFlow } from './core/hooks'
 import { ReactNode } from 'react'
 
@@ -28,6 +28,10 @@ export default function App() {
 
     case 'ingame':
       screen = <Game />
+      break
+
+    case 'observing':
+      screen = <Observing />
       break
 
     case 'game_summary':

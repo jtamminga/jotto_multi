@@ -4,7 +4,7 @@ import { EventBus, JottoSocket, jottoSocketDecorator } from 'src/core'
 import { AuthEvent, isAuthEvent, isLeaveGame } from 'src/core/events'
 
 // constants
-const URL = 'http://localhost:3001'
+const URL = 'http://10.0.0.192:3001'
 
 
 export class Connection {

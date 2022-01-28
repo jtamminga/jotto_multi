@@ -95,7 +95,9 @@ export function PinInput({ numFields, value, className, onChange }: Props) {
   }
 
   function getVal(): string {
-    return refs.current.reduce((str, ref) => str + ref?.value, '')
+    return refs.current
+      .reduce((str, ref) => str + ref?.value, '')
+      .toLowerCase()
   }
 
   function focusNext(i: number) {

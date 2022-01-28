@@ -7,7 +7,7 @@ export function GameSummary() {
   return (
     <div>
       <h1>Game over!</h1>
-      <ol>
+      <ol className="list-decimal">
         {summary.playerSummaries.map((summary, i) =>
           <li key={`summary-${i}`}>
             <b>{summary.player.username}</b> ({summary.numGuesses} guesses)

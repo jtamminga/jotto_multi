@@ -4,7 +4,6 @@ import { Player } from 'src/models'
 
 /**
  * Some thoughts:
- * - maybe i should move all player.me to a seperate domain
  * - maybe won should move to the players domain
  */
 export type PlayerEventType =
@@ -76,6 +75,10 @@ export function createPlayerWon(player: Player): PlayerEvent {
 
 export function isPlayerEvent(event: Event): event is PlayerEvent {
   return event.domain === 'player'
+}
+
+export function isPlayerWonEvent(event: Event): event is PlayerEvent {
+  return isPlayerEvent(event) && event.type === 'won'
 }
 
 export function isPlayerChangeEvent(event: Event): event is PlayerChangeEvent {

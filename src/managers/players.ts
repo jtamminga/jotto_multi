@@ -15,9 +15,6 @@ import { PlayerState, Session, UserRestore } from 'jotto_core'
 
 export class Players {
 
-  // TODO: remove after testing
-  public _me: Session | undefined
-
   // this user and player
   private _userId: string | undefined
   private _player: Me | undefined
@@ -69,7 +66,11 @@ export class Players {
   }
 
   get connected(): Player[] {
-    return this._players.filter(p => p.connected)
+    return this._players.filter(p => p.connected && p.isPlaying)
+  }
+
+  get observing(): Player[] {
+    return this._players.filter(p => p.connected && p.isObserving)
   }
 
   get all(): Player[] {
@@ -114,22 +115,15 @@ export class Players {
     this._players = []
 
     for(const user of users) {
-      if (user.type === 'player') {
-        if (user.userId === this._userId) {
-          const me = new Me(user as PlayerState)
-          this._player = me
-          this._players.push(me)
-          this._bus.publish(createPlayerCreated(me))
-        } else {
-          const player = new Player(user as PlayerState)
-          this._players.push(player)
-          this._bus.publish(createPlayerCreated(player))
-        }
-      }
-
-      // testing 
       if (user.userId === this._userId) {
-        this._me = user
+        const me = new Me(user as PlayerState)
+        this._player = me
+        this._players.push(me)
+        this._bus.publish(createPlayerCreated(me))
+      } else {
+        const player = new Player(user as PlayerState)
+        this._players.push(player)
+        this._bus.publish(createPlayerCreated(player))
       }
     }
   }
