@@ -17,6 +17,7 @@ export function PinInput({ numFields, value, className, onChange }: Props) {
   useEffect(() => {
     if (!value) {
       clear()
+      onValueChange('')
       return
     }
 
@@ -26,6 +27,8 @@ export function PinInput({ numFields, value, className, onChange }: Props) {
         el.value = value[i]
       }
     }
+
+    onValueChange(value)
   }, [value])
 
 

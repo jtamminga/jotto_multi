@@ -26,8 +26,11 @@ export function Game() {
 
   return (
     <div>
-      <Hud me={me} />
-      <Observer />
+      <Hud me={me} className="my-2" />
+      <Observer
+        className="mb-5"
+        onClick={word => word && setWord(word)}
+      />
 
       <div className="flex justify-center mb-5">
         <FiveWordInput

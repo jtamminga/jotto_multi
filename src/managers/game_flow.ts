@@ -1,6 +1,10 @@
 import { filter } from 'rxjs'
-import { UserRestore } from 'jotto_core'
-import { EventBus, AppState, JottoSocket, SocketGuessResult, IllegalStateException, SocketGameSummary, SocketGameConfig } from 'src/core'
+import {
+  UserRestore,
+  GameConfig as SocketGameConfig,
+  GameSummary as SocketGameSummary
+} from 'jotto_core'
+import { EventBus, AppState, JottoSocket, SocketGuessResult, IllegalStateException } from 'src/core'
 import { createGuessResult, createLeaveGame } from 'src/core/events/game'
 import { createPickedWord } from 'src/core/events/me'
 import { Game } from 'src/models'

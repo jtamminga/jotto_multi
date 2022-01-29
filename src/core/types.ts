@@ -1,4 +1,5 @@
 import { Player } from 'src/models'
+import { PlayerSummary as SocketPlayerSummary } from 'jotto_core'
 
 export interface User {
   userId: string;
@@ -52,13 +53,6 @@ export interface GuessResult extends Guess {
   won: boolean
   from: Player
   to: Player
-}
-
-export interface SocketPlayerSummary {
-  userId: string
-  place: number
-  word: string
-  numGuesses: number
 }
 
 export interface PlayerSummary extends Omit<SocketPlayerSummary, 'userId'> {

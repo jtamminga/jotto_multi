@@ -14,7 +14,7 @@ export function Players(props: Props) {
   return (
     <div className="mb-5">
       <ul>
-        {players.connected.map(player =>
+        {players.playing.map(player =>
           <PlayerItem key={player.userId} {...props} player={player} />
         )}
       </ul>

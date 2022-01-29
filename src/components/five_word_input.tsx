@@ -8,7 +8,6 @@ type Props = {
 }
 
 export function FiveWordInput(props: Props) {
-
   const [error, setError] = useState<string>()
 
   // handle pin input change

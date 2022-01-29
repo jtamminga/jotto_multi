@@ -1,33 +1,74 @@
+import classNames from 'classnames'
 import { ReactNode } from 'react'
-import { isGameEvent, isGuessResultEvent, isPlayerWonEvent } from 'src/core/events'
+import { GuessResult } from 'src/core'
 import { useObserver } from 'src/core/hooks'
 
-export function Observer() {
+type Props = {
+  className?: string
+  onClick?: (word: string | undefined) => void
+}
+
+export function Observer({ className, onClick }: Props) {
   const { latestEvent } = useObserver()
 
   let content: ReactNode
 
+  // determine what to render
+  // ========================
+
   if (!latestEvent) {
     content = 'Nothing happened yet'
   }
-  else if (isPlayerWonEvent(latestEvent)) {
-    content =
-      <>
-        <b>{latestEvent.player.username}</b> won
-      </>
+  else if (latestEvent.guessResult.won) {
+    content = playerWon(latestEvent.guessResult)
   }
-  else if (isGuessResultEvent(latestEvent)) {
-    const guess = latestEvent.guessResult
-
-    content =
-      <>
-        <b>{guess.from.username}</b> guessed <b>{guess.word}</b>
-      </>
+  else {
+    content = playerGuess(latestEvent.guessResult)
   }
 
+  // event handler
+  // =============
+
+  function handleOnClick() {
+    if (onClick) {
+      onClick(latestEvent?.guessResult.word)
+    }
+  }
+
+  // render
+  // ======
+
+  const classes = classNames(
+    'bg-blue-100 h-12 px-6 rounded flex items-center gap-1 justify-center',
+    className
+  )
+
+  // render
   return (
-    <div className="bg-blue-100 p-2 rounded mb-5">
+    <div className={classes} onClick={handleOnClick}>
       {content}
     </div>
+  )
+}
+
+
+//
+// helper renders
+// ==============
+
+
+function playerWon({ from, word }: GuessResult) {
+  return (
+    <>
+      <b>{from.username}</b> won 🎉 guessing <b>{word}</b>
+    </>
+  )
+}
+
+function playerGuess({ from, word }: GuessResult) {
+  return (
+    <>
+      <b>{from.username}</b> guessed <b>{word}</b>
+    </>
   )
 }

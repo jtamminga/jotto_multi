@@ -12,6 +12,14 @@ type CollectionProps = {
 }
 
 export function GuessResults({ guesses }: CollectionProps) {
+  if (guesses.length === 0) {
+    return (
+      <div className="p-5 bg-slate-100 rounded text-center text-slate-400">
+        You made no guesses yet
+      </div>
+    )
+  }
+
   return (
     <ol className="list-decimal pl-3 flex flex-col items-center text-slate-300" reversed>
       {guesses.slice().reverse().map(guess =>

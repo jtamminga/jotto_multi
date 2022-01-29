@@ -69,8 +69,12 @@ export class Players {
     return this._players.filter(p => p.connected && p.isPlaying)
   }
 
+  get playing(): Player[] {
+    return this._players.filter(p => p.isPlaying)
+  }
+
   get observing(): Player[] {
-    return this._players.filter(p => p.connected && p.isObserving)
+    return this._players.filter(p => p.isObserving)
   }
 
   get all(): Player[] {

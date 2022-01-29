@@ -1,12 +1,20 @@
+import classNames from "classnames"
 import { Me } from "src/models"
 
 type Props = {
-  me: Me
+  me: Me,
+  className?: string
 }
 
-export function Hud({ me }: Props) {
+export function Hud({ me, className }: Props) {
+
+  const classes = classNames(
+    'flex bg-slate-100 rounded p-2 justify-around',
+    className
+  )
+
   return (
-    <div className="flex mb-2 bg-slate-100 rounded p-2 mt-2 justify-around">
+    <div className={classes}>
 
       {/* username */}
       <div>
