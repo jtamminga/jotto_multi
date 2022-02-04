@@ -1,5 +1,6 @@
+import { addMinutes, intervalToDuration } from 'date-fns'
 import { Player } from './player'
-import { Disposable, GameConfig, GameState, GameSummary, GuessResult, IllegalStateException } from 'src/core'
+import { Disposable, GameConfig, GameRestore, GameState, GameSummary, GuessResult, IllegalStateException } from 'src/core'
 
 export class Game implements Disposable {
 
@@ -7,28 +8,52 @@ export class Game implements Disposable {
   private _guesses: GuessResult[] = []
   private _summary: GameSummary | undefined
 
+  private _startedOn: Date | undefined
+  private _endedOn: Date | undefined
+  private _timeUpOn: Date | undefined
+
   constructor(
     private _players: Player[],
     private _config: GameConfig,
-    history?: GuessResult[]
+    restore?: GameRestore
   ) {
-    this._state = 'playing'
+    this._state = 'starting'
 
     this.processConfig()
-
-    if (history) {
-      this._guesses = history
-      this._players.forEach(player =>
-        player.restoreGuesses(history.filter(h => h.from === player)))
-    }
+    this.processRestore(restore)
   }
+
 
   //
   // getters & setters
-  //
+  // =================
+
 
   public get state(): GameState {
     return this._state
+  }
+
+  public get config(): GameConfig {
+    return this._config
+  }
+
+  public get hasTimeLimit(): boolean {
+    return !!this._config.gameLength
+  }
+
+  public get timeLeft(): Duration {
+    if (!this._timeUpOn) {
+      throw new IllegalStateException('game has not started yet')
+    }
+
+    return intervalToDuration({
+      start: Date.now(),
+      end: this._timeUpOn
+    })
+  }
+
+  public get guesses(): ReadonlyArray<GuessResult> {
+    return this._guesses
   }
 
   public get summary(): GameSummary {
@@ -39,9 +64,20 @@ export class Game implements Disposable {
     return this._summary
   }
 
+
   //
   // public functions
-  //
+  // ================
+
+
+  public start() {
+    this._state = 'playing'
+
+    this._startedOn = new Date()
+    if (this._config.gameLength) {
+      this._timeUpOn = addMinutes(this._startedOn, this._config.gameLength)
+    }
+  }
 
   public addGuess(history: GuessResult) {
     this._guesses.push(history)
@@ -49,6 +85,7 @@ export class Game implements Disposable {
 
   public gameOver(gameSummary: GameSummary) {
     this._state = 'over'
+    this._endedOn = new Date()
     this._summary = gameSummary
   }
 
@@ -56,9 +93,11 @@ export class Game implements Disposable {
     // this._players.forEach(player => player.dispose())
   }
 
+
   //
   // private functions
-  //
+  // =================
+
 
   private processConfig() {
     // set opponents
@@ -66,14 +105,19 @@ export class Game implements Disposable {
       o.player.setOpponent(o.opponent)
     }
   }
-  
-  private getPlayer(userId: string): Player {
-    const player = this._players.find(p => p.userId === userId)
 
-    if (!player) {
-      throw new Error('Player not found')
+  private processRestore(restore: GameRestore | undefined) {
+    if (!restore) {
+      return
     }
 
-    return player
+    this._guesses = restore.history
+    this._players.forEach(player =>
+      player.restoreGuesses(restore.history.filter(h => h.from === player)))
+
+    if (restore.timeUpOn && this._config.gameLength) {
+      this._timeUpOn = restore.timeUpOn
+      this._startedOn = addMinutes(this._timeUpOn, -this._config.gameLength)
+    }
   }
 }

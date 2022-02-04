@@ -1,7 +1,7 @@
 import { MouseEventHandler } from 'react'
 import classNames from 'classnames'
 
-type Type = 'primary' | 'link'
+type Type = 'primary' | 'secondary' | 'link'
 
 type Params = {
   onClick: MouseEventHandler<HTMLButtonElement>
@@ -24,12 +24,18 @@ export function Button({
 
     // primary style
     { 'text-white font-semibold rounded': type === 'primary' },
-    { [primaryStyle]: type === 'primary' && !disabled },
-    { 'bg-emerald-100': type === 'primary' && disabled },
+    { [primaryStyleEnabled]: type === 'primary' && !disabled },
+    { [primaryStyleDisabled]: type === 'primary' && disabled },
+
+    // secondary style
+    { 'border-2 rounded': type === 'secondary' },
+    { [secondaryStyleEnabled]: type === 'secondary' && !disabled },
+    { [secondaryStyleDisabled]: type === 'secondary' && disabled },
 
     // link style
-    { 'text-slate-600 hover:text-slate-700 underline': type === 'link' && !disabled },
-    { 'text-slate-300 underline': type === 'link' && disabled },
+    { 'underline': type === 'link' },
+    { [linkStyleEnabled]: type === 'link' && !disabled },
+    { [linkStyleDisabled]: type === 'link' && disabled },
 
     // inherited
     className
@@ -46,8 +52,22 @@ export function Button({
   )
 }
 
-const primaryStyle =
-  'bg-emerald-400  hover:bg-emerald-500 ' +
+const primaryStyleEnabled =
+  'border bg-emerald-400  hover:bg-emerald-500 ' +
   'focus:ring focus:ring-emerald-100 focus:border-emerald-400 focus:outline-none'
 
+const primaryStyleDisabled =
+  'bg-emerald-100 disabled'
 
+const secondaryStyleEnabled =
+  'border-emerald-300 hover:border-emerald-400 text-emerald-500 ' +
+  'hover:text-emerald-600 focus:ring focus:ring-emerald-100 focus:outline-none'
+
+const secondaryStyleDisabled =
+  'border-slate-100 disabled text-slate-300'
+
+const linkStyleEnabled =
+  'text-slate-600 hover:text-slate-700'
+
+const linkStyleDisabled =
+  'text-slate-300 disabled'

@@ -37,11 +37,8 @@ export class Connection {
   }
 
   private onLeaveGame = () => {
-    if (this._socket.sessionId) {
-      sessionStorage.removeItem(this._socket.sessionId)
-    } else {
-      console.warn('user leaving with no session id')
-    }
+    console.info('clearing session from session storage')
+    sessionStorage.removeItem('session')
 
     this._socket = jottoSocketDecorator(io(URL, { autoConnect: false }))
   }

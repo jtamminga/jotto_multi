@@ -5,17 +5,27 @@ import { Player } from 'src/models'
 
 type Mode = 'readyState' | 'opponents' | undefined
 type Props = { show?: Mode }
-type PlayerProps = Props & { player: Player }
+type PlayerProp = { player: Player, isMe: boolean }
+type PlayerItemProps = Props & PlayerProp
 
 export function Players(props: Props) {
 
   const { players } = usePlayers()
 
+  if (!players.ready) {
+    return null
+  }
+
   return (
     <div className="mb-5">
       <ul>
         {players.playing.map(player =>
-          <PlayerItem key={player.userId} {...props} player={player} />
+          <PlayerItem
+            key={player.userId}
+            {...props}
+            player={player}
+            isMe={player === players.me}
+          />
         )}
       </ul>
       { players.observing.length > 0 &&
@@ -23,7 +33,11 @@ export function Players(props: Props) {
           <h4 className="font-medium mb-2">Observers</h4>
           <ul>
             {players.observing.map(player =>
-              <ObserverItem key={player.userId} player={player} />  
+              <ObserverItem
+                key={player.userId}
+                player={player}
+                isMe={player === players.me}
+              />  
             )}
           </ul>
         </>
@@ -33,7 +47,7 @@ export function Players(props: Props) {
 
 }
 
-function PlayerItem({ player, show }: PlayerProps) {
+function PlayerItem({ player, isMe, show }: PlayerItemProps) {
 
   let content: ReactNode
   switch(show) {
@@ -51,16 +65,26 @@ function PlayerItem({ player, show }: PlayerProps) {
       break
   }
 
+  const classes = classNames(
+    'flex items-center bg-slate-100 p-2 px-3 rounded mb-2',
+    { 'border-2 border-slate-300': isMe }
+  )
+
   return (
-    <li className="flex items-center bg-slate-100 p-2 rounded mb-2">
+    <li className={classes}>
       {content}
     </li>
   )
 }
 
-function ObserverItem({ player }: { player: Player}) {
+function ObserverItem({ player, isMe }: PlayerProp) {
+  const classes = classNames(
+    'flex items-center bg-orange-100 p-2 px-3 rounded mb-2',
+    { 'border-2 border-orange-300': isMe }
+  )
+
   return (
-    <li className="flex items-center bg-orange-100 p-2 rounded mb-2">
+    <li className={classes}>
       {renderPlayer(player)}
     </li>
   )

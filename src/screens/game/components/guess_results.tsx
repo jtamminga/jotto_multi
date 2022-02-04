@@ -21,7 +21,7 @@ export function GuessResults({ guesses }: CollectionProps) {
   }
 
   return (
-    <ol className="list-decimal pl-3 flex flex-col items-center text-slate-300" reversed>
+    <ol className="list-decimal flex flex-col items-center text-slate-300" reversed>
       {guesses.slice().reverse().map(guess =>
         <li key={guess.id} className="pl-3">
           <GuessResultItem guess={guess} />

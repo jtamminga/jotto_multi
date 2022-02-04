@@ -25,6 +25,7 @@ export function jottoSocketDecorator(socket: Socket): JottoSocket {
   
   jottoSocket.updateAuth = function(auth: Auth) {
     jottoSocket.auth = auth
+    // jottoSocket.sessionId = auth.sessionId
   }
 
   return jottoSocket

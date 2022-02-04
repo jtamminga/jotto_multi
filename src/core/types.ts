@@ -1,5 +1,5 @@
 import { Player } from 'src/models'
-import { PlayerSummary as SocketPlayerSummary } from 'jotto_core'
+import { Minutes, PlayerSummary as SocketPlayerSummary, Seconds, UserRestore } from 'jotto_core'
 
 export interface User {
   userId: string;
@@ -16,11 +16,12 @@ export type AppState =
   | 'picking_word'
   | 'picked_word'
   | 'starting_game'
-  | 'ingame'
+  | 'playing'
   | 'observing'
   | 'game_summary'
 
 export type GameState =
+  | 'starting'
   | 'playing'
   | 'over'
 
@@ -29,6 +30,8 @@ export interface SocketGameConfig {
 }
 
 export interface GameConfig {
+  preGameLength: Seconds
+  gameLength: Minutes | undefined
   opponents: { player: Player, opponent: Player }[]
 }
 
@@ -74,14 +77,9 @@ export type PlayerLobbyState =
   | 'playing'
   | 'game_over'
 
-export interface UserRestore {
-  userId: string
-  state: PlayerLobbyState
-  users: User[]
-  word?: string
-  config?: SocketGameConfig
-  gameSummary?: SocketGameSummary
-  history?: SocketGuessResult[]
+export interface GameRestore {
+  timeUpOn: Date | undefined
+  history: GuessResult[]
 }
 
 export class IllegalStateException extends Error { }

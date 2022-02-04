@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Button, FiveWordChangeEvent, FiveWordInput } from 'src/components'
-import { players } from 'src/core/di'
 import { useMe } from 'src/core/hooks'
 import { GuessResults } from './components/guess_results'
 import { Hud } from './components/hud'
@@ -20,31 +19,45 @@ export function Game() {
   }
 
   function onGuess() {
-    players.me.guess(word!)
+    me.guess(word!)
     setWord(undefined)
   }
 
   return (
     <div>
-      <Hud me={me} className="my-2" />
+      <Hud className="my-2" />
+
       <Observer
         className="mb-5"
         onClick={word => word && setWord(word)}
       />
 
-      <div className="flex justify-center mb-5">
-        <FiveWordInput
-          value={word}
-          onChange={onChange}
-        />
-      </div>
+      { me.won ?
 
-      <Button
-        text="Guess"
-        className="w-full"
-        disabled={!isValid}
-        onClick={onGuess}
-      />
+        // winning state
+        <div className="bg-emerald-100 p-5 rounded text-center">
+          You guessed right! 🥳
+        </div>
+
+        :
+
+        // not winning state
+        <>
+          <div className="flex justify-center mb-5">
+            <FiveWordInput
+              value={word}
+              onChange={onChange}
+            />
+          </div>
+
+          <Button
+            text="Guess"
+            className="w-full"
+            disabled={!isValid}
+            onClick={onGuess}
+          />
+        </>
+      }
 
       <div className="mt-5">
         <div className="text-center mb-3">

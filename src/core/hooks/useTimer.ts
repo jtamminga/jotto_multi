@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { interval, Subscription } from 'rxjs'
 
-export function useTimer() {
+export function useTimer(autoStart = false) {
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
 
@@ -12,7 +12,7 @@ export function useTimer() {
   useEffect(() => {
     let subscription: Subscription | undefined
 
-    if (isActive) {
+    if (autoStart || isActive) {
       subscription = interval(1000)
         .subscribe(i => {
           setSeconds(i + 1)

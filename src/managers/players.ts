@@ -57,6 +57,10 @@ export class Players {
       .pipe(filter(isPlayersEvent))
   }
 
+  get ready(): boolean {
+    return this._player !== undefined
+  }
+
   get me(): Me {
     if (this._player === undefined) {
       throw new IllegalStateException('Player is not in the game')
@@ -104,19 +108,21 @@ export class Players {
 
 
   private onSession = ({ sessionId, userId }: SocketSession) => {
-    console.debug('onSession')  
+    console.debug('onSession')
     this._socket.userId = userId
     this._socket.updateAuth({ sessionId })
     this._userId = userId
     this._bus.publish(createAuth(sessionId))
+
+    console.group('test session')
+    console.log('userId', this._socket.userId)
+    console.log('sessionId', this._socket.sessionId)
+    console.log('username', this._socket.username)
+    console.groupEnd()
   }
 
   private onUsers = (users: Session[]) => {
     console.debug('onUsers', users.map(u => u.username))
-
-    // first clear players from previous play throughs
-    this._players.forEach(p => p.dispose())
-    this._players = []
 
     for(const user of users) {
       if (user.userId === this._userId) {
@@ -198,6 +204,10 @@ export class Players {
   private onGameEvent = (event: GameEvent) => {
     switch(event.type) {
       case 'leave':
+        this._userId = undefined
+        this._player?.dispose()
+        this._player = undefined
+      case 'playAgain':
         this._players.forEach(p => p.dispose())
         this._players = []
         break

@@ -1,35 +1,39 @@
 import { useEffect, useState } from 'react'
-import { Players, Screen } from 'src/components'
-import { AppState } from 'src/core'
+import { filter } from 'rxjs'
+import { Players, Screen, Timer } from 'src/components'
 import { useGameFlow, useTimer } from 'src/core/hooks'
 
 export function PickedWord() {
 
   const { gameFlow } = useGameFlow()
-  const [isCounting, setIsCounting] = useState(false)
+  const [gameStarting, setGameStarting] = useState(false)
   const timer = useTimer()
+
+  // title based on state
+  const title = gameStarting ?
+    'Starting game' : 'Waiting for other players'
+
+  // time left
+  const timeLeft = { seconds: 10 - timer.seconds}
  
   useEffect(() => {
     const subscription = gameFlow.state$
+      .pipe(filter(e => e.state === 'starting_game'))
       .subscribe(e => {
-        if (e.state === 'starting_game') {
-          timer.start()
-          setIsCounting(true)
-        }
+        timer.start()
+        setGameStarting(true)
       })
 
     return () => subscription.unsubscribe()
   }, [])
 
-  // title based on state
-  const title = gameFlow.state === 'starting_game' ?
-    'Starting game' : 'Waiting for other players'
-
   return (
     <Screen title={title}>
 
-      { isCounting &&
-        <span>Starting in {10 - timer.seconds}</span>
+      { gameStarting &&
+        <div className="text-center mb-5">
+          Starting in <Timer className={timerClasses} duration={timeLeft} />
+        </div>
       }
 
       <Players show={timer.seconds >= 3 ? 'opponents' : 'readyState'} />
@@ -37,3 +41,10 @@ export function PickedWord() {
     </Screen>
   )
 }
+
+
+//
+// styles
+// ======
+
+const timerClasses = "bg-slate-100 py-1 px-2 rounded inline-block"

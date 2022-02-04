@@ -1,11 +1,11 @@
 import { filter } from 'rxjs'
 import {
-  UserRestore,
+  UserRestore as SocketUserRestore,
   GameConfig as SocketGameConfig,
   GameSummary as SocketGameSummary
 } from 'jotto_core'
 import { EventBus, AppState, JottoSocket, SocketGuessResult, IllegalStateException } from 'src/core'
-import { createGuessResult, createLeaveGame } from 'src/core/events/game'
+import { createGuessResult, createLeaveGame, createPlayAgain } from 'src/core/events/game'
 import { createPickedWord } from 'src/core/events/me'
 import { Game } from 'src/models'
 import { Players } from './players'
@@ -81,6 +81,7 @@ export class GameFlow {
   public backToRoom() {
     this._socket.emit('rejoinRoom')
     this.updateState('joined_room')
+    this._bus.publish(createPlayAgain())
 
     this._game!.dispose()
     this._game = undefined
@@ -120,7 +121,7 @@ export class GameFlow {
 
   private setupListeners() {
     this._socket.on('wordPicking', this.onWorkPicking)
-    this._socket.on('gameStart', this.onGameStart)
+    this._socket.on('startPlaying', this.onStartPlaying)
     this._socket.on('guessResult', this.onGuessResult)
     this._socket.on('endGameSummary', this.onGameEnd)
     this._socket.on('restore', this.onRestore)
@@ -136,15 +137,20 @@ export class GameFlow {
     this.updateStateIf({ player: 'picking_word', obs: 'picked_word'})
   }
 
-  private onGameStart = (gameConfig: SocketGameConfig, _history?: SocketGuessResult[]) => {
+  private onStartPlaying = (gameConfig: SocketGameConfig, restore?: SocketUserRestore) => {
     const config = Transform.gameConfig(gameConfig)
-    const history = _history ? Transform.history(_history) : undefined
-    this._game = new Game(this._players.connected, config, history)
-    if (history) {
-      this.updateState('ingame')
+    const gameRestore = restore ? Transform.gameRestore(restore) : undefined
+
+    this._game = new Game(this._players.playing, config, gameRestore)
+    
+    if (restore) {
+      this.updateStateIf({ player: 'playing', obs: 'observing' })
     } else {
       this.updateState('starting_game')
-      setTimeout(() => this.updateStateIf({ player: 'ingame', obs: 'observing' }), 10_000) // 10 sec
+      setTimeout(() => {
+        this._game?.start()
+        this.updateStateIf({ player: 'playing', obs: 'observing' })
+      }, config.preGameLength * 1_000)
     }
   }
 
@@ -164,7 +170,7 @@ export class GameFlow {
     this.updateState('game_summary')
   }
 
-  private onRestore = (restore: UserRestore) => {
+  private onRestore = (restore: SocketUserRestore) => {
     switch (restore.state) {
       case 'in_room':
         this.updateState('joined_room')
@@ -176,10 +182,10 @@ export class GameFlow {
         this.updateState('picked_word')
         break
       case 'playing':
-        this.onGameStart(restore.config!, restore.history)
+        this.onStartPlaying(restore.config!, restore)
         break
       case 'game_over':
-        this.onGameStart(restore.config!, restore.history)
+        this.onStartPlaying(restore.config!, restore)
         this.onGameEnd(restore.gameSummary!)
         break
     }

@@ -18,18 +18,17 @@ export function JoinRoom() {
         className="mb-5"
       />
 
-      <div className="flex flex-col">
+      <div className="flex flex-col space-y-3">
         <Button
           text="Join Game"
           disabled={!isValid}
           onClick={() => gameFlow.joinRoom(username, 'player')}
-          className="mb-3"
         />
 
         <Button
+          type="link"
           text="Join as Observer"
           disabled={!isValid}
-          type="link"
           onClick={() => gameFlow.joinRoom(username, 'observer')}
         />
       </div>

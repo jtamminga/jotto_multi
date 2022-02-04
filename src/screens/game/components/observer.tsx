@@ -40,6 +40,7 @@ export function Observer({ className, onClick }: Props) {
 
   const classes = classNames(
     'bg-blue-100 h-12 px-6 rounded flex items-center gap-1 justify-center',
+    { 'cursor-pointer hover:bg-blue-200': latestEvent !== undefined },
     className
   )
 

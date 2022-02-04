@@ -42,9 +42,11 @@ export function PinInput({ numFields, value, className, onChange }: Props) {
   }
 
   function onKey(e: KeyboardEvent<HTMLInputElement>, i: number) {
+    const onLastInput = i + 1 === numFields
+
     // always prevent default
     // only exception is if tabbing on the last input
-    if (!(e.key === 'Tab' && !e.shiftKey && i + 1 === numFields)) {
+    if (!(e.key === 'Tab' && !e.shiftKey && onLastInput)) {
       e.preventDefault()
     }
 
@@ -55,10 +57,19 @@ export function PinInput({ numFields, value, className, onChange }: Props) {
 
     switch (e.key) {
       case 'Backspace':
-        el.value = ''
+        const wasCleared = el.value === ''
+
+        if (onLastInput && !wasCleared) {
+          el.value = ''
+        } else {
+          const preEl = refs.current[i - 1]
+          if (preEl) preEl.value = ''
+        }
+
         onValueChange(getVal())
-        focusPrev(i)
+        if (!onLastInput || wasCleared) focusPrev(i)
         break
+
       case 'ArrowLeft':
         focusPrev(i)
         break
@@ -130,7 +141,7 @@ export function PinInput({ numFields, value, className, onChange }: Props) {
         key={i}
         type="text"
         ref={el => refs.current[i] = el}
-        className="text-center uppercase w-12"
+        className="text-center uppercase w-12 caret-transparent"
         onKeyDown={e => onKey(e, i) }
       />
     )

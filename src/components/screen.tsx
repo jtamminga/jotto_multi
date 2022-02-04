@@ -10,7 +10,7 @@ export function Screen({ title, children }: Props) {
   return (
     <div>
       <GameHeader />
-      <Header>{title}</Header>
+      <Header className="mb-8">{title}</Header>
 
       {children}
     </div>

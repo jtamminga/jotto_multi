@@ -26,7 +26,7 @@ export default function App() {
       screen = <PickedWord />
       break
 
-    case 'ingame':
+    case 'playing':
       screen = <Game />
       break
 

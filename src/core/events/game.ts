@@ -1,11 +1,17 @@
 import { GuessResult } from 'src/core'
 import { Event } from './event'
 
+/**
+ * Maybe rejoin and leave should be player.me events
+ */
 
 export type GameEventType =
 
   // result from the guess
   | 'guess_result'
+
+  // rejoin game
+  | 'playAgain'
 
   // leave the game
   | 'leave'
@@ -47,6 +53,10 @@ export function createGuessResult(guessResult: GuessResult): GuessEvent {
 
 export function createLeaveGame(): GameEvent {
   return create('leave')
+}
+
+export function createPlayAgain(): GameEvent {
+  return create('playAgain')
 }
 
 
