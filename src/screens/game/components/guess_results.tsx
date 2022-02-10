@@ -23,7 +23,7 @@ export function GuessResults({ guesses }: CollectionProps) {
   return (
     <ol className="list-decimal flex flex-col items-center text-slate-300" reversed>
       {guesses.slice().reverse().map(guess =>
-        <li key={guess.id} className="pl-3">
+        <li key={guess.id} className="pl-3 mb-2">
           <GuessResultItem guess={guess} />
         </li>
       )}
@@ -70,7 +70,7 @@ const baseCharBlockClasses = 'py-2 uppercase text-center text-slate-800'
 
 function containerClasses({ won }: GuessResult): string {
   return classNames(
-    'inline-flex rounded mb-2',
+    'inline-flex rounded',
     {
       'bg-emerald-100': won,
       'bg-slate-100': !won

@@ -1,8 +1,8 @@
-import { PlayerState, UserType } from "jotto_core"
-import { filter, Subscription } from "rxjs"
-import { Disposable, GuessResult, IllegalStateException } from "src/core"
+import { PlayerState, UserType } from 'jotto_core'
+import { filter, Subscription } from 'rxjs'
+import { Disposable, GuessResult, IllegalStateException } from 'src/core'
 import { eventBus as bus } from 'src/core/di'
-import { createPlayerWon, GuessEvent, isGuessResultEvent, isPlayerEvent } from "src/core/events"
+import { createPlayerWon, GuessEvent, isGuessResultEvent, isPlayerEvent } from 'src/core/events'
 
 export class Player implements Disposable {
   
@@ -112,6 +112,12 @@ export class Player implements Disposable {
   public restoreGuesses(guesses: GuessResult[]) {
     this._won = guesses.some(g => g.won)
     bus.publish(createPlayerWon(this))
+  }
+
+  public reset() {
+    this._ready = false
+    this._won = false
+    this._opponent = undefined
   }
 
   public dispose(): void {

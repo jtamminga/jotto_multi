@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { ReactNode } from 'react'
-import { GuessResult } from 'src/core'
+import { GuessResultSummary } from 'src/components'
 import { useObserver } from 'src/core/hooks'
 
 type Props = {
@@ -19,11 +19,8 @@ export function Observer({ className, onClick }: Props) {
   if (!latestEvent) {
     content = 'Nothing happened yet'
   }
-  else if (latestEvent.guessResult.won) {
-    content = playerWon(latestEvent.guessResult)
-  }
   else {
-    content = playerGuess(latestEvent.guessResult)
+    content = <GuessResultSummary result={latestEvent.guessResult} />
   }
 
   // event handler
@@ -39,12 +36,14 @@ export function Observer({ className, onClick }: Props) {
   // ======
 
   const classes = classNames(
-    'bg-blue-100 h-12 px-6 rounded flex items-center gap-1 justify-center',
-    { 'cursor-pointer hover:bg-blue-200': latestEvent !== undefined },
+    'h-12 px-6 rounded flex items-center justify-center',
+    {
+      [noEventStyle]: latestEvent === undefined,
+      [hasEventStyle]: latestEvent !== undefined
+    },
     className
   )
 
-  // render
   return (
     <div className={classes} onClick={handleOnClick}>
       {content}
@@ -54,22 +53,12 @@ export function Observer({ className, onClick }: Props) {
 
 
 //
-// helper renders
-// ==============
+// styles
+// ======
 
 
-function playerWon({ from, word }: GuessResult) {
-  return (
-    <>
-      <b>{from.username}</b> won 🎉 guessing <b>{word}</b>
-    </>
-  )
-}
+const noEventStyle =
+  'bg-slate-100 text-slate-400'
 
-function playerGuess({ from, word }: GuessResult) {
-  return (
-    <>
-      <b>{from.username}</b> guessed <b>{word}</b>
-    </>
-  )
-}
+const hasEventStyle =
+  'bg-blue-100 cursor-pointer hover:bg-blue-200'

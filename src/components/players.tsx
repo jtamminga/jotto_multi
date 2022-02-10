@@ -13,6 +13,7 @@ export function Players(props: Props) {
   const { players } = usePlayers()
 
   if (!players.ready) {
+    console.warn('players not ready yet')
     return null
   }
 
@@ -115,7 +116,7 @@ function renderPlayerWithOpponent(player: Player) {
   return (
     <>
       {renderPlayer(player)}
-      <span className="text-gray-500 inline-block px-1">against</span>
+      <span className="text-gray-400 inline-block px-1">against</span>
       {renderPlayer(player.opponent)}
     </>
   )

@@ -37,6 +37,20 @@ export class Game implements Disposable {
     return this._config
   }
 
+  public get guesses(): ReadonlyArray<GuessResult> {
+    return this._guesses
+  }
+
+  public get summary(): GameSummary {
+    if (!this._summary) {
+      throw new IllegalStateException('game is not over yet')
+    }
+
+    return this._summary
+  }
+
+  // time related getters
+
   public get hasTimeLimit(): boolean {
     return !!this._config.gameLength
   }
@@ -52,16 +66,26 @@ export class Game implements Disposable {
     })
   }
 
-  public get guesses(): ReadonlyArray<GuessResult> {
-    return this._guesses
+  public get timeElasped(): Duration {
+    if (!this._startedOn) {
+      throw new IllegalStateException('game has not started yet')
+    }
+
+    return intervalToDuration({
+      start: this._startedOn,
+      end: Date.now()
+    })
   }
 
-  public get summary(): GameSummary {
-    if (!this._summary) {
+  public get finalTime(): Duration {
+    if (!this._startedOn || !this._endedOn) {
       throw new IllegalStateException('game is not over yet')
     }
 
-    return this._summary
+    return intervalToDuration({
+      start: this._startedOn,
+      end: this._endedOn
+    })
   }
 
 

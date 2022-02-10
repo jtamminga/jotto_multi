@@ -1,12 +1,11 @@
-import { ReactNode } from 'react'
 import { GuessResult } from 'src/core'
 
 type Props = {
   result: GuessResult
 }
 
-export function GuessResultItem({ result }: Props) {
-  let content: ReactNode
+export function GuessResultSummary({ result }: Props) {
+  let content: JSX.Element
 
   // determine what to render
 
@@ -29,16 +28,16 @@ export function GuessResultItem({ result }: Props) {
 
 function playerWon({ from, word }: GuessResult) {
   return (
-    <>
+    <span>
       <b>{from.username}</b> won 🎉 guessing <b>{word}</b>
-    </>
+    </span>
   )
 }
 
 function playerGuess({ from, word }: GuessResult) {
   return (
-    <>
+    <span>
       <b>{from.username}</b> guessed <b>{word}</b>
-    </>
+    </span>
   )
 }

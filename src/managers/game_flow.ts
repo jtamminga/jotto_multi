@@ -31,6 +31,14 @@ export class GameFlow {
     this.setupListeners()
   }
 
+  private setupListeners() {
+    this._socket.on('wordPicking', this.onWorkPicking)
+    this._socket.on('startPlaying', this.onStartPlaying)
+    this._socket.on('guessResult', this.onGuessResult)
+    this._socket.on('endGameSummary', this.onGameEnd)
+    this._socket.on('restore', this.onRestore)
+  }
+
 
   //
   // getters & setters
@@ -117,14 +125,6 @@ export class GameFlow {
     } else {
       this.updateState(obs)
     }
-  }
-
-  private setupListeners() {
-    this._socket.on('wordPicking', this.onWorkPicking)
-    this._socket.on('startPlaying', this.onStartPlaying)
-    this._socket.on('guessResult', this.onGuessResult)
-    this._socket.on('endGameSummary', this.onGameEnd)
-    this._socket.on('restore', this.onRestore)
   }
 
 

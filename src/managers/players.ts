@@ -42,6 +42,7 @@ export class Players {
     this._socket.on('users', this.onUsers)
     this._socket.on('userConnect', this.onConnect)
     this._socket.on('userDisconnect', this.onDisconnect)
+    this._socket.on('wordPicking', this.onWordPicking)
     this._socket.on('userReady', this.onReady)
     this._socket.on('restore', this.onRestore)
   }
@@ -136,6 +137,14 @@ export class Players {
         this._bus.publish(createPlayerCreated(player))
       }
     }
+
+    if (this._player === undefined) {
+      console.warn('player.me not defined but should be')
+      console.group('debugging player.me issue')
+      console.log('this._userId', this._userId)
+      console.log('this._player', this._player)
+      console.groupEnd()
+    }
   }
 
   private onConnect = (user: Session) => {
@@ -152,16 +161,32 @@ export class Players {
     this._bus.publish(createPlayerConnected(player))
   }
 
-  private onDisconnect = (userId: string) => {
+  private onDisconnect = (userId: string, intended: boolean) => {
     console.debug('onDisconnect', userId)
-    const player = this.find(userId)
+    const index = this._players.findIndex(p => p.userId === userId)
 
-    if (!player) {
+    if (index === -1) {
       return
     }
 
+    const player = this._players[index]
     player.connected = false
+
+    if (intended) {
+      player.dispose()
+      this._players.splice(index, 1)
+    }
+
     this._bus.publish(createPlayerDisconnected(player))
+  }
+
+  private onWordPicking = () => {
+    // when observing, the workPicking event is what
+    // is the signal for a new game starting
+    // we just reset all players then to make life easy
+    if (this.me.isObserving) {
+      this._players.forEach(p => p.reset())
+    }
   }
 
   private onReady = (userId: string) => {

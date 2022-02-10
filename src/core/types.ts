@@ -1,5 +1,5 @@
 import { Player } from 'src/models'
-import { Minutes, PlayerSummary as SocketPlayerSummary, Seconds, UserRestore } from 'jotto_core'
+import { Minutes, PlayerSummary as SocketPlayerSummary, Seconds } from 'jotto_core'
 
 export interface User {
   userId: string;

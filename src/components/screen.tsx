@@ -9,8 +9,10 @@ type Props = {
 export function Screen({ title, children }: Props) {
   return (
     <div>
-      <GameHeader />
-      <Header className="mb-8">{title}</Header>
+      <div className="mt-3 mb-8">
+        <GameHeader />
+        <Header>{title}</Header>
+      </div>
 
       {children}
     </div>

@@ -142,7 +142,7 @@ export function PinInput({ numFields, value, className, onChange }: Props) {
         type="text"
         ref={el => refs.current[i] = el}
         className="text-center uppercase w-12 caret-transparent"
-        onKeyDown={e => onKey(e, i) }
+        onKeyDown={e => onKey(e, i)}
       />
     )
   }

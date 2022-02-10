@@ -40,8 +40,15 @@ export default function App() {
   }
 
   return (
-    <div className="container mx-auto max-w-screen-sm px-3">
-      {screen}
+    <div className="container mx-auto max-w-screen-sm px-3 h-screen flex flex-col">
+
+      <div className="grow">
+        {screen}
+      </div>
+
+      {/* <div className="w-full bg-slate-200 rounded">
+
+      </div> */}
     </div>
   )
 }

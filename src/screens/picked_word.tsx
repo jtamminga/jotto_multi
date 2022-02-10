@@ -32,7 +32,7 @@ export function PickedWord() {
 
       { gameStarting &&
         <div className="text-center mb-5">
-          Starting in <Timer className={timerClasses} duration={timeLeft} />
+          Starting in <Timer duration={timeLeft} />
         </div>
       }
 
@@ -41,10 +41,3 @@ export function PickedWord() {
     </Screen>
   )
 }
-
-
-//
-// styles
-// ======
-
-const timerClasses = "bg-slate-100 py-1 px-2 rounded inline-block"
