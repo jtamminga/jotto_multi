@@ -4,8 +4,8 @@ export function useQueryParams<T extends object>(): Partial<T> {
   )
 
   return new Proxy(params, {
-      get(target, prop) {
-          return target.get(prop as string)
-      },
+    get(target, prop) {
+      return target.get(prop as string)
+    },
   }) as T;
 }

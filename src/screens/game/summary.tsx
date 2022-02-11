@@ -64,9 +64,9 @@ function PlayerSummaryItem({ summary }: PlayerSummaryProps) {
 
   return (
     <div className={classes}>
-      <div className="w-32 text-center">{summary.player.username}</div>
+      <div className="w-28 text-center">{summary.player.username}</div>
       <div className="w-16 text-center">{summary.word}</div>
-      <div className="w-32 text-center">{summary.numGuesses}</div>
+      <div className="w-24 text-center">{summary.numGuesses}</div>
     </div>
   )
 }
@@ -74,9 +74,9 @@ function PlayerSummaryItem({ summary }: PlayerSummaryProps) {
 function PlayerSummaryHeader() {
   return (
     <div className="flex p-2 text-slate-400 ml-3">
-      <div className="w-32 text-center">Player</div>
+      <div className="w-28 text-center">Player</div>
       <div className="w-16 text-center">Word</div>
-      <div className="w-32 text-center"># Guesses</div>
+      <div className="w-24 text-center"># Guesses</div>
     </div>
   )
 }

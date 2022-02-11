@@ -12,9 +12,11 @@ export function FiveWordInput(props: Props) {
 
   // handle pin input change
   function onChange(value: string) {
+    
     const error = valid(value)
     const isValid = !error && value.length == 5
     const word = isValid ? value : undefined
+    
     setError(error)
 
     if (props.onChange) {

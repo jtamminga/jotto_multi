@@ -1,12 +1,14 @@
 import { Game, GameSummary, InRoom, JoinRoom, Observing, PickedWord, PickWord } from './screens'
 import { useGameFlow } from './core/hooks'
 import { ReactNode } from 'react'
+import { Keyboard } from './components'
 
 export default function App() {
 
   const { gameFlow } = useGameFlow()
 
   let screen: ReactNode
+  let showKeyboard: boolean = false
 
   switch (gameFlow.state) {
     case 'joining_room':
@@ -19,6 +21,7 @@ export default function App() {
 
     case 'picking_word':
       screen = <PickWord />
+      showKeyboard = true
       break
 
     case 'picked_word':
@@ -28,6 +31,7 @@ export default function App() {
 
     case 'playing':
       screen = <Game />
+      showKeyboard = true
       break
 
     case 'observing':
@@ -40,15 +44,13 @@ export default function App() {
   }
 
   return (
-    <div className="container mx-auto max-w-screen-sm px-3 h-screen flex flex-col">
+    <div className="container mx-auto max-w-screen-sm h-full flex flex-col">
 
-      <div className="grow">
-        {screen}
-      </div>
+      {screen}
 
-      {/* <div className="w-full bg-slate-200 rounded">
-
-      </div> */}
+      { showKeyboard &&
+        <Keyboard />
+      }
     </div>
   )
 }

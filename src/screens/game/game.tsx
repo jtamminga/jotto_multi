@@ -24,49 +24,51 @@ export function Game() {
   }
 
   return (
-    <div>
-      <Hud className="my-2" />
+    <>
+      <div className="px-3">
+        <Hud className="my-2" />
 
-      <Observer
-        className="mb-5"
-        onClick={word => word && setWord(word)}
-      />
+        <Observer
+          className="mb-5"
+          onClick={word => word && setWord(word)}
+        />
 
-      { me.won ?
+        { me.won ?
 
-        // winning state
-        <div className="bg-emerald-100 p-5 rounded text-center">
-          You guessed right! 🥳
-        </div>
-
-        :
-
-        // not winning state
-        <>
-          <div className="flex justify-center mb-5">
-            <FiveWordInput
-              value={word}
-              onChange={onChange}
-            />
+          // winning state
+          <div className="bg-emerald-100 p-5 rounded text-center">
+            You guessed right! 🥳
           </div>
 
-          <Button
-            text="Guess"
-            className="w-full"
-            disabled={!isValid}
-            onClick={onGuess}
-          />
-        </>
-      }
+          :
 
-      <div className="mt-5">
+          // not winning state
+          <>
+            <div className="flex justify-center mb-5">
+              <FiveWordInput
+                value={word}
+                onChange={onChange}
+              />
+            </div>
+
+            <Button
+              text="Guess"
+              className="w-full"
+              disabled={!isValid}
+              onClick={onGuess}
+            />
+          </>
+        }
+      </div>
+
+      <div className="mt-5 px-3 grow overflow-y-auto">
         <div className="text-center mb-3">
           Guesses
         </div>
 
         <GuessResults guesses={me.guessResults} />
       </div>
-    </div>
+    </>
   )
 
 }

@@ -53,7 +53,7 @@ export function Button({
 }
 
 const primaryStyleEnabled =
-  'border bg-emerald-400  hover:bg-emerald-500 ' +
+  'bg-emerald-400  hover:bg-emerald-500 ' +
   'focus:ring focus:ring-emerald-100 focus:border-emerald-400 focus:outline-none'
 
 const primaryStyleDisabled =

@@ -13,7 +13,7 @@ export function InRoom() {
 
       <Players />
 
-      { host && 
+      { host &&
         <Button
           text="Start Game"
           className="w-full"

@@ -1,34 +1,29 @@
 import classNames from 'classnames'
-import { useRef, KeyboardEvent, ReactNode, useEffect } from 'react'
-import { Input } from './input'
+import { ReactNode, useEffect, useState } from 'react'
+import { keyboard } from 'src/core/di'
 
 type Props = {
   numFields: number,
   value?: string,
   onChange?: (val: string) => void,
-  onComplete?: (val: string) => void,
   className?: string
 }
 
 export function PinInput({ numFields, value, className, onChange }: Props) {
 
-  const refs = useRef<Array<HTMLInputElement | null>>([])
-
+  const [word, setWord] = useState('')
+ 
+  // mount
   useEffect(() => {
-    if (!value) {
-      clear()
-      onValueChange('')
-      return
-    }
+    const subscription = keyboard.keyPress$
+      .subscribe(e => onKeyPress(e.key))
 
-    for (let i = 0; i < value.length; i++) {
-      const el = refs.current[i]
-      if (el) {
-        el.value = value[i]
-      }
-    }
+    return () => subscription.unsubscribe()
+  }, [word])
 
-    onValueChange(value)
+  // prop update
+  useEffect(() => {
+    onValueChange(value ?? '')
   }, [value])
 
 
@@ -38,62 +33,25 @@ export function PinInput({ numFields, value, className, onChange }: Props) {
 
 
   function onValueChange(val: string) {
-    if (onChange) onChange(val)
+    if (onChange && word !== val && val.length <= numFields) {
+      onChange(val)
+      setWord(val)
+    }
   }
 
-  function onKey(e: KeyboardEvent<HTMLInputElement>, i: number) {
-    const onLastInput = i + 1 === numFields
-
-    // always prevent default
-    // only exception is if tabbing on the last input
-    if (!(e.key === 'Tab' && !e.shiftKey && onLastInput)) {
-      e.preventDefault()
+  function onKeyPress(key: string) {
+    
+    if (key === 'backspace') {
+      onValueChange(word.substring(0, word.length - 1))
     }
 
-    var el = refs.current[i]
-    if (!el) {
-      return
+    else if (key === 'enter') {
+      // TODO: figure out this button
     }
 
-    switch (e.key) {
-      case 'Backspace':
-        const wasCleared = el.value === ''
-
-        if (onLastInput && !wasCleared) {
-          el.value = ''
-        } else {
-          const preEl = refs.current[i - 1]
-          if (preEl) preEl.value = ''
-        }
-
-        onValueChange(getVal())
-        if (!onLastInput || wasCleared) focusPrev(i)
-        break
-
-      case 'ArrowLeft':
-        focusPrev(i)
-        break
-      case 'ArrowRight':
-        focusNext(i)
-        break
-      case 'Tab':
-        if (e.shiftKey) {
-          focusPrev(i)
-        } else {
-          focusNext(i)
-        }
-        break
+    else {
+      onValueChange(word + key)
     }
-
-
-    if (e.key.length != 1 || !e.key.match(/[a-z]/i)) {
-      return
-    }
-
-    el.value = e.key
-
-    focusNext(i)
-    onValueChange(getVal())
   }
 
 
@@ -102,28 +60,8 @@ export function PinInput({ numFields, value, className, onChange }: Props) {
   // ================
 
 
-  function clear() {
-    for (let i = 0; i < numFields; i++) {
-      refs.current[i]!.value = ''
-    }
-  }
-
-  function getVal(): string {
-    return refs.current
-      .reduce((str, ref) => str + ref?.value, '')
-      .toLowerCase()
-  }
-
-  function focusNext(i: number) {
-    refs.current[i + 1]?.focus()
-  }
-
-  function focusPrev(i: number) {
-    refs.current[i - 1]?.focus()
-  }
-
   const containerClasses = classNames(
-    'inline-grid grid-flow-col gap-x-3',
+    'flex gap-x-3',
     className
   )
 
@@ -137,13 +75,10 @@ export function PinInput({ numFields, value, className, onChange }: Props) {
   const inputs: ReactNode[] = []
   for (let i = 0; i < numFields; i++) {
     inputs.push(
-      <Input
+      <div
         key={i}
-        type="text"
-        ref={el => refs.current[i] = el}
-        className="text-center uppercase w-12 caret-transparent"
-        onKeyDown={e => onKey(e, i)}
-      />
+        className={charStyle(word, i)}
+      >{word[i]}</div>
     )
   }
 
@@ -151,5 +86,21 @@ export function PinInput({ numFields, value, className, onChange }: Props) {
     <div className={containerClasses}>
       {inputs}
     </div>
+  )
+}
+
+
+//
+// styles
+// ======
+
+
+function charStyle(word: string, i: number) {
+  return classNames(
+    'uppercase w-12 h-14 flex items-center justify-center border border-1 border-slate-200 rounded',
+    {
+      'ring ring-emerald-100 border-emerald-400': i === word.length,
+      'bg-slate-100': i < word.length
+    }
   )
 }
