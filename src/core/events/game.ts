@@ -21,6 +21,7 @@ export type GameEventType =
 // events
 // ======
 
+
 export interface GameEvent extends Event {
   domain: 'game'
   type: GameEventType

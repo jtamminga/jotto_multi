@@ -1,6 +1,7 @@
 import { PinInput } from './pin_input'
 import { duplicateChars } from 'jotto_core'
 import { useState } from 'react'
+import ValidWordList from 'jotto_core/words.json'
 
 type Props = {
   value?: string,
@@ -47,7 +48,13 @@ export function FiveWordInput(props: Props) {
 
 function valid(word: string): string | undefined {
   if (duplicateChars(word).length > 0) {
-    return 'word cannot have a duplicate letter'
+    return 'Cannot have a duplicate letter'
+  }
+
+  if (word.length === 5) {
+    if (!ValidWordList.words.includes(word)) {
+      return 'Not a valid word'
+    }
   }
 }
 

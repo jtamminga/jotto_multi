@@ -2,8 +2,7 @@ import { filter } from 'rxjs'
 import {
   UserRestore as SocketUserRestore,
   GameConfig as SocketGameConfig,
-  GameSummary as SocketGameSummary
-} from 'jotto_core'
+  GameSummary as SocketGameSummary} from 'jotto_core'
 import { EventBus, AppState, JottoSocket, SocketGuessResult, IllegalStateException } from 'src/core'
 import { createGuessResult, createLeaveGame, createPlayAgain } from 'src/core/events/game'
 import { createPickedWord } from 'src/core/events/me'
@@ -35,7 +34,7 @@ export class GameFlow {
     this._socket.on('wordPicking', this.onWorkPicking)
     this._socket.on('startPlaying', this.onStartPlaying)
     this._socket.on('guessResult', this.onGuessResult)
-    this._socket.on('endGameSummary', this.onGameEnd)
+    this._socket.on('endGameSummary', this.onGameOver)
     this._socket.on('restore', this.onRestore)
   }
 
@@ -84,6 +83,10 @@ export class GameFlow {
     this._socket.emit('submitWord', word)
     this.updateState('picked_word')
     this._bus.publish(createPickedWord(word))
+  }
+
+  public observe() {
+    this.updateState('observing')
   }
 
   public backToRoom() {
@@ -164,7 +167,7 @@ export class GameFlow {
     this._bus.publish(createGuessResult(result))
   }
 
-  private onGameEnd = (gameSummary: SocketGameSummary) => {
+  private onGameOver = (gameSummary: SocketGameSummary) => {
     const summary = Transform.gameSummary(gameSummary)
     this._game!.gameOver(summary)
     this.updateState('game_summary')
@@ -186,7 +189,7 @@ export class GameFlow {
         break
       case 'game_over':
         this.onStartPlaying(restore.config!, restore)
-        this.onGameEnd(restore.gameSummary!)
+        this.onGameOver(restore.gameSummary!)
         break
     }
   }

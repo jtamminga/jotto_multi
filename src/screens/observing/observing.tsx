@@ -17,6 +17,10 @@ export function Observing() {
       </div>
 
       <div>
+        
+      </div>
+
+      <div>
         {guessResults(guesses)}
       </div>
     </Screen>

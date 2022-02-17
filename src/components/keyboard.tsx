@@ -51,8 +51,8 @@ function thirdRow(stats: Stats) {
     <div className={rowStyle}>
       <button
         className={enterStyle}
-        onClick={() => onClick('enter')}
-      >enter</button>
+        onClick={() => onClick('clear')}
+      >clear</button>
       {renderKeys(row, stats)}
       <button
         className={enterStyle}

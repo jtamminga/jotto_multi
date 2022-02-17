@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Button, FiveWordChangeEvent, FiveWordInput } from 'src/components'
+import { gameFlow } from 'src/core/di'
 import { useMe } from 'src/core/hooks'
 import { GuessResults } from './components/guess_results'
 import { Hud } from './components/hud'
@@ -38,6 +39,12 @@ export function Game() {
           // winning state
           <div className="bg-emerald-100 p-5 rounded text-center">
             You guessed right! 🥳
+
+            <Button
+              text="Observe"
+              className="mt-3 w-full"
+              onClick={() => gameFlow.observe()}
+            />
           </div>
 
           :

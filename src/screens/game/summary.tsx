@@ -13,12 +13,17 @@ export function GameSummary() {
       {/* player summarys */}
       <div className="flex justify-center mb-5">
         <ol className="list-decimal">
-          <PlayerSummaryHeader />
+
+          {/* header */}
+          {playerSummaryHeader}
+
+          {/* player rows */}
           {summary.playerSummaries.map((summary, i) =>
             <li key={i} className="pl-3 mb-2">
-              <PlayerSummaryItem summary={summary} />
+              {playerSummaryItem(summary)}
             </li>
           )}
+
         </ol>
       </div>
 
@@ -51,11 +56,7 @@ export function GameSummary() {
 // ==============
 
 
-type PlayerSummaryProps = {
-  summary: PlayerSummary
-}
-
-function PlayerSummaryItem({ summary }: PlayerSummaryProps) {
+function playerSummaryItem(summary: PlayerSummary) {
   const classes = classNames(
     'flex rounded',
     { 'bg-yellow-100 px-3 py-4': summary.place === 1 },
@@ -64,19 +65,23 @@ function PlayerSummaryItem({ summary }: PlayerSummaryProps) {
 
   return (
     <div className={classes}>
-      <div className="w-28 text-center">{summary.player.username}</div>
+      <div className="w-24 text-center">{summary.player.username}</div>
+      <div className="w-16 text-center">{bestGuess(summary)}</div>
       <div className="w-16 text-center">{summary.word}</div>
-      <div className="w-24 text-center">{summary.numGuesses}</div>
+      <div className="w-16 text-center">{summary.numGuesses}</div>
     </div>
   )
 }
 
-function PlayerSummaryHeader() {
-  return (
-    <div className="flex p-2 text-slate-400 ml-3">
-      <div className="w-28 text-center">Player</div>
-      <div className="w-16 text-center">Word</div>
-      <div className="w-24 text-center"># Guesses</div>
+const playerSummaryHeader =
+  (
+    <div className="flex text-slate-400 text-sm ml-3 mb-3 px-3">
+      <div className="w-24 flex justify-center items-end text-center">Player</div>
+      <div className="w-16 flex justify-center items-end text-center">Best</div>
+      <div className="w-16 flex justify-center items-end text-center">Word</div>
+      <div className="w-16 flex justify-center items-end text-center">Guesses</div>
     </div>
   )
-}
+
+const bestGuess = (summary: PlayerSummary) =>
+  summary.wonAt === undefined ? summary.bestGuess : '⭐'

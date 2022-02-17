@@ -1,4 +1,4 @@
-import { addMinutes, intervalToDuration } from 'date-fns'
+import { addMinutes, addSeconds, intervalToDuration } from 'date-fns'
 import { Player } from './player'
 import { Disposable, GameConfig, GameRestore, GameState, GameSummary, GuessResult, IllegalStateException } from 'src/core'
 
@@ -109,13 +109,13 @@ export class Game implements Disposable {
 
   public gameOver(gameSummary: GameSummary) {
     this._state = 'over'
-    this._endedOn = new Date()
+    // instead of setting it to `new Date()` we are just setting it to
+    // based on the game length so it is consistant across users
+    this._endedOn = addSeconds(this._startedOn!, gameSummary.gameLength)
     this._summary = gameSummary
   }
 
-  public dispose(): void {
-    // this._players.forEach(player => player.dispose())
-  }
+  public dispose(): void { }
 
 
   //
@@ -139,9 +139,10 @@ export class Game implements Disposable {
     this._players.forEach(player =>
       player.restoreGuesses(restore.history.filter(h => h.from === player)))
 
-    if (restore.timeUpOn && this._config.gameLength) {
-      this._timeUpOn = restore.timeUpOn
-      this._startedOn = addMinutes(this._timeUpOn, -this._config.gameLength)
+    this._startedOn = restore.startedOn
+
+    if (this._startedOn !== undefined && this._config.gameLength) {
+      this._timeUpOn = addMinutes(this._startedOn, this._config.gameLength)
     }
   }
 }

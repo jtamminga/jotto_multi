@@ -3,6 +3,7 @@ import { PlayerEventType } from './player'
 import { PlayersEventType } from './players'
 import { GameEventType } from './game'
 import { KeyboardEventType } from './keyboard'
+import { ErrorEventType } from './error'
 
 // domains
 export type Domain = 
@@ -11,6 +12,7 @@ export type Domain =
   | 'players'
   | 'game'
   | 'keyboard'
+  | 'error'
 
 // event types
 export type EventType =
@@ -19,6 +21,7 @@ export type EventType =
   | PlayersEventType
   | GameEventType
   | KeyboardEventType
+  | ErrorEventType
 
 export interface Event {
   domain: Domain

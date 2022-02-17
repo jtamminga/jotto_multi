@@ -35,7 +35,7 @@ export function history(guesses: SocketGuessResult[]): GuessResult[] {
 export function gameRestore(restore: SocketUserRestore): GameRestore {
   return {
     history: history(restore.history ?? []),
-    timeUpOn: restore.timeUpOn ? new Date(restore.timeUpOn) : undefined
+    startedOn: restore.startedOn ? new Date(restore.startedOn) : undefined
   }
 }
 
@@ -44,5 +44,9 @@ export function gameSummary(summary: SocketGameSummary): GameSummary {
     ...s, player: players.get(s.userId)
   }))
 
-  return { playerSummaries }
+  return {
+    gameLength: summary.gameLength,
+    gameOverReason: summary.gameOverReason,
+    playerSummaries
+  }
 }

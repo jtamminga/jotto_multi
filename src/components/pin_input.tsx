@@ -45,8 +45,8 @@ export function PinInput({ numFields, value, className, onChange }: Props) {
       onValueChange(word.substring(0, word.length - 1))
     }
 
-    else if (key === 'enter') {
-      // TODO: figure out this button
+    else if (key === 'clear') {
+      onValueChange('')
     }
 
     else {

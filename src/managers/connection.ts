@@ -1,3 +1,4 @@
+import { SocketError } from 'jotto_core'
 import { filter } from 'rxjs'
 import { io } from 'socket.io-client'
 import { EventBus, JottoSocket, jottoSocketDecorator } from 'src/core'
@@ -23,6 +24,8 @@ export class Connection {
       this._socket.connect()
     }
 
+    this._socket.on('error', this.onError)
+
     _bus.events$
       .pipe(filter(isLeaveGame))
       .subscribe(this.onLeaveGame)
@@ -46,6 +49,10 @@ export class Connection {
   private onAuth = (event: AuthEvent) => {
     sessionStorage.setItem('session', event.sessionId)
     console.debug('saved session id')
+  }
+
+  private onError = (error: SocketError) => {
+    //
   }
 
 }

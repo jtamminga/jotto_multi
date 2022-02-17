@@ -1,8 +1,8 @@
 import { PlayerState, UserType } from 'jotto_core'
 import { filter, Subscription } from 'rxjs'
-import { Disposable, GuessResult, IllegalStateException } from 'src/core'
+import { Disposable, Guess, GuessResult, IllegalStateException } from 'src/core'
 import { eventBus as bus } from 'src/core/di'
-import { createPlayerWon, GuessEvent, isGuessResultEvent, isPlayerEvent } from 'src/core/events'
+import { createPlayerChange, createPlayerWon, GuessEvent, isGuessResultEvent, isPlayerEvent } from 'src/core/events'
 
 export class Player implements Disposable {
   
@@ -14,6 +14,7 @@ export class Player implements Disposable {
   protected _won: boolean
   protected _opponent: Player | undefined
   protected _subscription: Subscription
+  protected _guesses: Guess[] = []
 
   constructor(user: PlayerState) {
     this._userId = user.userId
@@ -28,7 +29,7 @@ export class Player implements Disposable {
         filter(isGuessResultEvent),
         filter(this.isMyGuess)
       )
-      .subscribe(e => this.onGuessResult(e))
+      .subscribe(e => this.onGuessResult(e.guessResult))
   }
 
 
@@ -85,6 +86,10 @@ export class Player implements Disposable {
     return this._opponent
   }
 
+  public get guessResults(): GuessResult[] {
+    return this._guesses.filter(this.isGuessResult)
+  }
+
   // setters
 
   set connected(value: boolean) {
@@ -110,8 +115,12 @@ export class Player implements Disposable {
   }
 
   public restoreGuesses(guesses: GuessResult[]) {
+    this._guesses = guesses
     this._won = guesses.some(g => g.won)
-    bus.publish(createPlayerWon(this))
+
+    if (this._won) {
+      bus.publish(createPlayerWon(this))
+    }
   }
 
   public reset() {
@@ -130,8 +139,18 @@ export class Player implements Disposable {
   // ========
 
 
-  protected onGuessResult(event: GuessEvent) {
-    if (event.guessResult.won) {
+  protected onGuessResult(result: GuessResult) {
+    const i = this._guesses.findIndex(g => g.id === result.id)
+
+    if (i === -1) {
+      this._guesses.push(result)
+    } else {
+      this._guesses[i] = result
+    }
+
+    bus.publish(createPlayerChange(this, 'guesses'))
+
+    if (result.won) {
       this._won = true
       bus.publish(createPlayerWon(this))
     }
@@ -146,4 +165,9 @@ export class Player implements Disposable {
   private isMyGuess = (event: GuessEvent): boolean => {
     return event.guessResult.from == this
   }
+
+  // guard
+  private isGuessResult(guess: Guess): guess is GuessResult {
+    return guess.common !== undefined
+  } 
 }

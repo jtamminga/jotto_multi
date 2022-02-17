@@ -122,6 +122,22 @@ function renderPlayerWithOpponent(player: Player) {
   )
 }
 
+function renderPlayerStats(player: Player) {
+  return (
+    <>
+      <div>
+        {renderPlayer(player)}
+      </div>
+      <div>
+        {player.guessResults.length}
+      </div>
+      <div>
+        
+      </div>
+    </>
+  )
+}
+
 
 //
 // helper render functions

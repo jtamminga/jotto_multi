@@ -1,5 +1,10 @@
 import { Player } from 'src/models'
-import { Minutes, PlayerSummary as SocketPlayerSummary, Seconds } from 'jotto_core'
+import {
+  GameOverReason,
+  Minutes,
+  PlayerSummary as SocketPlayerSummary,
+  Seconds
+} from 'jotto_core'
 
 export interface User {
   userId: string;
@@ -62,11 +67,9 @@ export interface PlayerSummary extends Omit<SocketPlayerSummary, 'userId'> {
   player: Player
 }
 
-export interface SocketGameSummary {
-  playerSummaries: SocketPlayerSummary[]
-}
-
 export interface GameSummary {
+  gameLength: Seconds
+  gameOverReason: GameOverReason
   playerSummaries: PlayerSummary[]
 }
 
@@ -78,7 +81,7 @@ export type PlayerLobbyState =
   | 'game_over'
 
 export interface GameRestore {
-  timeUpOn: Date | undefined
+  startedOn: Date | undefined
   history: GuessResult[]
 }
 

@@ -1,5 +1,5 @@
 import { Guess } from 'src/core'
-import { PlayerEvent } from './player'
+import { PlayerEvent, isPlayerWonEvent } from './player'
 import { Event } from './event'
 import { players } from 'src/core/di'
 
@@ -69,4 +69,8 @@ export function isWordEvent(event: Event): event is WordEvent {
 
 export function isPickWordEvent(event: Event): event is PickedWordEvent {
   return event.domain === 'player' && event.type === 'picked_word'
+}
+
+export function isMeWon(event: Event): event is PlayerEvent {
+  return isPlayerWonEvent(event) && event.player === players.me
 }

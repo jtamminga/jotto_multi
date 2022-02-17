@@ -5,7 +5,7 @@ import { gameFlow } from 'src/core/di'
 export function JoinRoom() {
   
   const [username, setUsername] = useState('')
-  const isValid = username.length > 0 && username.length < 10
+  const isValid = username.length > 0 && username.length <= 8
 
   return (
     <Screen title="Join the game">

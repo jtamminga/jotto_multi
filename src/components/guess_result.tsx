@@ -34,10 +34,10 @@ function playerWon({ from, word }: GuessResult) {
   )
 }
 
-function playerGuess({ from, word }: GuessResult) {
+function playerGuess({ from, word, common }: GuessResult) {
   return (
     <span>
-      <b>{from.username}</b> guessed <b>{word}</b>
+      <b>{from.username}</b> guessed <b>{word}</b> <span className="text-slate-400">{common} common</span> {common > 3 && '👀'}
     </span>
   )
 }
