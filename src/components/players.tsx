@@ -3,8 +3,8 @@ import { ReactNode } from 'react'
 import { usePlayers } from 'src/core/hooks'
 import { Player } from 'src/models'
 
-type Mode = 'readyState' | 'opponents' | undefined
-type Props = { show?: Mode }
+export type PlayersShowMode = 'readyState' | 'opponents' | 'stats' | undefined
+type Props = { show?: PlayersShowMode }
 type PlayerProp = { player: Player, isMe: boolean }
 type PlayerItemProps = Props & PlayerProp
 
@@ -20,6 +20,10 @@ export function Players(props: Props) {
   return (
     <div className="mb-5">
       <ul>
+        { props.show === 'stats' &&
+          statsHeader
+        }
+
         {players.playing.map(player =>
           <PlayerItem
             key={player.userId}
@@ -59,6 +63,10 @@ function PlayerItem({ player, isMe, show }: PlayerItemProps) {
 
     case 'opponents':
       content = renderPlayerWithOpponent(player)
+      break
+
+    case 'stats':
+      content = renderPlayerStats(player)
       break
       
     default:
@@ -125,14 +133,14 @@ function renderPlayerWithOpponent(player: Player) {
 function renderPlayerStats(player: Player) {
   return (
     <>
-      <div>
+      <div className="grow text-center">
         {renderPlayer(player)}
       </div>
-      <div>
-        {player.guessResults.length}
+      <div className="w-20 text-center">
+        {bestGuess(player)}
       </div>
-      <div>
-        
+      <div className="w-20 text-center">
+        {player.guessResults.length}
       </div>
     </>
   )
@@ -154,3 +162,22 @@ function renderStatus(status: boolean) {
 
   return <span className={classes}>{status ? 'Ready' : 'Picking'}</span>
 }
+
+function bestGuess(player: Player) {
+  return player.won ? '⭐' : player.bestGuess
+}
+
+const statsHeader =
+  (
+    <div className="flex text-slate-400 text-sm px-3 mb-2">
+      <div className="grow text-center">
+        Player
+      </div>
+      <div className="w-20 text-center">
+        Best
+      </div>
+      <div className="w-20 text-center">
+        Guesses
+      </div>
+    </div>
+  )

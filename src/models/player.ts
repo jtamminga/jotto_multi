@@ -90,6 +90,11 @@ export class Player implements Disposable {
     return this._guesses.filter(this.isGuessResult)
   }
 
+  public get bestGuess(): number {
+    return this.guessResults.reduce((max, result) =>
+      result.common > max ? result.common : max, 0)
+  }
+
   // setters
 
   set connected(value: boolean) {

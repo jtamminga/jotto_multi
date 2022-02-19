@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { players, gameFlow } from 'src/core/di'
+import { players, gameFlow, menu } from 'src/core/di'
 import { GameTime } from 'src/components'
 
 type Props = {
@@ -17,7 +17,7 @@ export function Hud({ className }: Props) {
   )
 
   return (
-    <div className={classes}>
+    <div className={classes} onClick={() => menu.show()}>
       <div className="flex justify-around grow">
 
         {/* users word */}

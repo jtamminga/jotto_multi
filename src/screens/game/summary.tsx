@@ -12,14 +12,14 @@ export function GameSummary() {
 
       {/* player summarys */}
       <div className="flex justify-center mb-5">
-        <ol className="list-decimal">
+        <ol className="list-decimal pl-2">
 
           {/* header */}
           {playerSummaryHeader}
 
           {/* player rows */}
           {summary.playerSummaries.map((summary, i) =>
-            <li key={i} className="pl-3 mb-2">
+            <li key={i} className="pl-1 mb-2">
               {playerSummaryItem(summary)}
             </li>
           )}
@@ -75,7 +75,7 @@ function playerSummaryItem(summary: PlayerSummary) {
 
 const playerSummaryHeader =
   (
-    <div className="flex text-slate-400 text-sm ml-3 mb-3 px-3">
+    <div className="flex text-slate-400 text-sm ml-1 mb-3 px-3">
       <div className="w-24 flex justify-center items-end text-center">Player</div>
       <div className="w-16 flex justify-center items-end text-center">Best</div>
       <div className="w-16 flex justify-center items-end text-center">Word</div>

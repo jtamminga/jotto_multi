@@ -10,6 +10,9 @@ export type AppEventType =
   // the state of the overall app changes
   | 'state_change'
 
+  // menu is shown or hidden
+  | 'menu_visibility_change'
+
 
 //
 // events
@@ -30,6 +33,10 @@ export interface AppStateChangeEvent extends AppEvent {
   type: 'state_change'
   state: AppState
   preState: AppState
+}
+
+export interface MenuEvent extends AppEvent {
+  type: 'menu_visibility_change'
 }
 
 
@@ -63,6 +70,13 @@ export function createStateChange(state: AppState, preState: AppState): AppState
   }
 }
 
+export function createMenuVisibilityChange(): MenuEvent {
+  return {
+    ...create('menu_visibility_change'),
+    type: 'menu_visibility_change'
+  }
+}
+
 
 //
 // guards
@@ -75,4 +89,8 @@ export function isAuthEvent(event: Event): event is AuthEvent {
 
 export function isStateChangeEvent(event: Event): event is AppStateChangeEvent {
   return event.domain === 'app' && event.type === 'state_change'
+}
+
+export function isMenuVisibilityChangeEvent(event: Event): event is MenuEvent {
+  return event.domain === 'app' && event.type === 'menu_visibility_change'
 }

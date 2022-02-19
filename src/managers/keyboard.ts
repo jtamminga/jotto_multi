@@ -34,7 +34,7 @@ export class Keyboard {
     return this._bus.events$
       .pipe(
         filter(isKeyboardEvent),
-        filter(e => e.type === 'visibilityChange')
+        filter(e => e.type === 'visibility_change')
       )
   }
 

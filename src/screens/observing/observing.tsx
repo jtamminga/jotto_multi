@@ -1,4 +1,4 @@
-import { GameTime, GuessResultSummary, Screen } from 'src/components'
+import { GameTime, GuessResultSummary, Header, Players, Screen } from 'src/components'
 import { useObserver } from 'src/core/hooks'
 import { gameFlow } from 'src/core/di'
 import { GuessResult } from 'src/core'
@@ -12,16 +12,24 @@ export function Observing() {
   return (
     <Screen title="Game">
       
-      <div className="mb-5 flex justify-center">
+      <div className="mb-8 flex justify-center">
         <GameTime game={game} style="large" />
       </div>
 
-      <div>
-        
-      </div>
+      <div className="sm:flex">
+        {/* players */}
+        <div className="mb-8 sm:w-64">
+          <Players show="stats" />
+        </div>
 
-      <div>
-        {guessResults(guesses)}
+        {/* events */}
+        <div className="sm:grow">
+          <Header className="mb-3">
+            Events
+          </Header>
+
+          {guessResults(guesses)}
+        </div>
       </div>
     </Screen>
   )

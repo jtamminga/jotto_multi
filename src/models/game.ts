@@ -41,6 +41,10 @@ export class Game implements Disposable {
     return this._guesses
   }
 
+  public get latestGuess(): GuessResult | undefined {
+    return this._guesses[this._guesses.length - 1]
+  }
+
   public get summary(): GameSummary {
     if (!this._summary) {
       throw new IllegalStateException('game is not over yet')

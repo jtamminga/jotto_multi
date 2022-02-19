@@ -5,7 +5,7 @@ export type KeyboardEventType =
 
   | 'keypress'
 
-  | 'visibilityChange'
+  | 'visibility_change'
 
 
 //
@@ -46,7 +46,7 @@ export function createKeypress(key: string): KeyPressEvent {
 }
 
 export function createKeyboardVisibilityChange(): KeyboardEvent {
-  return create('visibilityChange')
+  return create('visibility_change')
 }
 
 
