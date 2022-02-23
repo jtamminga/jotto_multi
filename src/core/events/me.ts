@@ -2,6 +2,7 @@ import { Guess } from 'src/core'
 import { PlayerEvent, isPlayerWonEvent } from './player'
 import { Event } from './event'
 import { players } from 'src/core/di'
+import { LetterNotes, Notes } from 'src/models'
 
 
 /**
@@ -27,6 +28,11 @@ export interface PickedWordEvent extends WordEvent {
 export interface SubmitGuessEvent extends WordEvent {
   type: 'submit_guess'
   id: string
+}
+
+export interface NotesEvent extends PlayerEvent {
+  type: 'notes_change'
+  notes: Notes
 }
 
 
@@ -56,6 +62,16 @@ export function createSubmitGuess(guess: Guess): SubmitGuessEvent {
   }
 }
 
+export function createNotesEvent(notes: Notes): NotesEvent {
+  return {
+    domain: 'player',
+    type: 'notes_change',
+    player: players.me,
+    notes,
+    timestamp: Date.now()
+  }
+}
+
 
 //
 // guards
@@ -73,4 +89,8 @@ export function isPickWordEvent(event: Event): event is PickedWordEvent {
 
 export function isMeWon(event: Event): event is PlayerEvent {
   return isPlayerWonEvent(event) && event.player === players.me
+}
+
+export function isNotesEvent(event: Event): event is NotesEvent {
+  return event.domain === 'player' && event.type === 'notes_change'
 }

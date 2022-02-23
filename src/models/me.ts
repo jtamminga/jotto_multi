@@ -1,12 +1,14 @@
+import { v4 as createId } from 'uuid'
+import { PlayerState } from 'jotto_core'
 import { Guess, GuessResult } from 'src/core'
 import { Player } from './player'
 import { eventBus as bus } from 'src/core/di'
-import { createPlayerChange, createPlayerReady, createSubmitGuess, GuessEvent } from 'src/core/events'
-import { v4 as createId } from 'uuid'
-import { PlayerState } from 'jotto_core'
+import { createPlayerChange, createPlayerReady, createSubmitGuess } from 'src/core/events'
+import { Notes } from './notes'
 
 export class Me extends Player {
   private _word: string | undefined
+  private _notes: Notes | undefined
 
   constructor(user: PlayerState) {
     super(user)
@@ -26,6 +28,10 @@ export class Me extends Player {
     return this._guesses
   }
 
+  public get notes(): Notes | undefined {
+    return this._notes
+  }
+
 
   //
   // public functions
@@ -43,5 +49,32 @@ export class Me extends Player {
     this._guesses.push(guess)
     bus.publish(createPlayerChange(this, 'guesses'))
     bus.publish(createSubmitGuess(guess))
+  }
+
+
+  //
+  // overrides
+  // =========
+
+
+  override onGuessResult(result: GuessResult) {
+    super.onGuessResult(result)
+    this._notes?.addGuess(result)
+  }
+
+  override reset() {
+    super.reset()
+    this._notes = new Notes()
+  }
+
+  override restoreGuesses(guesses: GuessResult[]) {
+    super.restoreGuesses(guesses)
+    this._notes = new Notes()
+    this._notes.restoreGuesses(guesses)
+  }
+
+  override dispose() {
+    super.dispose()
+    this._notes?.dispose()
   }
 }

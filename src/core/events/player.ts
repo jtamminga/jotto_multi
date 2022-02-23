@@ -20,6 +20,9 @@ export type PlayerEventType =
   // if player submitted a guess
   | 'submit_guess'
 
+  // notes changed
+  | 'notes_change'
+
 export type PlayerProperty =
   | 'guesses'
 

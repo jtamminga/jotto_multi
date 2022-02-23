@@ -181,12 +181,8 @@ export class Players {
   }
 
   private onWordPicking = () => {
-    // when observing, the workPicking event is what
-    // is the signal for a new game starting
-    // we just reset all players then to make life easy
-    if (this.me.isObserving) {
-      this._players.forEach(p => p.reset())
-    }
+    // reset all players before start of game
+    this._players.forEach(p => p.reset())
   }
 
   private onReady = (userId: string) => {

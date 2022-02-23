@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { Button, FiveWordChangeEvent, FiveWordInput } from 'src/components'
 import { gameFlow } from 'src/core/di'
-import { useMe } from 'src/core/hooks'
+import { useMe, useNotes } from 'src/core/hooks'
 import { GuessResults } from './components/guess_results'
 import { Hud } from './components/hud'
 import { Observer } from './components/observer'
@@ -11,6 +11,7 @@ export function Game() {
   const [isValid, setIsValid] = useState(false)
 
   const { me } = useMe()
+  const { notes } = useNotes()
 
   function onChange(e: FiveWordChangeEvent) {
     setIsValid(e.isValid)
@@ -24,6 +25,44 @@ export function Game() {
     setWord(undefined)
   }
 
+  let content: ReactNode = null
+
+  if (me.won) {
+    content = (
+      <div className="bg-emerald-100 p-5 rounded text-center mb-5">
+        You guessed right! 🥳
+
+        <Button
+          text="Observe"
+          className="mt-3 w-full"
+          onClick={() => gameFlow.observe()}
+        />
+      </div>
+    )
+  }
+
+  else if (notes?.isMarking === false) {
+    content = (
+      <>
+        <div className="flex justify-center mb-5">
+          <FiveWordInput
+            value={word}
+            onChange={onChange}
+          />
+        </div>
+
+        <Button
+          text="Guess"
+          className="w-full mb-5"
+          disabled={!isValid}
+          onClick={onGuess}
+        />
+      </>
+    )
+  }
+
+
+
   return (
     <>
       <div className="px-3">
@@ -34,41 +73,10 @@ export function Game() {
           onClick={word => word && setWord(word)}
         />
 
-        { me.won ?
-
-          // winning state
-          <div className="bg-emerald-100 p-5 rounded text-center">
-            You guessed right! 🥳
-
-            <Button
-              text="Observe"
-              className="mt-3 w-full"
-              onClick={() => gameFlow.observe()}
-            />
-          </div>
-
-          :
-
-          // not winning state
-          <>
-            <div className="flex justify-center mb-5">
-              <FiveWordInput
-                value={word}
-                onChange={onChange}
-              />
-            </div>
-
-            <Button
-              text="Guess"
-              className="w-full"
-              disabled={!isValid}
-              onClick={onGuess}
-            />
-          </>
-        }
+        {content}
       </div>
 
-      <div className="mt-5 px-3 grow overflow-y-auto">
+      <div className="px-3 grow overflow-y-auto">
         <div className="text-center mb-3">
           Guesses
         </div>

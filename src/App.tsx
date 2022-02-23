@@ -13,6 +13,7 @@ export default function App() {
   return (
     <div className={containerStyle}>
 
+      {/* menu */}
       { menu.visible &&
         <div className="absolute w-full h-full bg-white">
           <Menu state={gameFlow.state} />

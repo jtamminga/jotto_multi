@@ -132,6 +132,7 @@ export class Player implements Disposable {
     this._ready = false
     this._won = false
     this._opponent = undefined
+    this._guesses = []
   }
 
   public dispose(): void {

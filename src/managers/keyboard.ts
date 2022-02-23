@@ -1,7 +1,17 @@
 import { filter, Observable } from 'rxjs'
 import { EventBus } from 'src/core'
 import { gameFlow } from 'src/core/di'
-import { AppStateChangeEvent, createKeyboardVisibilityChange, isKeyboardEvent, isKeypressEvent, isMeWon, KeyboardEvent, KeyPressEvent } from 'src/core/events'
+import {
+  AppStateChangeEvent,
+  createKeyboardVisibilityChange,
+  isKeyboardEvent,
+  isKeyPressEvent,
+  isMeWon,
+  KeyboardEvent,
+  KeyPressEvent
+} from 'src/core/events'
+
+type Mode = 'normal' | 'markable' | 'marking'
 
 export class Keyboard {
 
@@ -27,14 +37,16 @@ export class Keyboard {
 
   public get keyPress$(): Observable<KeyPressEvent> {
     return this._bus.events$
-      .pipe(filter(isKeypressEvent))
+      .pipe(filter(isKeyPressEvent))
   }
 
-  public get visibility$(): Observable<KeyboardEvent> {
+  public get change$(): Observable<KeyboardEvent> {
     return this._bus.events$
       .pipe(
         filter(isKeyboardEvent),
-        filter(e => e.type === 'visibility_change')
+        filter(e =>
+          e.type === 'visibility_change'
+        )
       )
   }
 
@@ -63,23 +75,20 @@ export class Keyboard {
 
 
   private updateVisibility(visible: boolean) {
-    // console.group('updateVisibility')
-    // console.log('_visible', this._visible)
-    // console.log('visible', visible)
-    // console.groupEnd()
-
     if (this._visible !== visible) {
-      // console.log('updating!!!')
       this._visible = visible
       this._bus.publish(createKeyboardVisibilityChange())
     }
   }
 
   private onAppStateChange(e: AppStateChangeEvent) {
-    if (e.state === 'picking_word' || e.state === 'playing') {
-      this.show()
-    } else {
-      this.hide()
+    switch (e.state) {
+      case 'playing':
+      case 'picking_word':
+        this.show()
+        break
+      default:
+        this.hide()
     }
   }
 }
