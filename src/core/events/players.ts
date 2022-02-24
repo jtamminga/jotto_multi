@@ -4,6 +4,9 @@ import { Event } from './event'
 
 export type PlayersEventType =
 
+  // after all players fetched and created
+  | 'all_created'
+
   // player instance created
   | 'created'
 
@@ -31,6 +34,12 @@ export interface PlayersEvent extends Event {
   player: Player
 }
 
+export interface PlayersCollectionEvent extends Event {
+  domain: 'players'
+  type: PlayersEventType
+  players: Player[]
+}
+
 
 //
 // factories
@@ -41,8 +50,8 @@ function create(player: Player, type: PlayersEventType): PlayersEvent {
   return {
     domain: 'players',
     type,
-    timestamp: Date.now(),
     player,
+    timestamp: Date.now()
   }
 }
 
@@ -64,6 +73,15 @@ export function createPlayerReady(player: Player): PlayersEvent {
 
 export function createPlayerLeave(player: Player): PlayersEvent {
   return create(player, 'leave')
+}
+
+export function createAllPlayersCreated(players: Player[]): PlayersCollectionEvent {
+  return {
+    domain: 'players',
+    type: 'all_created',
+    players,
+    timestamp: Date.now()
+  }
 }
 
 

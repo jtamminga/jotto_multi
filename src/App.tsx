@@ -11,7 +11,7 @@ export default function App() {
   const { menu } = useMenu()
 
   return (
-    <div className={containerStyle}>
+    <div className={containerStyle(gameFlow.state)}>
 
       {/* menu */}
       { menu.visible &&
@@ -80,7 +80,11 @@ function screen(state: AppState): ReactNode {
 // ======
 
 
-const containerStyle =
-  "container mx-auto max-w-screen-sm h-full flex flex-col relative"
+function containerStyle(state: AppState): string {
+  const wide = state === 'observing'
+
+  return "container mx-auto h-full flex flex-col relative " +
+    (wide ? 'max-w-screen-lg' : 'max-w-screen-sm')
+}
 
  

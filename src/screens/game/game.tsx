@@ -61,8 +61,6 @@ export function Game() {
     )
   }
 
-
-
   return (
     <>
       <div className="px-3">

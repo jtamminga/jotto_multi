@@ -18,12 +18,12 @@ export function Observing() {
 
       <div className="sm:flex">
         {/* players */}
-        <div className="mb-8 sm:w-64">
+        <div className="mb-8 sm:w-80 sm:mt-2">
           <Players show="stats" />
         </div>
 
         {/* events */}
-        <div className="sm:grow">
+        <div className="sm:grow sm:ml-5">
           <SubHeader className="mb-3">
             Events
           </SubHeader>

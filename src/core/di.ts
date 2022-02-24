@@ -6,7 +6,7 @@ console.debug('setting up dependencies...')
 // setup bus
 export const eventBus = new EventBus()
 
-// eventBus.events$.subscribe(e => console.debug('events', e))
+eventBus.events$.subscribe(e => console.debug('eventbus', e))
 
 // managers
 export const connection = new Connection(eventBus)

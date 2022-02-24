@@ -19,6 +19,10 @@ export function Players(props: Props) {
     return null
   }
 
+  if (players.all.length === 0) {
+    console.warn('players empty')
+  }
+
   let playing = players.playing
   // sort players only if in stats mode
   if (props.show === 'stats') {

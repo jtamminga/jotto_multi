@@ -11,6 +11,8 @@ type Props = {
 export function Screen({ title, children, showMenu = false }: Props) {
   return (
     <div className="px-3 grow">
+
+      {/* main jotto header */}
       <div className="mt-3 mb-8">
         <div className="relative">
           <GameHeader />
@@ -24,6 +26,8 @@ export function Screen({ title, children, showMenu = false }: Props) {
             </button>
           }
         </div>
+
+        {/* screen title */}
         <Header>{title}</Header>
       </div>
 

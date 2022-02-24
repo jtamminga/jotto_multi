@@ -3,11 +3,11 @@ import { EventBus, IllegalStateException, JottoSocket, SocketSession } from 'src
 import { WordEvent, isWordEvent, SubmitGuessEvent } from 'src/core/events/me'
 import { Me, Player } from 'src/models'
 import {
-  createPlayerCreated,
   createPlayerConnected,
   createPlayerDisconnected,
   createPlayerReady,
-  isPlayersEvent
+  isPlayersEvent,
+  createAllPlayersCreated
 } from 'src/core/events/players'
 import { GameEvent, isGameEvent } from 'src/core/events/game'
 import { createAuth } from 'src/core/events/app'
@@ -126,13 +126,13 @@ export class Players {
         const me = new Me(user as PlayerState)
         this._player = me
         this._players.push(me)
-        this._bus.publish(createPlayerCreated(me))
       } else {
         const player = new Player(user as PlayerState)
         this._players.push(player)
-        this._bus.publish(createPlayerCreated(player))
       }
     }
+
+    this._bus.publish(createAllPlayersCreated(this._players))
 
     if (this._player === undefined) {
       console.warn('player.me not defined but should be')
