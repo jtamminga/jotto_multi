@@ -1,4 +1,4 @@
-import { PlayerState, UserType } from 'jotto_core'
+import { PlayerPerf, PlayerState, UserType } from 'jotto_core'
 import { filter, Subscription } from 'rxjs'
 import { Disposable, Guess, GuessResult, IllegalStateException } from 'src/core'
 import { eventBus as bus } from 'src/core/di'
@@ -11,7 +11,7 @@ export class Player implements Disposable {
   protected _username: string
   protected _connected: boolean
   protected _ready: boolean
-  protected _won: boolean
+  protected _wonAt: number | undefined
   protected _opponent: Player | undefined
   protected _subscription: Subscription
   protected _guesses: Guess[] = []
@@ -22,7 +22,7 @@ export class Player implements Disposable {
     this._username = user.username
     this._connected = user.connected
     this._ready = user.ready
-    this._won = user.won
+    this._wonAt = user.wonAt
 
     this._subscription = bus.events$
       .pipe(
@@ -75,7 +75,11 @@ export class Player implements Disposable {
   }
 
   get won(): boolean {
-    return this._won
+    return this._wonAt !== undefined
+  }
+
+  get wonAt(): number | undefined {
+    return this._wonAt
   }
 
   get opponent(): Player {
@@ -93,6 +97,14 @@ export class Player implements Disposable {
   public get bestGuess(): number {
     return this.guessResults.reduce((max, result) =>
       result.common > max ? result.common : max, 0)
+  }
+
+  public get perf(): PlayerPerf {
+    return {
+      numGuesses: this._guesses.length,
+      bestGuess: this.bestGuess,
+      wonAt: this._wonAt
+    }
   }
 
   // setters
@@ -121,16 +133,15 @@ export class Player implements Disposable {
 
   public restoreGuesses(guesses: GuessResult[]) {
     this._guesses = guesses
-    this._won = guesses.some(g => g.won)
-
-    if (this._won) {
-      bus.publish(createPlayerWon(this))
-    }
   }
+
+  public startPlaying() { }
+
+  public finishPlaying() { }
 
   public reset() {
     this._ready = false
-    this._won = false
+    this._wonAt = undefined
     this._opponent = undefined
     this._guesses = []
   }
@@ -157,7 +168,7 @@ export class Player implements Disposable {
     bus.publish(createPlayerChange(this, 'guesses'))
 
     if (result.won) {
-      this._won = true
+      this._wonAt = Date.now()
       bus.publish(createPlayerWon(this))
     }
   }

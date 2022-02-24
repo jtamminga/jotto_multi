@@ -1,9 +1,13 @@
 import classNames from 'classnames'
 import { ReactNode } from 'react'
 
-type ClassProps = {
-  className?: string
-}
+
+//
+// main header
+// ===========
+
+
+type ClassProps = { className?: string }
 
 export function GameHeader({ className }: ClassProps) {
   const classes = classNames(
@@ -18,15 +22,34 @@ export function GameHeader({ className }: ClassProps) {
   )
 }
 
+
 //
-// Header
-//
+// header
+// ======
+
 
 type HeaderProps = { children: ReactNode } & ClassProps
 
 export function Header({ children, className }: HeaderProps) {
   const classes = classNames(
     'text-lg text-center',
+    className
+  )
+
+  return (
+    <h1 className={classes}>{children}</h1>
+  )
+}
+
+
+//
+// sub header
+// ==========
+
+
+export function SubHeader({ children, className }: HeaderProps) {
+  const classes = classNames(
+    'text-center',
     className
   )
 

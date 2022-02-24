@@ -1,4 +1,4 @@
-import { GameTime, GuessResultSummary, Header, Players, Screen } from 'src/components'
+import { GameTime, GuessResultSummary, Players, Screen, SubHeader } from 'src/components'
 import { useObserver } from 'src/core/hooks'
 import { gameFlow } from 'src/core/di'
 import { GuessResult } from 'src/core'
@@ -24,9 +24,9 @@ export function Observing() {
 
         {/* events */}
         <div className="sm:grow">
-          <Header className="mb-3">
+          <SubHeader className="mb-3">
             Events
-          </Header>
+          </SubHeader>
 
           {guessResults(guesses)}
         </div>
@@ -42,6 +42,14 @@ export function Observing() {
 
 
 function guessResults(guesses: ReadonlyArray<GuessResult>) {
+  if (guesses.length === 0) {
+    return (
+      <div className="p-5 bg-slate-100 rounded text-center text-slate-400">
+        Nothing has happened yet
+      </div>
+    )
+  }
+
   return (
     <ol className="list-decimal text-slate-300 pl-6" reversed>
       { guesses.map(guess =>

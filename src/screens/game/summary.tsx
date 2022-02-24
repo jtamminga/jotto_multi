@@ -57,10 +57,17 @@ export function GameSummary() {
 
 
 function playerSummaryItem(summary: PlayerSummary) {
+  const isMe = summary.player === players.me
+
   const classes = classNames(
     'flex rounded',
-    { 'bg-yellow-100 px-3 py-4': summary.place === 1 },
-    { 'bg-slate-100 p-2 px-3': summary.place > 1 }
+    {
+      'bg-yellow-100 px-3 py-4': summary.place === 1,
+      'bg-slate-100 p-2 px-3': summary.place > 1,
+      'outline outline-offset-2 outline-2': isMe,
+      'outline-yellow-300': isMe && summary.place === 1,
+      'outline-slate-200': isMe && summary.place > 1
+    }
   )
 
   return (

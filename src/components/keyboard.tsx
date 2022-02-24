@@ -98,6 +98,12 @@ export function Keyboard() {
 
   return (
     <div className="w-full px-1 pb-2">
+      { notes?.isMarking &&
+        <div className="text-slate-400 text-sm text-center py-1">
+          tap on letters to note for yourself if in word or not
+        </div>
+      }
+
       {firstRow()}
       {secondRow()}
       {thirdRow()}

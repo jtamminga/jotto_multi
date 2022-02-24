@@ -70,10 +70,6 @@ export class Players {
     return this._player
   }
 
-  get connected(): Player[] {
-    return this._players.filter(p => p.connected && p.isPlaying)
-  }
-
   get playing(): Player[] {
     return this._players.filter(p => p.isPlaying)
   }

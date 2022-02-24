@@ -1,14 +1,22 @@
 import { filter, Observable } from 'rxjs'
 import { EventBus } from 'src/core'
 import { createMenuVisibilityChange, isMenuVisibilityChangeEvent, MenuEvent } from 'src/core/events'
+import { GameFlow } from './game_flow'
 
 export class Menu {
 
   private _visible = false
 
   constructor(
-    private _bus: EventBus
-  ) { }
+    private _bus: EventBus,
+    private _gameFlow: GameFlow
+  ) {
+
+    // hide menu on screen change
+    _gameFlow.state$
+      .subscribe(() => this.hide())
+
+  }
 
 
   //

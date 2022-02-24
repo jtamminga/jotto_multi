@@ -14,6 +14,6 @@ export const players = new Players(connection.socket, eventBus)
 export const gameFlow = new GameFlow(connection.socket, eventBus, players)
 export const observer = new Observer(eventBus)
 export const keyboard = new Keyboard(eventBus)
-export const menu = new Menu(eventBus)
+export const menu = new Menu(eventBus, gameFlow)
 
 console.debug('dependences setup')

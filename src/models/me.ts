@@ -1,6 +1,6 @@
 import { v4 as createId } from 'uuid'
 import { PlayerState } from 'jotto_core'
-import { Guess, GuessResult } from 'src/core'
+import { Guess, GuessResult, IllegalStateException } from 'src/core'
 import { Player } from './player'
 import { eventBus as bus } from 'src/core/di'
 import { createPlayerChange, createPlayerReady, createSubmitGuess } from 'src/core/events'
@@ -62,9 +62,20 @@ export class Me extends Player {
     this._notes?.addGuess(result)
   }
 
-  override reset() {
-    super.reset()
+  override startPlaying() {
+    super.startPlaying()
+
+    if (this._notes) {
+      throw new IllegalStateException('notes should not be defined')
+    }
+
     this._notes = new Notes()
+  }
+
+  override finishPlaying() {
+    super.finishPlaying()
+    this._notes?.dispose()
+    this._notes = undefined
   }
 
   override restoreGuesses(guesses: GuessResult[]) {

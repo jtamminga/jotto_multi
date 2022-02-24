@@ -105,6 +105,8 @@ export class Game implements Disposable {
     if (this._config.gameLength) {
       this._timeUpOn = addMinutes(this._startedOn, this._config.gameLength)
     }
+
+    this._players.forEach(player => player.startPlaying())
   }
 
   public addGuess(history: GuessResult) {
@@ -117,6 +119,8 @@ export class Game implements Disposable {
     // based on the game length so it is consistant across users
     this._endedOn = addSeconds(this._startedOn!, gameSummary.gameLength)
     this._summary = gameSummary
+
+    this._players.forEach(player => player.finishPlaying())
   }
 
   public dispose(): void { }

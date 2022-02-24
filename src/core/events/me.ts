@@ -2,7 +2,7 @@ import { Guess } from 'src/core'
 import { PlayerEvent, isPlayerWonEvent } from './player'
 import { Event } from './event'
 import { players } from 'src/core/di'
-import { LetterNotes, Notes } from 'src/models'
+import { Notes } from 'src/models'
 
 
 /**

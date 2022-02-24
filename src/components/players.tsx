@@ -1,7 +1,9 @@
 import classNames from 'classnames'
+import { comparePlayers } from 'jotto_core'
 import { ReactNode } from 'react'
 import { usePlayers } from 'src/core/hooks'
 import { Player } from 'src/models'
+import { SubHeader } from './header'
 
 export type PlayersShowMode = 'readyState' | 'opponents' | 'stats' | undefined
 type Props = { show?: PlayersShowMode }
@@ -17,6 +19,14 @@ export function Players(props: Props) {
     return null
   }
 
+  let playing = players.playing
+  // sort players only if in stats mode
+  if (props.show === 'stats') {
+    playing = [...players.playing].sort((a, b) =>
+      comparePlayers(a.perf, b.perf))
+  }
+
+  // render
   return (
     <div className="mb-5">
       <ul>
@@ -24,7 +34,7 @@ export function Players(props: Props) {
           statsHeader
         }
 
-        {players.playing.map(player =>
+        { playing.map(player =>
           <PlayerItem
             key={player.userId}
             {...props}
@@ -35,9 +45,9 @@ export function Players(props: Props) {
       </ul>
       { players.observing.length > 0 &&
         <>
-          <h4 className="font-medium mb-2">Observers</h4>
+          <SubHeader className="mb-2">Observers</SubHeader>
           <ul>
-            {players.observing.map(player =>
+            { players.observing.map(player =>
               <ObserverItem
                 key={player.userId}
                 player={player}
@@ -76,7 +86,7 @@ function PlayerItem({ player, isMe, show }: PlayerItemProps) {
 
   const classes = classNames(
     'flex items-center bg-slate-100 p-2 px-3 rounded mb-2',
-    { 'border-2 border-slate-300': isMe }
+    { 'outline outline-offset-2 outline-2 outline-slate-200': isMe }
   )
 
   return (
@@ -89,7 +99,7 @@ function PlayerItem({ player, isMe, show }: PlayerItemProps) {
 function ObserverItem({ player, isMe }: PlayerProp) {
   const classes = classNames(
     'flex items-center bg-orange-100 p-2 px-3 rounded mb-2',
-    { 'border-2 border-orange-300': isMe }
+    { 'outline outline-offset-2 outline-2 outline-orange-300': isMe }
   )
 
   return (
@@ -122,11 +132,11 @@ function renderPlayerWithStatus(player: Player) {
 
 function renderPlayerWithOpponent(player: Player) {
   return (
-    <>
+    <div className="grow text-center">
       {renderPlayer(player)}
       <span className="text-gray-400 inline-block px-1">against</span>
       {renderPlayer(player.opponent)}
-    </>
+    </div>
   )
 }
 

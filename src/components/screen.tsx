@@ -2,8 +2,6 @@ import { ReactNode } from 'react'
 import { GameHeader, Header } from './header'
 import { menu } from 'src/core/di'
 
-import menuPath from './assets/menu.svg'
-
 type Props = {
   children: ReactNode
   title: string
@@ -19,7 +17,7 @@ export function Screen({ title, children, showMenu = false }: Props) {
 
           { showMenu &&
             <button
-              className="absolute top-0 right-0 text-slate-400 underline"
+              className="absolute top-0 right-0 text-slate-400 underline z-10"
               onClick={() => menu.toggle()}
             >
               {menu.visible ? 'back' : 'menu'}

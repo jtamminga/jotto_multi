@@ -10,6 +10,10 @@ export function PickWord() {
   return (
     <Screen title="Pick a word">
 
+      <div className="text-center mb-5">
+        Pick a <span className="text-emerald-500">5 letter</span> word with <span className="text-emerald-500">no duplicate</span> letters
+      </div>
+
       <div className="flex justify-center mb-5">
         <FiveWordInput
           onChange={e => setWord(e.word)}

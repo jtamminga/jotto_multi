@@ -30,6 +30,13 @@ export type GameState =
   | 'playing'
   | 'over'
 
+export type LetterNote = {
+  confidence: 'known' | 'maybe' | 'nothing'
+  inWord?: boolean
+}
+
+export type LetterNotes = Map<string, LetterNote>
+
 export interface SocketGameConfig {
   opponents: { id: string, opponentId: string }[]
 }

@@ -1,24 +1,13 @@
 import { filter, Subscription } from 'rxjs'
 import { keyboard, eventBus as bus } from 'src/core/di'
 import { createNotesEvent, KeyPressEvent } from 'src/core/events'
-import { Disposable, GuessResult, IllegalStateException } from 'src/core'
-
-
-const LETTERS = 'abcdefghijklmnopqrstuvwxyz'
-
-type Info = {
-  confidence: 'known' | 'maybe' | 'nothing'
-  inWord?: boolean
-}
-
-export type LetterNotes = Map<string, Info>
-
+import { Disposable, GuessResult, IllegalStateException, LetterNote, LetterNotes } from 'src/core'
 
 export class Notes implements Disposable {
 
   private _subscription: Subscription
-  private readonly _letterNotes = new Map<string, Info>()
   private _isMarking: boolean = false
+  private readonly _letterNotes = new Map<string, LetterNote>()
 
   constructor() {
     this.setInfo(LETTERS, { confidence: 'nothing' })
@@ -75,6 +64,7 @@ export class Notes implements Disposable {
 
   public dispose() {
     this._subscription.unsubscribe()
+    sessionStorage.removeItem(STORE_KEY)
   }
 
 
@@ -110,9 +100,9 @@ export class Notes implements Disposable {
     return false
   }
 
-  private setInfo(letters: string, info: Info) {
+  private setInfo(letters: string, note: LetterNote) {
     Array.from(letters).forEach(letter =>
-      this._letterNotes.set(letter, { ...info }))
+      this._letterNotes.set(letter, { ...note }))
   } 
 
   // nothing --> maybe(inword) --> maybe(!inWord) --> nothing
@@ -147,13 +137,11 @@ export class Notes implements Disposable {
       .map(([key, info]) => ({ key, in: info.inWord }))
 
     const serialized = JSON.stringify(condensed)
-    sessionStorage.setItem('notes', serialized)
+    sessionStorage.setItem(STORE_KEY, serialized)
   }
 
   private deserialize() {
-    const serialized = sessionStorage.getItem('notes')
-
-    console.log('deserialize', serialized)
+    const serialized = sessionStorage.getItem(STORE_KEY)
 
     if (!serialized) {
       return
@@ -161,11 +149,13 @@ export class Notes implements Disposable {
 
     const condensed = JSON.parse(serialized) as { key: string, in: boolean }[]
 
-    console.log('condensed', condensed)
-
     condensed.forEach(info =>
       this._letterNotes.set(info.key, { confidence: 'maybe', inWord: info.in })
     )
   }
 
 }
+
+
+const LETTERS = 'abcdefghijklmnopqrstuvwxyz'
+const STORE_KEY = 'notes'
