@@ -18,7 +18,7 @@ export function Observing() {
 
       <div className="sm:flex">
         {/* players */}
-        <div className="mb-8 sm:w-80 sm:mt-2">
+        <div className="mb-8 sm:w-80 sm:mt-[5px]">
           <PlayersStats />
         </div>
 

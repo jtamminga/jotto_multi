@@ -1,6 +1,7 @@
 import { comparePlayers } from 'jotto_core'
 import { useGuessResult, usePlayers } from 'src/core/hooks'
 import { Player } from 'src/models'
+import { PlayersHeader } from './players_header'
 import { PlayerContainer } from './player_container'
 
 export function PlayersStats() {
@@ -16,15 +17,17 @@ export function PlayersStats() {
 
   return (
     <div>
-      <ol className="list-decimal pl-2">
+      <ol>
 
         {/* header */}
-        {header}
+        <PlayersHeader className="mb-3">
+          {headerColumns}
+        </PlayersHeader>
 
         {/* players */}
-        {sortedPlayers.map(player =>
-          <li key={player.userId} className="pl-1 mb-2">
-            <PlayerContainer isMe={players.isMe(player)}>
+        {sortedPlayers.map((player, i) =>
+          <li key={player.userId} className="mb-2">
+            <PlayerContainer isMe={players.isMe(player)} num={i+1}>
               {renderPlayerStats(player)}
             </PlayerContainer>
           </li>
@@ -50,9 +53,9 @@ function renderPlayerStats(player: Player) {
   )
 }
 
-const header =
+const headerColumns =
   (
-    <div className="flex text-slate-400 text-sm px-3 mb-2">
+    <>
       <div className="grow text-center">
         Player
       </div>
@@ -62,5 +65,5 @@ const header =
       <div className="w-20 text-center">
         Guesses
       </div>
-    </div>
+    </>
   )

@@ -126,6 +126,10 @@ export class Players {
     console.debug('onUsers', users.map(u => u.username))
 
     for(const user of users) {
+      if (this.find(user.userId)) {
+        continue
+      }
+
       if (user.userId === this._userId) {
         const me = new Me(user as PlayerState)
         this._player = me

@@ -1,4 +1,4 @@
-import { Button, PlayerContainer, Screen, Timer } from 'src/components'
+import { Button, PlayerContainer, PlayersHeader, Screen, Timer } from 'src/components'
 import { PlayerSummary } from 'src/core'
 import { gameFlow, players } from 'src/core/di'
 
@@ -11,17 +11,20 @@ export function GameSummary() {
 
       {/* player summarys */}
       <div className="flex justify-center mb-5">
-        <ol className="list-decimal pl-2">
+        <ol>
 
           {/* header */}
-          {playerSummaryHeader}
+          <PlayersHeader className="mb-3">
+            {headerColumns}
+          </PlayersHeader>
 
           {/* player rows */}
           {summary.playerSummaries.map((summary, i) =>
-            <li key={i} className="pl-1 mb-2">
+            <li key={i} className="mb-2">
               <PlayerContainer
                 isMe={players.isMe(summary.player)}
                 style={summary.place === 1 ? 'grand' : 'primary'}
+                num={i+1}
               >
                 {playerSummary(summary)}
               </PlayerContainer>
@@ -71,12 +74,12 @@ function playerSummary(summary: PlayerSummary) {
   )
 }
 
-const playerSummaryHeader =
+const headerColumns =
   (
-    <div className="flex text-slate-400 text-sm ml-1 mb-3 px-3">
+    <>
       <div className="w-24 flex justify-center items-end text-center">Player</div>
       <div className="w-16 flex justify-center items-end text-center">Best</div>
       <div className="w-16 flex justify-center items-end text-center">Word</div>
       <div className="w-16 flex justify-center items-end text-center">Guesses</div>
-    </div>
+    </>
   )
