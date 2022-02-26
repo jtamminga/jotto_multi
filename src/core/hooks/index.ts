@@ -5,6 +5,7 @@ export * from './useObserver'
 export * from './useKeyboard'
 export * from './useMenu'
 export * from './useNotes'
+export * from './useGuessResult'
 
 export * from './useQueryParams'
 export * from './useTimer'

@@ -1,5 +1,4 @@
-import classNames from 'classnames'
-import { Button, Screen, Timer } from 'src/components'
+import { Button, PlayerContainer, Screen, Timer } from 'src/components'
 import { PlayerSummary } from 'src/core'
 import { gameFlow, players } from 'src/core/di'
 
@@ -20,7 +19,12 @@ export function GameSummary() {
           {/* player rows */}
           {summary.playerSummaries.map((summary, i) =>
             <li key={i} className="pl-1 mb-2">
-              {playerSummaryItem(summary)}
+              <PlayerContainer
+                isMe={players.isMe(summary.player)}
+                style={summary.place === 1 ? 'grand' : 'primary'}
+              >
+                {playerSummary(summary)}
+              </PlayerContainer>
             </li>
           )}
 
@@ -56,27 +60,14 @@ export function GameSummary() {
 // ==============
 
 
-function playerSummaryItem(summary: PlayerSummary) {
-  const isMe = summary.player === players.me
-
-  const classes = classNames(
-    'flex rounded',
-    {
-      'bg-yellow-100 px-3 py-4': summary.place === 1,
-      'bg-slate-100 p-2 px-3': summary.place > 1,
-      'outline outline-offset-2 outline-2': isMe,
-      'outline-yellow-300': isMe && summary.place === 1,
-      'outline-slate-200': isMe && summary.place > 1
-    }
-  )
-
+function playerSummary(summary: PlayerSummary) {
   return (
-    <div className={classes}>
+    <>
       <div className="w-24 text-center">{summary.player.username}</div>
-      <div className="w-16 text-center">{bestGuess(summary)}</div>
+      <div className="w-16 text-center">{summary.wonAt ? '⭐' : summary.bestGuess}</div>
       <div className="w-16 text-center">{summary.word}</div>
       <div className="w-16 text-center">{summary.numGuesses}</div>
-    </div>
+    </>
   )
 }
 
@@ -89,6 +80,3 @@ const playerSummaryHeader =
       <div className="w-16 flex justify-center items-end text-center">Guesses</div>
     </div>
   )
-
-const bestGuess = (summary: PlayerSummary) =>
-  summary.wonAt === undefined ? summary.bestGuess : '⭐'

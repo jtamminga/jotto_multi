@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Button, Screen, FiveWordInput } from 'src/components'
-import { PinInput } from 'src/components/pin_input'
 import { gameFlow } from 'src/core/di'
 
 export function PickWord() {

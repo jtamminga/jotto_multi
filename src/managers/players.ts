@@ -98,6 +98,10 @@ export class Players {
     return player
   }
 
+  public isMe(player: Player): boolean {
+    return this.me === player
+  }
+
 
   //
   // listeners

@@ -11,7 +11,7 @@ export function InRoom() {
   return (
     <Screen title="Waiting for players">
 
-      <Players />
+      <Players className="mb-5" />
 
       { host &&
         <Button

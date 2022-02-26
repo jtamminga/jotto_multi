@@ -1,6 +1,6 @@
 import { Screen } from './screen'
-import { Players, PlayersShowMode } from './players'
 import { AppState } from 'src/core'
+import { PlayersStats } from './players/players_stats'
 
 type Props = {
   state: AppState
@@ -8,15 +8,14 @@ type Props = {
 
 export function Menu({ state }: Props) {
 
-  let showMode: PlayersShowMode = undefined
-  if (state === 'playing' || state === 'observing') {
-    showMode = 'stats'
-  }
+  const showStats = state === 'playing' || state === 'observing'
 
   return (
     <Screen title="Menu" showMenu>
 
-      <Players show={showMode} />
+      { showStats &&
+        <PlayersStats />
+      }
 
     </Screen>
   )
