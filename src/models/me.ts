@@ -81,7 +81,7 @@ export class Me extends Player {
   override restoreGuesses(guesses: GuessResult[]) {
     super.restoreGuesses(guesses)
     this._notes = new Notes()
-    this._notes.restoreGuesses(guesses)
+    this._notes.restore(guesses)
   }
 
   override dispose() {

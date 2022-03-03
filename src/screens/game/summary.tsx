@@ -1,5 +1,5 @@
+import { PlayerSummary } from 'jotto_core'
 import { Button, PlayerContainer, PlayersHeader, Screen, Timer } from 'src/components'
-import { PlayerSummary } from 'src/core'
 import { gameFlow, players } from 'src/core/di'
 
 export function GameSummary() {
@@ -22,7 +22,7 @@ export function GameSummary() {
           {summary.playerSummaries.map((summary, i) =>
             <li key={i} className="mb-2">
               <PlayerContainer
-                isMe={players.isMe(summary.player)}
+                isMe={players.me.userId === summary.userId}
                 style={summary.place === 1 ? 'grand' : 'primary'}
                 num={i+1}
               >
@@ -66,7 +66,7 @@ export function GameSummary() {
 function playerSummary(summary: PlayerSummary) {
   return (
     <>
-      <div className="w-24 text-center">{summary.player.username}</div>
+      <div className="w-24 text-center">{summary.username}</div>
       <div className="w-16 text-center">{summary.wonAt ? '⭐' : summary.bestGuess}</div>
       <div className="w-16 text-center">{summary.word}</div>
       <div className="w-16 text-center">{summary.numGuesses}</div>

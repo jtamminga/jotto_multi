@@ -2,9 +2,11 @@ import { PinInput } from './pin_input'
 import { duplicateChars } from 'jotto_core'
 import { useState } from 'react'
 import ValidWordList from 'jotto_core/words.json'
+import { Guess } from 'src/core'
 
 type Props = {
   value?: string,
+  guesses?: Guess[],
   onChange?: (event: FiveWordChangeEvent) => void
 }
 
@@ -14,7 +16,7 @@ export function FiveWordInput(props: Props) {
   // handle pin input change
   function onChange(value: string) {
     
-    const error = valid(value)
+    const error = valid(value, props.guesses)
     const isValid = !error && value.length == 5
     const word = isValid ? value : undefined
     
@@ -46,9 +48,15 @@ export function FiveWordInput(props: Props) {
 }
 
 
-function valid(word: string): string | undefined {
+function valid(word: string, guesses: Guess[] | undefined): string | undefined {
   if (duplicateChars(word).length > 0) {
     return 'Cannot have a duplicate letter'
+  }
+
+  if (guesses) {
+    if (guesses.map(g => g.word).includes(word)) {
+      return 'Already guessed this word'
+    }
   }
 
   if (word.length === 5) {

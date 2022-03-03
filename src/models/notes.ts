@@ -12,8 +12,6 @@ export class Notes implements Disposable {
   constructor() {
     this.setInfo(LETTERS, { confidence: 'nothing' })
 
-    this.deserialize()
-
     this._subscription = keyboard.keyPress$
       .pipe(filter(e => e.isMarking))
       .subscribe(this.onKeyPress)
@@ -52,7 +50,9 @@ export class Notes implements Disposable {
     }
   }
 
-  public restoreGuesses(guesses: GuessResult[]) {
+  public restore(guesses: GuessResult[]) {
+    this.deserialize()
+
     const changed = guesses
       .map(guess => this.processResult(guess))
       .some(change => change)
@@ -93,6 +93,7 @@ export class Notes implements Disposable {
     }
     
     if (guess.common === 5) {
+      this.setInfo(LETTERS, { confidence: 'known', inWord: false })
       this.setInfo(guess.word, { confidence: 'known', inWord: true })
       return true
     }

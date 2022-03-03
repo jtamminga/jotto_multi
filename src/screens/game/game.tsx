@@ -47,6 +47,7 @@ export function Game() {
         <div className="flex justify-center mb-5">
           <FiveWordInput
             value={word}
+            guesses={me.guesses}
             onChange={onChange}
           />
         </div>

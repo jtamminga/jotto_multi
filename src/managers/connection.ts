@@ -7,6 +7,11 @@ import { AuthEvent, isAuthEvent, isLeaveGame } from 'src/core/events'
 // constants
 const URL = 'http://10.0.0.192:3001'
 
+const socketOptions = {
+  autoConnect: false,
+  transports: ['websocket']
+}
+
 
 export class Connection {
 
@@ -15,7 +20,7 @@ export class Connection {
   constructor(
     private _bus: EventBus
   ) {
-    this._socket = jottoSocketDecorator(io(URL, { autoConnect: false }))
+    this._socket = jottoSocketDecorator(io(URL, socketOptions))
 
     const sessionId = sessionStorage.getItem('session')
     if (sessionId) {
@@ -43,7 +48,7 @@ export class Connection {
     console.info('clearing session from session storage')
     sessionStorage.removeItem('session')
 
-    this._socket = jottoSocketDecorator(io(URL, { autoConnect: false }))
+    this._socket = jottoSocketDecorator(io(URL, socketOptions))
   }
 
   private onAuth = (event: AuthEvent) => {

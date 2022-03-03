@@ -1,10 +1,9 @@
 import { players } from 'src/core/di'
 import {
   GameConfig as SocketGameConfig,
-  GameSummary as SocketGameSummary,
   UserRestore as SocketUserRestore
 } from 'jotto_core'
-import { GameRestore, GameSummary, GuessResult, SocketGuessResult, GameConfig } from './types'
+import { GameRestore, GuessResult, SocketGuessResult, GameConfig } from './types'
 
 export function gameConfig(config: SocketGameConfig): GameConfig {
   const opponents = config.opponents.map(o => ({
@@ -36,17 +35,5 @@ export function gameRestore(restore: SocketUserRestore): GameRestore {
   return {
     history: history(restore.history ?? []),
     startedOn: restore.startedOn ? new Date(restore.startedOn) : undefined
-  }
-}
-
-export function gameSummary(summary: SocketGameSummary): GameSummary {
-  const playerSummaries = summary.playerSummaries.map(s => ({
-    ...s, player: players.get(s.userId)
-  }))
-
-  return {
-    gameLength: summary.gameLength,
-    gameOverReason: summary.gameOverReason,
-    playerSummaries
   }
 }
