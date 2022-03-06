@@ -80,7 +80,13 @@ export function Keyboard() {
             key={`key-${key}`}
             className={buttonStyle(key, notes)}
             onClick={() => onClick(key)}
-          >{key}</button>
+          >
+            {key}
+
+            { notes?.letters.get(key)?.confidence === 'known' &&
+              <div className={knownMarkerStyle}></div>
+            }
+          </button>
         )}
       </>
     )
@@ -124,11 +130,13 @@ const spacerStyle = 'flex-[0.5]'
 // original height: h-14 (maybe for desktop)
 const buttonBase =
   'h-12 flex items-center justify-center uppercase rounded ' +
-  'mr-1 last-of-type:mr-0 select-none text-slate-600'
+  'mr-1 last-of-type:mr-0 select-none text-slate-600 relative'
 
 const largeButtonBase = classNames(buttonBase, 'flex-[1.5] text-xs')
 
 const largeButtonStyle = classNames(largeButtonBase, 'bg-slate-200 flex-[1.5] text-xs')
+
+const knownMarkerStyle = 'absolute bottom-1.5 w-3 m-auto bg-black opacity-20 h-1 rounded-full'
 
 function markingStyle(isMarking: boolean): string {
   return classNames(
@@ -141,14 +149,18 @@ function markingStyle(isMarking: boolean): string {
 }
 
 function buttonStyle(key: string, notes: Notes | undefined): string {
-  const inWord = notes?.letters.get(key)?.inWord
+  const letterNote = notes?.letters.get(key)
+  const inWord = letterNote?.inWord
+  const isMarking = notes?.isMarking ?? false
+  const known = letterNote?.confidence === 'known'
   
   return classNames(
     buttonBase, 'flex-1',
     {
       'bg-slate-200': inWord === undefined,
       'bg-emerald-200': inWord === true,
-      'bg-slate-400': inWord === false
+      'bg-slate-400': inWord === false,
+      'opacity-50': known && isMarking
     }
   )
 }

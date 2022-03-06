@@ -7,7 +7,7 @@ import { Hud } from './components/hud'
 import { Observer } from './components/observer'
 
 export function Game() {
-  const [word, setWord] = useState<string>()
+  const [value, setValue] = useState<string>()
   const [isValid, setIsValid] = useState(false)
 
   const { me } = useMe()
@@ -15,14 +15,12 @@ export function Game() {
 
   function onChange(e: FiveWordChangeEvent) {
     setIsValid(e.isValid)
-    if (e.isValid) {
-      setWord(e.word)
-    }
+    setValue(e.value)
   }
 
   function onGuess() {
-    me.guess(word!)
-    setWord(undefined)
+    me.guess(value!)
+    setValue(undefined)
   }
 
   let content: ReactNode = null
@@ -46,7 +44,7 @@ export function Game() {
       <>
         <div className="flex justify-center mb-5">
           <FiveWordInput
-            value={word}
+            value={value}
             guesses={me.guesses}
             onChange={onChange}
           />
@@ -69,7 +67,7 @@ export function Game() {
 
         <Observer
           className="mb-5"
-          onClick={word => word && setWord(word)}
+          onClick={word => word && setValue(word)}
         />
 
         {content}
