@@ -1,8 +1,8 @@
-import { SocketError } from 'jotto_core'
+import { Credentials } from 'jotto_core'
 import { filter } from 'rxjs'
 import { io } from 'socket.io-client'
 import { EventBus, JottoSocket, jottoSocketDecorator } from 'src/core'
-import { AuthEvent, isAuthEvent, isLeaveGame } from 'src/core/events'
+import { isLeaveGame } from 'src/core/events'
 
 // constants
 const URL = 'http://10.0.0.192:3001'
@@ -16,6 +16,7 @@ const socketOptions = {
 export class Connection {
 
   private _socket: JottoSocket
+  private _lobbyCode: string | undefined
 
   constructor(
     private _bus: EventBus
@@ -29,19 +30,42 @@ export class Connection {
       this._socket.connect()
     }
 
-    this._socket.on('error', this.onError)
+    this._socket.on('session', this.onSession)
 
     _bus.events$
       .pipe(filter(isLeaveGame))
       .subscribe(this.onLeaveGame)
-
-    _bus.events$
-      .pipe(filter(isAuthEvent))
-      .subscribe(this.onAuth)
   }
+
+
+  //
+  // getters & setters
+  // =================
+
 
   get socket(): JottoSocket {
     return this._socket
+  }
+
+  get lobbyCode(): string | undefined {
+    return this._lobbyCode
+  }
+
+
+  //
+  // bus handlers
+  // ============
+
+
+  private onSession = ({ sessionId, lobbyCode }: Credentials) => {
+    console.debug('[connection] onSession:', { sessionId, lobbyCode })
+
+    this._lobbyCode = lobbyCode
+    this._socket.updateAuth({ sessionId })
+    // this._socket.connect()
+
+    sessionStorage.setItem('session', sessionId)
+    console.debug('saved session id')
   }
 
   private onLeaveGame = () => {
@@ -51,13 +75,12 @@ export class Connection {
     this._socket = jottoSocketDecorator(io(URL, socketOptions))
   }
 
-  private onAuth = (event: AuthEvent) => {
-    sessionStorage.setItem('session', event.sessionId)
-    console.debug('saved session id')
-  }
 
-  private onError = (error: SocketError) => {
-    //
-  }
+  //
+  // private functions
+  // =================
+
+
+  
 
 }

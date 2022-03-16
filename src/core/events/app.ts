@@ -4,8 +4,8 @@ import { AppState } from 'src/core'
 
 export type AppEventType =
 
-  // user authenticated
-  | 'auth'
+  // connected or not
+  | 'loading_state_change'
 
   // the state of the overall app changes
   | 'state_change'
@@ -22,11 +22,6 @@ export type AppEventType =
 export interface AppEvent extends Event {
   domain: 'app',
   type: AppEventType
-}
-
-export interface AuthEvent extends AppEvent {
-  type: 'auth'
-  sessionId: string
 }
 
 export interface AppStateChangeEvent extends AppEvent {
@@ -53,11 +48,10 @@ function create(type: AppEventType): AppEvent {
   }
 }
 
-export function createAuth(sessionId: string): AuthEvent {
+export function createLoadingChange(): AppEvent {
   return {
-    ...create('auth'),
-    type: 'auth',
-    sessionId
+    ...create('loading_state_change'),
+    type: 'loading_state_change'
   }
 }
 
@@ -83,12 +77,12 @@ export function createMenuVisibilityChange(): MenuEvent {
 // ======
 
 
-export function isAuthEvent(event: Event): event is AuthEvent {
-  return event.domain === 'app' && event.type === 'auth'
-}
-
 export function isStateChangeEvent(event: Event): event is AppStateChangeEvent {
   return event.domain === 'app' && event.type === 'state_change'
+}
+
+export function isLoadingStateChangeEvent(event: Event): event is AppEvent {
+  return event.domain === 'app' && event.type === 'loading_state_change'
 }
 
 export function isMenuVisibilityChangeEvent(event: Event): event is MenuEvent {

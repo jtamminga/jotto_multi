@@ -26,9 +26,9 @@ export function JoinRoom() {
         />
 
         <Button
-          type="link"
           text="Join as Observer"
           disabled={!isValid}
+          type="link"
           onClick={() => gameFlow.joinRoom(username, 'observer')}
         />
       </div>

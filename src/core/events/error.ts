@@ -1,8 +1,11 @@
+import { JottoError } from 'src/models'
 import { Event } from './event'
 
 export type ErrorEventType =
 
-  | 'lobby_closed'
+  | 'new_error'
+
+  | 'clear_error'
 
 
 //
@@ -13,7 +16,7 @@ export type ErrorEventType =
 export interface ErrorEvent extends Event {
   domain: 'error',
   type: ErrorEventType
-  message: string
+  error: JottoError
 }
 
 
@@ -22,17 +25,21 @@ export interface ErrorEvent extends Event {
 // =========
 
 
-function create(type: ErrorEventType, message: string): ErrorEvent {
+function create(type: ErrorEventType, error: JottoError): ErrorEvent {
   return {
     domain: 'error',
     type,
-    message,
+    error,
     timestamp: Date.now()
   }
 }
 
-export function createError(type: ErrorEventType, message: string): ErrorEvent {
-  return create(type, message)
+export function createError(error: JottoError): ErrorEvent {
+  return create('new_error', error)
+}
+
+export function createClearError(error: JottoError): ErrorEvent {
+  return create('clear_error', error)
 }
 
 

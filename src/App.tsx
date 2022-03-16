@@ -1,8 +1,20 @@
-import { Game, GameSummary, InRoom, JoinRoom, Observing, PickedWord, PickWord } from './screens'
 import { useGameFlow, useKeyboard, useMenu } from './core/hooks'
 import { ReactNode } from 'react'
 import { Keyboard, Menu } from './components'
 import { AppState } from './core'
+
+import {
+  Game,
+  GameSummary,
+  InRoom,
+  JoinLobby,
+  JoinRoom,
+  Observing,
+  PickedWord,
+  PickWord,
+  RoleSelect
+} from './screens'
+
 
 export default function App() {
 
@@ -41,6 +53,14 @@ function screen(state: AppState): ReactNode {
   let screen: ReactNode
 
   switch (state) {
+    case 'role_select':
+      screen = <RoleSelect />
+      break
+
+    case 'joining_lobby':
+      screen = <JoinLobby />
+      break
+
     case 'joining_room':
       screen = <JoinRoom />
       break

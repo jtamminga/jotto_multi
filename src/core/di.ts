@@ -1,4 +1,12 @@
-import { GameFlow, Players, Connection, Observer, Keyboard, Menu } from 'src/managers'
+import {
+  GameFlow,
+  Players,
+  Connection,
+  Observer,
+  Keyboard,
+  Menu,
+  Errors
+} from 'src/managers'
 import { EventBus } from './event_bus'
 
 console.debug('setting up dependencies...')
@@ -9,6 +17,7 @@ export const eventBus = new EventBus()
 eventBus.events$.subscribe(e => console.debug('eventbus', e))
 
 // managers
+export const errors = new Errors(eventBus)
 export const connection = new Connection(eventBus)
 export const players = new Players(connection.socket, eventBus)
 export const gameFlow = new GameFlow(connection.socket, eventBus, players)

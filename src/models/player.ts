@@ -7,6 +7,7 @@ import { createPlayerChange, createPlayerWon, GuessEvent, isGuessResultEvent, is
 export class Player implements Disposable {
   
   protected _userId: string
+  protected _host: boolean
   protected _type: UserType
   protected _username: string
   protected _connected: boolean
@@ -23,6 +24,7 @@ export class Player implements Disposable {
     this._connected = user.connected
     this._ready = user.ready
     this._wonAt = user.wonAt
+    this._host = user.host
 
     this._subscription = bus.events$
       .pipe(
@@ -80,6 +82,10 @@ export class Player implements Disposable {
 
   get wonAt(): number | undefined {
     return this._wonAt
+  }
+
+  get host(): boolean {
+    return this._host
   }
 
   get opponent(): Player {

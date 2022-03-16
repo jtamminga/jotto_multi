@@ -1,5 +1,5 @@
 import { filter } from 'rxjs'
-import { EventBus, IllegalStateException, JottoSocket, SocketSession } from 'src/core'
+import { EventBus, IllegalStateException, JottoSocket } from 'src/core'
 import { WordEvent, isWordEvent, SubmitGuessEvent } from 'src/core/events/me'
 import { Me, Player } from 'src/models'
 import {
@@ -10,8 +10,7 @@ import {
   createAllPlayersCreated
 } from 'src/core/events/players'
 import { GameEvent, isGameEvent } from 'src/core/events/game'
-import { createAuth } from 'src/core/events/app'
-import { PlayerState, Session, UserRestore } from 'jotto_core'
+import { Credentials, PlayerState, Session, UserRestore } from 'jotto_core'
 
 export class Players {
 
@@ -108,22 +107,13 @@ export class Players {
   // =========
 
 
-  private onSession = ({ sessionId, userId }: SocketSession) => {
-    console.debug('onSession')
-    this._socket.userId = userId
-    this._socket.updateAuth({ sessionId })
+  private onSession = ({ userId }: Credentials) => {
+    console.debug('[players] set userId:', userId)
     this._userId = userId
-    this._bus.publish(createAuth(sessionId))
-
-    console.group('test session')
-    console.log('userId', this._socket.userId)
-    console.log('sessionId', this._socket.sessionId)
-    console.log('username', this._socket.username)
-    console.groupEnd()
   }
 
   private onUsers = (users: Session[]) => {
-    console.debug('onUsers', users.map(u => u.username))
+    console.debug('[players] onUsers', users)
 
     for(const user of users) {
       if (this.find(user.userId)) {
@@ -152,7 +142,7 @@ export class Players {
   }
 
   private onConnect = (user: Session) => {
-    console.debug('onConnect', user)
+    console.debug('[players] onConnect', user)
     let player = this._players.find(p => p.userId === user.userId)
 
     if (player) {
@@ -166,7 +156,7 @@ export class Players {
   }
 
   private onDisconnect = (userId: string, intended: boolean) => {
-    console.debug('onDisconnect', userId)
+    console.debug('[players] onDisconnect', userId)
     const index = this._players.findIndex(p => p.userId === userId)
 
     if (index === -1) {
@@ -190,7 +180,7 @@ export class Players {
   }
 
   private onReady = (userId: string) => {
-    console.debug('onReady', userId)
+    console.debug('[players] onReady', userId)
     const player = this.get(userId)
 
     player.ready = true
@@ -198,7 +188,7 @@ export class Players {
   }
 
   private onRestore = (restore: UserRestore) => {
-    console.debug('onRestore', restore)
+    console.debug('[players] onRestore', restore)
 
     this._userId = restore.userId
     this.onUsers(restore.users)

@@ -16,6 +16,8 @@ export interface User {
 }
 
 export type AppState =
+  | 'role_select'
+  | 'joining_lobby'
   | 'joining_room'
   | 'joined_room'
   | 'picking_word'

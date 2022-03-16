@@ -7,6 +7,7 @@ import { createPlayerChange, createPlayerReady, createSubmitGuess } from 'src/co
 import { Notes } from './notes'
 
 export class Me extends Player {
+
   private _word: string | undefined
   private _notes: Notes | undefined
 

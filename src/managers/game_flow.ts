@@ -2,14 +2,17 @@ import { filter } from 'rxjs'
 import {
   UserRestore as SocketUserRestore,
   GameConfig as SocketGameConfig,
-  GameSummary} from 'jotto_core'
+  GameSummary,
+  UserType,
+  HostConfig } from 'jotto_core'
 import { EventBus, AppState, JottoSocket, SocketGuessResult, IllegalStateException } from 'src/core'
 import { createGuessResult, createLeaveGame, createPlayAgain } from 'src/core/events/game'
 import { createPickedWord } from 'src/core/events/me'
-import { Game } from 'src/models'
+import { Game, JottoError } from 'src/models'
 import { Players } from './players'
 import * as AppEvents from 'src/core/events/app'
 import * as Transform from 'src/core/transforms'
+import { createError } from 'src/core/events'
 
 /**
  * Handles game flow related functions.
@@ -19,18 +22,23 @@ export class GameFlow {
 
   private _state: AppState
   private _game: Game | undefined
+  private _loading: boolean
+
 
   constructor(
     private _socket: JottoSocket,
     private _bus: EventBus,
     private _players: Players
   ) {
-    this._state = 'joining_room'
+    this._loading = false
+    this._state = 'role_select'
 
     this.setupListeners()
   }
 
   private setupListeners() {
+    this._socket.on('connect', this.onConnect)
+    this._socket.on('connect_error', this.onError)
     this._socket.on('wordPicking', this.onWorkPicking)
     this._socket.on('startPlaying', this.onStartPlaying)
     this._socket.on('guessResult', this.onGuessResult)
@@ -51,8 +59,19 @@ export class GameFlow {
       )
   }
 
-  public get state() {
+  public get loading$() {
+    return this._bus.events$
+      .pipe(
+        filter(AppEvents.isLoadingStateChangeEvent)
+      )
+  }
+
+  public get state(): AppState {
     return this._state
+  }
+
+  public get loading(): boolean {
+    return this._loading
   }
 
   public get game(): Game {
@@ -69,14 +88,29 @@ export class GameFlow {
   // ================
 
 
-  public joinRoom(username: string, type: 'observer' | 'player') {
-    this._socket.updateAuth({ username, type })
+  public hostLobby() {
     this._socket.connect()
+    this.updateState('joining_room')
+  }
+
+  public joiningLobby() {
+    this.updateState('joining_lobby')
+  }
+
+  public joinLobby(code: string) {
+    this._socket.updateAuth({ lobbyCode: code })
+    this._socket.connect()
+    this.updateLoading(true)
+    // switch to 'joining_room' on connect success
+  }
+
+  public joinRoom(username: string, type: UserType) {
+    this._socket.emit('joinRoom', username, type)
     this.updateState('joined_room')
   }
 
-  public start() {
-    this._socket.emit('startGame')
+  public start(config: HostConfig) {
+    this._socket.emit('startGame', config)
   }
 
   public pickWord(word: string) {
@@ -109,32 +143,29 @@ export class GameFlow {
 
 
   //
-  // private functions
-  // =================
-
-
-  private updateState(state: AppState) {
-    const preState = this._state
-    this._state = state
-
-    if (preState !== state) {
-      this._bus.publish(AppEvents.createStateChange(this._state, preState))
-    }
-  }
-
-  private updateStateIf({ player, obs }: { player: AppState, obs: AppState}) {
-    if (this._players.me.isPlaying) {
-      this.updateState(player)
-    } else {
-      this.updateState(obs)
-    }
-  }
-
-
-  //
   // event handlers
   // ==============
 
+
+  private onConnect = () => {
+    console.log('onConnect', this._state)
+
+    // bail if not in role select
+    // (this is also called on reconnect)
+    if (this._state !== 'joining_lobby') {
+      return
+    }
+
+    this.updateState('joining_room')
+    this.updateLoading(false)
+  }
+
+  private onError = (error: Error) => {
+    console.error('connect error:', error.message)
+    this._bus.publish(createError(
+      new JottoError('lobby_not_available', 'Lobby is not available')))
+    this.updateLoading(false)
+  }
 
   private onWorkPicking = () => {
     this.updateStateIf({ player: 'picking_word', obs: 'picked_word'})
@@ -190,6 +221,36 @@ export class GameFlow {
         this.onStartPlaying(restore.config!, restore)
         this.onGameOver(restore.gameSummary!)
         break
+    }
+  }
+
+
+  //
+  // private functions
+  // =================
+
+
+  private updateState(state: AppState) {
+    const preState = this._state
+    this._state = state
+
+    if (preState !== state) {
+      this._bus.publish(AppEvents.createStateChange(this._state, preState))
+    }
+  }
+
+  private updateLoading(loading: boolean) {
+    if (this._loading !== loading) {
+      this._loading = loading
+      this._bus.publish(AppEvents.createLoadingChange())
+    }
+  }
+
+  private updateStateIf({ player, obs }: { player: AppState, obs: AppState}) {
+    if (this._players.me.isPlaying) {
+      this.updateState(player)
+    } else {
+      this.updateState(obs)
     }
   }
 

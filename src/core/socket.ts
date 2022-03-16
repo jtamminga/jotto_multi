@@ -2,14 +2,9 @@ import { Socket } from 'socket.io-client'
 import { ClientToServerEvents, ServerToClientEvents } from 'jotto_core'
 
 type Auth = {
-  username?: string;
-  sessionId?: string;
+  sessionId?: string
+  lobbyCode?: string
   type?: 'player' | 'observer'
-}
-
-export type SocketSession = {
-  sessionId: string;
-  userId: string;
 }
 
 export abstract class JottoSocket extends Socket<ServerToClientEvents, ClientToServerEvents> {
