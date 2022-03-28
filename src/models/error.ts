@@ -1,6 +1,7 @@
 export type ErrorType =
 
   | 'lobby_not_available'
+  | 'lobby_closed'
   
 
 export class JottoError {

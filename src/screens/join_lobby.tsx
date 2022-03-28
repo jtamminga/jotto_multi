@@ -19,6 +19,7 @@ export function JoinLobby() {
       <Input
         autoFocus
         type="number"
+        pattern="\d*"
         value={code}
         onChange={e => setCode(e.target.value)}
         placeholder="Lobby code"

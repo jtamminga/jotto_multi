@@ -10,7 +10,7 @@ import {
   createAllPlayersCreated
 } from 'src/core/events/players'
 import { GameEvent, isGameEvent } from 'src/core/events/game'
-import { Credentials, PlayerState, Session, UserRestore } from 'jotto_core'
+import { Credentials, PlayerState, UserRestore, UserState } from 'jotto_core'
 
 export class Players {
 
@@ -112,7 +112,7 @@ export class Players {
     this._userId = userId
   }
 
-  private onUsers = (users: Session[]) => {
+  private onUsers = (users: UserState[]) => {
     console.debug('[players] onUsers', users)
 
     for(const user of users) {
@@ -141,7 +141,7 @@ export class Players {
     }
   }
 
-  private onConnect = (user: Session) => {
+  private onConnect = (user: UserState) => {
     console.debug('[players] onConnect', user)
     let player = this._players.find(p => p.userId === user.userId)
 

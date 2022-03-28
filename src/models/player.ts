@@ -8,6 +8,7 @@ export class Player implements Disposable {
   
   protected _userId: string
   protected _host: boolean
+  protected _lobbyCode: string
   protected _type: UserType
   protected _username: string
   protected _connected: boolean
@@ -25,6 +26,7 @@ export class Player implements Disposable {
     this._ready = user.ready
     this._wonAt = user.wonAt
     this._host = user.host
+    this._lobbyCode = user.lobbyCode
 
     this._subscription = bus.events$
       .pipe(
@@ -86,6 +88,10 @@ export class Player implements Disposable {
 
   get host(): boolean {
     return this._host
+  }
+
+  get lobbyCode(): string {
+    return this._lobbyCode
   }
 
   get opponent(): Player {

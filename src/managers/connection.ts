@@ -1,6 +1,6 @@
 import { Credentials } from 'jotto_core'
 import { filter } from 'rxjs'
-import { io } from 'socket.io-client'
+import { io, Socket } from 'socket.io-client'
 import { EventBus, JottoSocket, jottoSocketDecorator } from 'src/core'
 import { isLeaveGame } from 'src/core/events'
 
@@ -16,14 +16,13 @@ const socketOptions = {
 export class Connection {
 
   private _socket: JottoSocket
-  private _lobbyCode: string | undefined
 
   constructor(
     private _bus: EventBus
   ) {
     this._socket = jottoSocketDecorator(io(URL, socketOptions))
 
-    const sessionId = sessionStorage.getItem('session')
+    const sessionId = localStorage.getItem('session')
     if (sessionId) {
       console.info('connecting with session id...')
       this._socket.updateAuth({ sessionId })
@@ -31,6 +30,8 @@ export class Connection {
     }
 
     this._socket.on('session', this.onSession)
+    this._socket.on('connect_error', this.onConnectError)
+    this._socket.on('disconnect', this.onDisconnect)
 
     _bus.events$
       .pipe(filter(isLeaveGame))
@@ -47,40 +48,40 @@ export class Connection {
     return this._socket
   }
 
-  get lobbyCode(): string | undefined {
-    return this._lobbyCode
-  }
-
 
   //
   // bus handlers
   // ============
 
 
-  private onSession = ({ sessionId, lobbyCode }: Credentials) => {
-    console.debug('[connection] onSession:', { sessionId, lobbyCode })
+  private onSession = ({ sessionId }: Credentials) => {
+    console.debug('[connection] onSession:', { sessionId })
 
-    this._lobbyCode = lobbyCode
     this._socket.updateAuth({ sessionId })
     // this._socket.connect()
 
-    sessionStorage.setItem('session', sessionId)
+    localStorage.setItem('session', sessionId)
     console.debug('saved session id')
   }
 
   private onLeaveGame = () => {
     console.info('clearing session from session storage')
-    sessionStorage.removeItem('session')
+    localStorage.removeItem('session')
 
     this._socket = jottoSocketDecorator(io(URL, socketOptions))
   }
 
+  private onConnectError = (error: Error) => {
+    console.error('connect error:', error.message)
+    localStorage.removeItem('session')
+  }
 
-  //
-  // private functions
-  // =================
-
-
-  
+  private onDisconnect = (reason: Socket.DisconnectReason) => {
+    const forced = reason === 'io server disconnect'
+    
+    if (forced) {
+      localStorage.removeItem('session')
+    }
+  }
 
 }

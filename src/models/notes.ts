@@ -10,8 +10,6 @@ export class Notes implements Disposable {
   private readonly _letterNotes = new Map<string, LetterNote>()
 
   constructor() {
-    this.setInfo(LETTERS, { confidence: 'nothing' })
-
     this._subscription = keyboard.keyPress$
       .pipe(filter(e => e.isMarking))
       .subscribe(this.onKeyPress)
@@ -42,6 +40,22 @@ export class Notes implements Disposable {
       this._isMarking = isMarking
       bus.publish(createNotesEvent(this))
     }
+  }
+
+  /**
+   * Mark some letters as maybe
+   * @param letters The letters as string to set
+   * @param inWord pass undefined if you want cleared
+   */
+  public maybe(letters: string, inWord: boolean | undefined) {
+    if (inWord === undefined) {
+      this.clear(letters)
+    } else {
+      this.set(letters, { confidence: 'maybe', inWord })
+    }
+
+    bus.publish(createNotesEvent(this))
+    this.serialize()
   }
 
   public addGuess(guess: GuessResult) {
@@ -88,53 +102,58 @@ export class Notes implements Disposable {
 
   private processResult(guess: GuessResult): boolean {
     if (guess.common === 0) {
-      this.setInfo(guess.word, { confidence: 'known', inWord: false })
+      this.set(guess.word, { confidence: 'known', inWord: false })
       return true
     }
     
     if (guess.common === 5) {
-      this.setInfo(LETTERS, { confidence: 'known', inWord: false })
-      this.setInfo(guess.word, { confidence: 'known', inWord: true })
+      this.set(LETTERS, { confidence: 'known', inWord: false })
+      this.set(guess.word, { confidence: 'known', inWord: true })
       return true
     }
 
     return false
   }
 
-  private setInfo(letters: string, note: LetterNote) {
+  private set(letters: string, note: LetterNote) {
     Array.from(letters).forEach(letter =>
       this._letterNotes.set(letter, { ...note }))
-  } 
+  }
+
+  private clear(letters: string) {
+    Array.from(letters).forEach(letter =>
+      this._letterNotes.delete(letter))
+  }
 
   // nothing --> maybe(inword) --> maybe(!inWord) --> nothing
   private toggle(key: string): boolean {
     let info = this._letterNotes.get(key)
 
-    // should never happen
     if (!info) {
-      throw new IllegalStateException('unknown key state')
+      this._letterNotes.set(key,
+        { confidence: 'maybe', inWord: true })
+      return true
     }
 
     if (info.confidence === 'known') {
       return false
     }
 
-    if (info.confidence === 'nothing') {
-      info = { confidence: 'maybe', inWord: true }
+    // confidence == maybe
+    if (info.inWord) {
+      this._letterNotes.set(key,
+        { confidence: 'maybe', inWord: false })
+      return true
     }
 
-    else if (info.confidence === 'maybe') {
-      info = info.inWord ?
-        { confidence: 'maybe', inWord: false } : { confidence: 'nothing' }
-    } 
-
-    this._letterNotes.set(key, info)
+    // confidence == maybe && inWord == false
+    this._letterNotes.delete(key)
     return true
   }
 
   private serialize() {
     const condensed = Array.from(this._letterNotes)
-      .filter(([_, info]) => info.confidence === 'maybe' && info.inWord !== undefined)
+      .filter(([_, info]) => info.confidence === 'maybe')
       .map(([key, info]) => ({ key, in: info.inWord }))
 
     const serialized = JSON.stringify(condensed)

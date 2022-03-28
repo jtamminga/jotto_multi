@@ -1,17 +1,18 @@
-import { gameFlow, connection } from 'src/core/di'
+import { gameFlow } from 'src/core/di'
 import { Button, Players, Screen } from 'src/components'
 import { usePlayers } from 'src/core/hooks'
 
 export function InRoom() {
 
   const { players } = usePlayers()
+  const valid = players.playing.length >= 2
 
   return (
     <Screen title="Waiting for players">
 
       { players.ready && players.me.host &&
         <div className="text-center mb-5">
-          Lobby code is <span className="text-emerald-500">{connection.lobbyCode}</span>
+          Lobby code is <span className="text-emerald-500">{players.me.lobbyCode}</span>
         </div>
       }
 
@@ -22,18 +23,21 @@ export function InRoom() {
           <Button
             text="Relaxed"
             className="grow"
+            disabled={!valid}
             onClick={() => gameFlow.start({ gameLength: undefined })}
           />
 
           <Button
             text="10 min"
             className="grow"
+            disabled={!valid}
             onClick={() => gameFlow.start({ gameLength: 10 })}
           />
 
           <Button
             text="15 min"
             className="grow"
+            disabled={!valid}
             onClick={() => gameFlow.start({ gameLength: 15 })}
           />
         </div>

@@ -1,13 +1,31 @@
 import classNames from 'classnames'
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 import { eventBus } from 'src/core/di'
 import { createKeypress } from 'src/core/events'
 import { useKeyboard, useNotes } from 'src/core/hooks'
 import { Notes } from 'src/models'
+import { NoteSelect } from './note_select'
 
 export function Keyboard() {
+
   const { notes } = useNotes()
+  const timerRef = useRef<number>()
+  const [heldLetter, setHeldLetter] = useState<string>()
   useKeyboard()
+
+  useEffect(() => {
+    const listener = () => {
+      clearTimeout(timerRef.current)
+    }
+
+    window.addEventListener('mouseup', listener)
+    window.addEventListener('touchend', listener)
+
+    return () => {
+      window.removeEventListener('mouseup', listener)
+      window.removeEventListener('touchend', listener)
+    }
+  })
   
   // first
   function firstRow() {
@@ -80,6 +98,8 @@ export function Keyboard() {
             key={`key-${key}`}
             className={buttonStyle(key, notes)}
             onClick={() => onClick(key)}
+            onMouseDown={() => onLongPress(key)}
+            onTouchStart={() => onLongPress(key)}
           >
             {key}
 
@@ -90,6 +110,17 @@ export function Keyboard() {
         )}
       </>
     )
+  }
+
+  function onLongPress(key: string) {
+    // only if able to take notes
+    if (!notes) {
+      return
+    }
+
+    timerRef.current = window.setTimeout(() => {
+      setHeldLetter(key)
+    }, 500)
   }
 
   function onClick(key: string) {
@@ -113,6 +144,16 @@ export function Keyboard() {
       {firstRow()}
       {secondRow()}
       {thirdRow()}
+
+      { heldLetter &&
+        <NoteSelect
+          letter={heldLetter}
+          onClose={(isMarking, inWord) => {
+            if (isMarking) notes?.maybe(heldLetter, inWord)
+            setHeldLetter(undefined)
+          }}
+        />
+      }
     </div>
   )
 }

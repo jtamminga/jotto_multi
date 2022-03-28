@@ -33,8 +33,8 @@ export type GameState =
   | 'over'
 
 export type LetterNote = {
-  confidence: 'known' | 'maybe' | 'nothing'
-  inWord?: boolean
+  confidence: 'known' | 'maybe'
+  inWord: boolean
 }
 
 export type LetterNotes = Map<string, LetterNote>

@@ -13,6 +13,7 @@ import { Players } from './players'
 import * as AppEvents from 'src/core/events/app'
 import * as Transform from 'src/core/transforms'
 import { createError } from 'src/core/events'
+import { Socket } from 'socket.io-client'
 
 /**
  * Handles game flow related functions.
@@ -39,6 +40,8 @@ export class GameFlow {
   private setupListeners() {
     this._socket.on('connect', this.onConnect)
     this._socket.on('connect_error', this.onError)
+    this._socket.on('disconnect', this.onDisconnect)
+
     this._socket.on('wordPicking', this.onWorkPicking)
     this._socket.on('startPlaying', this.onStartPlaying)
     this._socket.on('guessResult', this.onGuessResult)
@@ -161,10 +164,15 @@ export class GameFlow {
   }
 
   private onError = (error: Error) => {
-    console.error('connect error:', error.message)
     this._bus.publish(createError(
       new JottoError('lobby_not_available', 'Lobby is not available')))
     this.updateLoading(false)
+  }
+
+  private onDisconnect = (reason: Socket.DisconnectReason) => {
+    this._bus.publish(createError(
+      new JottoError('lobby_closed', 'Lobby closed by server')))
+    this.updateState('role_select')
   }
 
   private onWorkPicking = () => {
