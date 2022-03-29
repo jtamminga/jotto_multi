@@ -11,8 +11,6 @@ import {
   KeyPressEvent
 } from 'src/core/events'
 
-type Mode = 'normal' | 'markable' | 'marking'
-
 export class Keyboard {
 
   private _visible = false

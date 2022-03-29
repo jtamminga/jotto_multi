@@ -192,7 +192,7 @@ export class Player implements Disposable {
 
 
   private isMyGuess = (event: GuessEvent): boolean => {
-    return event.guessResult.from == this
+    return event.guessResult.from === this
   }
 
   // guard

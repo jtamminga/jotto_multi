@@ -81,7 +81,7 @@ function containerClasses({ won }: GuessResult): string {
 function charBlockClasses(index: number): string {
   return classNames(
     baseCharBlockClasses, 'w-6',
-    { 'rounded-l ml-3': index == 0 },
+    { 'rounded-l ml-3': index === 0 },
     { 'mr-3': index === 4 }
   )
 }

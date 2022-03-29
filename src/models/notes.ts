@@ -1,7 +1,7 @@
 import { filter, Subscription } from 'rxjs'
 import { keyboard, eventBus as bus } from 'src/core/di'
 import { createNotesEvent, KeyPressEvent } from 'src/core/events'
-import { Disposable, GuessResult, IllegalStateException, LetterNote, LetterNotes } from 'src/core'
+import { Disposable, GuessResult, LetterNote, LetterNotes } from 'src/core'
 
 export class Notes implements Disposable {
 

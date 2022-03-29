@@ -1,5 +1,4 @@
 import { v4 as createId } from 'uuid'
-import { PlayerState } from 'jotto_core'
 import { Guess, GuessResult, IllegalStateException } from 'src/core'
 import { Player } from './player'
 import { eventBus as bus } from 'src/core/di'
@@ -10,10 +9,6 @@ export class Me extends Player {
 
   private _word: string | undefined
   private _notes: Notes | undefined
-
-  constructor(user: PlayerState) {
-    super(user)
-  }
 
 
   //

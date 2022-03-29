@@ -17,7 +17,7 @@ export function FiveWordInput(props: Props) {
   function onChange(value: string) {
     
     const error = valid(value, props.guesses)
-    const isValid = !error && value.length == 5
+    const isValid = !error && value.length === 5
     const word = isValid ? value : undefined
     
     setError(error)
