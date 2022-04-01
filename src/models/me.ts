@@ -1,5 +1,5 @@
 import { v4 as createId } from 'uuid'
-import { Guess, GuessResult, IllegalStateException } from 'src/core'
+import { Guess, GuessResult, DetailedGuessResult, IllegalStateException } from 'src/core'
 import { Player } from './player'
 import { eventBus as bus } from 'src/core/di'
 import { createPlayerChange, createPlayerReady, createSubmitGuess } from 'src/core/events'

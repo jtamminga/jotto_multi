@@ -35,6 +35,10 @@ export class Notes implements Disposable {
   // ================
 
 
+  public inWord(letter: string): boolean | undefined {
+    return this._letterNotes.get(letter)?.inWord
+  }
+
   public setMarking(isMarking: boolean) {
     if (this._isMarking !== isMarking) {
       this._isMarking = isMarking

@@ -134,7 +134,7 @@ export function Keyboard() {
 
 
   return (
-    <div className="w-full px-1 pb-2">
+    <div className="w-full pt-1 px-1 pb-2">
       { notes?.isMarking &&
         <div className="text-slate-400 text-sm text-center py-1">
           tap on letters to note for yourself if in word or not
@@ -171,7 +171,7 @@ const spacerStyle = 'flex-[0.5]'
 // original height: h-14 (maybe for desktop)
 const buttonBase =
   'h-12 flex items-center justify-center uppercase rounded ' +
-  'mr-1 last-of-type:mr-0 select-none text-slate-600 relative'
+  'mr-1 last-of-type:mr-0 select-none relative'
 
 const largeButtonBase = classNames(buttonBase, 'flex-[1.5] text-xs')
 
@@ -198,9 +198,9 @@ function buttonStyle(key: string, notes: Notes | undefined): string {
   return classNames(
     buttonBase, 'flex-1',
     {
-      'bg-slate-200': inWord === undefined,
-      'bg-emerald-200': inWord === true,
-      'bg-slate-400': inWord === false,
+      'bg-slate-200 text-slate-600': inWord === undefined,
+      'bg-emerald-400 text-white': inWord === true,
+      'bg-slate-400 text-white': inWord === false,
       'opacity-50': known && isMarking
     }
   )

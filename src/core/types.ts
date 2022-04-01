@@ -27,6 +27,11 @@ export type AppState =
   | 'observing'
   | 'game_summary'
 
+export type ConnectionState =
+  | 'disconnected'
+  | 'connected'
+  | 'connecting'
+
 export type GameState =
   | 'starting'
   | 'playing'
@@ -70,6 +75,10 @@ export interface GuessResult extends Guess {
   won: boolean
   from: Player
   to: Player
+}
+
+export interface DetailedGuessResult extends GuessResult {
+  worksWithNotes: boolean | undefined
 }
 
 export interface PlayerSummary extends Omit<SocketPlayerSummary, 'userId'> {

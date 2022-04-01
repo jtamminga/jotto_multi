@@ -196,7 +196,7 @@ export class Player implements Disposable {
   }
 
   // guard
-  private isGuessResult(guess: Guess): guess is GuessResult {
+  protected isGuessResult(guess: Guess): guess is GuessResult {
     return guess.common !== undefined
   } 
 }

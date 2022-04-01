@@ -9,7 +9,7 @@ export class Menu {
 
   constructor(
     private _bus: EventBus,
-    private _gameFlow: GameFlow
+    _gameFlow: GameFlow
   ) {
 
     // hide menu on screen change

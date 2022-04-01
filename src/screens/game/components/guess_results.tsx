@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import { GuessResult } from 'src/core'
+import { Notes } from 'src/models'
 
 
 //
@@ -8,10 +9,11 @@ import { GuessResult } from 'src/core'
 
 
 type CollectionProps = {
-  guesses: GuessResult[]
+  guesses: GuessResult[],
+  notes: Notes | undefined
 }
 
-export function GuessResults({ guesses }: CollectionProps) {
+export function GuessResults({ guesses, notes }: CollectionProps) {
   if (guesses.length === 0) {
     return (
       <div className="p-5 bg-slate-100 rounded text-center text-slate-400">
@@ -24,7 +26,7 @@ export function GuessResults({ guesses }: CollectionProps) {
     <ol className="list-decimal flex flex-col items-center text-slate-300" reversed>
       {guesses.slice().reverse().map(guess =>
         <li key={guess.id} className="pl-3 mb-2">
-          <GuessResultItem guess={guess} />
+          {guessResultItem(guess, notes)}
         </li>
       )}
     </ol>
@@ -37,21 +39,17 @@ export function GuessResults({ guesses }: CollectionProps) {
 // ==========
 
 
-type ItemProps = {
-  guess: GuessResult
-}
-
-export function GuessResultItem({ guess }: ItemProps) {
+function guessResultItem(guess: GuessResult, notes: Notes | undefined) {
   const letters = Array.from(guess.word)
 
   const charBlocks = letters.map((char, i) =>
-    <div key={i} className={charBlockClasses(i)}>
+    <div key={i} className={charBlockClasses(i, notes?.inWord(char))}>
       {char}
     </div>  
   )
 
   return (
-    <div className={containerClasses(guess)}>
+    <div className={containerClasses}>
       {charBlocks}
       <div className={commonBlockClasses(guess)}>
         {guess.common}
@@ -66,39 +64,27 @@ export function GuessResultItem({ guess }: ItemProps) {
 // =======
 
 
-const baseCharBlockClasses = 'py-2 uppercase text-center text-slate-800'
+const containerClasses = 'inline-flex rounded space-x-1'
+const baseCharBlockClasses = 'py-2 uppercase text-center'
 
-function containerClasses({ won }: GuessResult): string {
+
+function charBlockClasses(index: number, inWord: boolean | undefined): string {
   return classNames(
-    'inline-flex rounded',
+    baseCharBlockClasses, 'w-8 rounded',
     {
-      'bg-emerald-100': won,
-      'bg-slate-100': !won
+      'bg-emerald-400 text-white': inWord === true,
+      'bg-slate-400 text-white': inWord === false,
+      'bg-slate-200 text-slate-600': inWord === undefined
     }
   )
 }
 
-function charBlockClasses(index: number): string {
-  return classNames(
-    baseCharBlockClasses, 'w-6',
-    { 'rounded-l ml-3': index === 0 },
-    { 'mr-3': index === 4 }
-  )
-}
-
-function commonBlockClasses({ common, won }: GuessResult): string {
+function commonBlockClasses({ common }: GuessResult): string {
   if (common === undefined) return ''
-
-  if (won) {
-    return classNames(
-      baseCharBlockClasses,
-      'w-14 rounded-r bg-emerald-200'
-    )
-  }
 
   return classNames(
     baseCharBlockClasses,
-    'w-14 rounded-r',
+    'w-14 rounded text-slate-600',
     {
       'bg-red-200': common === 0 || common === 1,
       'bg-amber-200': common === 2 || common === 3,

@@ -27,7 +27,7 @@ export default function App() {
 
       {/* menu */}
       { menu.visible &&
-        <div className="absolute w-full h-full bg-white">
+        <div className="absolute inset-0 z-10 bg-white">
           <Menu state={gameFlow.state} />
         </div>
       }

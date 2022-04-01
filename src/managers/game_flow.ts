@@ -12,7 +12,7 @@ import { Game, JottoError } from 'src/models'
 import { Players } from './players'
 import * as AppEvents from 'src/core/events/app'
 import * as Transform from 'src/core/transforms'
-import { createError } from 'src/core/events'
+import { ConnectionEvent, createError, isConnectionEvent } from 'src/core/events'
 import { Socket } from 'socket.io-client'
 
 /**
@@ -38,15 +38,15 @@ export class GameFlow {
   }
 
   private setupListeners() {
-    this._socket.on('connect', this.onConnect)
-    this._socket.on('connect_error', this.onError)
-    this._socket.on('disconnect', this.onDisconnect)
-
     this._socket.on('wordPicking', this.onWorkPicking)
     this._socket.on('startPlaying', this.onStartPlaying)
     this._socket.on('guessResult', this.onGuessResult)
     this._socket.on('endGameSummary', this.onGameOver)
     this._socket.on('restore', this.onRestore)
+
+    this._bus.events$
+      .pipe(filter(isConnectionEvent))
+      .subscribe(this.onConnectionEvent)
   }
 
 
@@ -150,29 +150,24 @@ export class GameFlow {
   // ==============
 
 
-  private onConnect = () => {
-    console.log('onConnect', this._state)
+  private onConnectionEvent = (event: ConnectionEvent) => {
+    console.log('[gameflow] onConnectionEvent state:', event.state)
 
-    // bail if not in role select
-    // (this is also called on reconnect)
-    if (this._state !== 'joining_lobby') {
-      return
+    switch (event.state) {
+      case 'connected':
+        // bail if not in role select
+        // (this is also called on reconnect)
+        if (this._state !== 'joining_lobby') {
+          return
+        }
+
+        this.updateState('joining_room')
+        this.updateLoading(false)
+        break
+
+      case 'disconnected':
+        this.updateState('role_select')
     }
-
-    this.updateState('joining_room')
-    this.updateLoading(false)
-  }
-
-  private onError = (error: Error) => {
-    this._bus.publish(createError(
-      new JottoError('lobby_not_available', 'Lobby is not available')))
-    this.updateLoading(false)
-  }
-
-  private onDisconnect = (reason: Socket.DisconnectReason) => {
-    this._bus.publish(createError(
-      new JottoError('lobby_closed', 'Lobby closed by server')))
-    this.updateState('role_select')
   }
 
   private onWorkPicking = () => {

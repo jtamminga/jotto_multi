@@ -1,8 +1,9 @@
 import { Credentials } from 'jotto_core'
 import { filter } from 'rxjs'
 import { io, Socket } from 'socket.io-client'
-import { EventBus, JottoSocket, jottoSocketDecorator } from 'src/core'
-import { isLeaveGame } from 'src/core/events'
+import { ConnectionState, EventBus, JottoSocket, jottoSocketDecorator } from 'src/core'
+import { createConnectionStateChange, createError, isLeaveGame } from 'src/core/events'
+import { JottoError } from 'src/models'
 
 // constants
 const URL = 'http://10.0.0.192:3001'
@@ -16,6 +17,8 @@ const socketOptions = {
 export class Connection {
 
   private _socket: JottoSocket
+  private _state: ConnectionState = 'disconnected'
+  private _hasConnected: boolean = false
 
   constructor(
     private _bus: EventBus
@@ -30,8 +33,9 @@ export class Connection {
     }
 
     this._socket.on('session', this.onSession)
-    this._socket.on('connect_error', this.onConnectError)
+    this._socket.on('connect', this.onConnect)
     this._socket.on('disconnect', this.onDisconnect)
+    this._socket.on('connect_error', this.onConnectError)
 
     _bus.events$
       .pipe(filter(isLeaveGame))
@@ -46,6 +50,10 @@ export class Connection {
 
   get socket(): JottoSocket {
     return this._socket
+  }
+
+  get state(): ConnectionState {
+    return this._state
   }
 
 
@@ -65,22 +73,57 @@ export class Connection {
   }
 
   private onLeaveGame = () => {
-    console.info('clearing session from session storage')
-    localStorage.removeItem('session')
+    console.info('[connection] leaving the game')
+    this.fullDisconnect()
 
     this._socket = jottoSocketDecorator(io(URL, socketOptions))
   }
 
-  private onConnectError = (error: Error) => {
-    console.error('connect error:', error.message)
-    localStorage.removeItem('session')
+  private onConnect = () => {
+    this._hasConnected = true
+    this.updateState('connected')
   }
 
   private onDisconnect = (reason: Socket.DisconnectReason) => {
+    console.log('[connection] onDisconnect reason:', reason)
     const forced = reason === 'io server disconnect'
     
     if (forced) {
-      localStorage.removeItem('session')
+      this.fullDisconnect()
+    } else {
+      this.updateState('connecting')
+    }
+  }
+
+  private onConnectError = (error: Error) => {
+    console.error('connect error:', error.message)
+    
+    this.fullDisconnect()
+
+    if (!this._hasConnected) {
+      this._bus.publish(createError(
+        new JottoError('lobby_closed', 'Lobby closed by server')))
+    }
+  }
+
+
+  //
+  // private functions
+  // =================
+
+
+  private fullDisconnect() {
+    console.info('[connection] full disconnect')
+    localStorage.removeItem('session')
+    this._hasConnected = false
+    this._socket.disconnect()
+    this.updateState('disconnected')
+  }
+
+  private updateState(state: ConnectionState) {
+    if (this._state !== state) {
+      this._state = state
+      this._bus.publish(createConnectionStateChange(state))
     }
   }
 

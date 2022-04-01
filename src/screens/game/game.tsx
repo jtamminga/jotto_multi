@@ -78,7 +78,10 @@ export function Game() {
           Guesses
         </div>
 
-        <GuessResults guesses={me.guessResults} />
+        <GuessResults
+          guesses={me.guessResults}
+          notes={notes}
+        />
       </div>
     </>
   )
