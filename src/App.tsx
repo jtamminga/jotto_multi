@@ -1,19 +1,7 @@
 import { useGameFlow, useKeyboard, useMenu } from './core/hooks'
-import { ReactNode } from 'react'
-import { Keyboard, Menu } from './components'
+import { FullScreenMenu, Keyboard } from './components'
 import { AppState } from './core'
-
-import {
-  Game,
-  GameSummary,
-  InRoom,
-  JoinLobby,
-  JoinRoom,
-  Observing,
-  PickedWord,
-  PickWord,
-  RoleSelect
-} from './screens'
+import { Navigation } from './screens'
 
 
 export default function App() {
@@ -26,14 +14,13 @@ export default function App() {
     <div className={containerStyle(gameFlow.state)}>
 
       {/* menu */}
-      { menu.visible &&
-        <div className="absolute inset-0 z-10 bg-white">
-          <Menu state={gameFlow.state} />
-        </div>
-      }
+      <FullScreenMenu
+        visible={menu.visible}
+        state={gameFlow.state}
+      />
 
       {/* render screen based on app state */}
-      {screen(gameFlow.state)}
+      <Navigation state={gameFlow.state} />
 
       {/* keyboard */}
       { keyboard.visible &&
@@ -41,57 +28,6 @@ export default function App() {
       }
     </div>
   )
-}
-
-
-//
-// helpers
-// =======
-
-
-function screen(state: AppState): ReactNode {
-  let screen: ReactNode
-
-  switch (state) {
-    case 'role_select':
-      screen = <RoleSelect />
-      break
-
-    case 'joining_lobby':
-      screen = <JoinLobby />
-      break
-
-    case 'joining_room':
-      screen = <JoinRoom />
-      break
-
-    case 'joined_room':
-      screen = <InRoom />
-      break
-
-    case 'picking_word':
-      screen = <PickWord />
-      break
-
-    case 'picked_word':
-    case 'starting_game':
-      screen = <PickedWord />
-      break
-
-    case 'playing':
-      screen = <Game />
-      break
-
-    case 'observing':
-      screen = <Observing />
-      break
-
-    case 'game_summary':
-      screen = <GameSummary />
-      break
-  }
-
-  return screen
 }
 
 

@@ -2,7 +2,6 @@ import { Button, Screen } from 'src/components'
 import { gameFlow } from 'src/core/di'
 
 export function RoleSelect() {
-
   return (
     <Screen title="Join game or host">
         <div className="flex flex-col space-y-3">

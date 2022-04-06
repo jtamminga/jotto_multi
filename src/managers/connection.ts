@@ -6,11 +6,11 @@ import { createConnectionStateChange, createError, isLeaveGame } from 'src/core/
 import { JottoError } from 'src/models'
 
 // constants
-const URL = 'http://10.0.0.192:3001'
+const URL = 'https://jotto-server-2mpd5xomlq-uc.a.run.app'
 
 const socketOptions = {
   autoConnect: false,
-  transports: ['websocket']
+  transports: ["websocket"]
 }
 
 
