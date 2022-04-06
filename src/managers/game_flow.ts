@@ -192,7 +192,6 @@ export class GameFlow {
   }
 
   private onGuessResult = (guessResult: SocketGuessResult) => {
-    alert('on guess result')
     if (!this._game) {
       throw new IllegalStateException('game not created yet')
     }
