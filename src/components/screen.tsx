@@ -10,7 +10,7 @@ type Props = {
 
 export function Screen({ title, children, showMenu = false }: Props) {
   return (
-    <div className="px-3 grow">
+    <div className="px-3 grow flex flex-col">
 
       {/* main jotto header */}
       <div className="mt-3 mb-8">

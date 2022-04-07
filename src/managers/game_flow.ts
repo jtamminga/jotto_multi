@@ -137,7 +137,6 @@ export class GameFlow {
 
   public leave() {
     this.updateState('joining_room')
-    this._socket.disconnect()
     this._bus.publish(createLeaveGame())
 
     this._game?.dispose()

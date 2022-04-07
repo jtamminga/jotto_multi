@@ -5,8 +5,6 @@ import { ConnectionState, EventBus, JottoSocket, jottoSocketDecorator } from 'sr
 import { createConnectionStateChange, createError, isLeaveGame } from 'src/core/events'
 import { JottoError } from 'src/models'
 
-// constants
-const URL = 'https://jotto-server-2mpd5xomlq-uc.a.run.app'
 
 const socketOptions = {
   autoConnect: false,
@@ -21,9 +19,10 @@ export class Connection {
   private _hasConnected: boolean = false
 
   constructor(
-    private _bus: EventBus
+    private _bus: EventBus,
+    private _serverUrl: string
   ) {
-    this._socket = jottoSocketDecorator(io(URL, socketOptions))
+    this._socket = jottoSocketDecorator(io(_serverUrl, socketOptions))
 
     const sessionId = localStorage.getItem('session')
     if (sessionId) {
@@ -75,8 +74,6 @@ export class Connection {
   private onLeaveGame = () => {
     console.info('[connection] leaving the game')
     this.fullDisconnect()
-
-    this._socket = jottoSocketDecorator(io(URL, socketOptions))
   }
 
   private onConnect = () => {
@@ -86,12 +83,17 @@ export class Connection {
 
   private onDisconnect = (reason: Socket.DisconnectReason) => {
     console.log('[connection] onDisconnect reason:', reason)
-    const forced = reason === 'io server disconnect'
-    
-    if (forced) {
-      this.fullDisconnect()
-    } else {
-      this.updateState('connecting')
+
+    switch (reason) {
+      case 'io server disconnect': // on server socket.disconnect
+        this.fullDisconnect()
+        break
+      case 'io client disconnect': // on client socket.disconnect
+        // already handled
+        break
+      default:
+        this.updateState('connecting')
+        break
     }
   }
 
@@ -117,6 +119,7 @@ export class Connection {
     localStorage.removeItem('session')
     this._hasConnected = false
     this._socket.disconnect()
+    this._socket.updateAuth({})
     this.updateState('disconnected')
   }
 
