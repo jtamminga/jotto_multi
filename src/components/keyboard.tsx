@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { ReactNode, useEffect, useRef, useState } from 'react'
-import { eventBus } from 'src/core/di'
+import { eventBus, menu, gameFlow } from 'src/core/di'
 import { createKeypress } from 'src/core/events'
 import { useKeyboard, useNotes } from 'src/core/hooks'
 import { Notes } from 'src/models'
@@ -56,19 +56,19 @@ export function Keyboard() {
     const row = Array.from('zxcvbnm')
 
     let button: ReactNode
-    if (notes === undefined) {
+    if (gameFlow.state === 'playing') {
+      button = (
+        <button
+          className={classNames(largeButtonBase, "bg-blue-100")}
+          onClick={() => menu.show()}
+        >menu</button>
+      )
+    } else {
       button = (
         <button
           className={largeButtonStyle}
           onClick={() => onClick('clear')}
         >clear</button>
-      )
-    } else {
-      button = (
-        <button
-          className={markingStyle(notes.isMarking)}
-          onClick={() => notes.setMarking(!notes.isMarking)}
-        >{notes.isMarking ? 'done' : 'mark'}</button>
       )
     }
   
@@ -178,16 +178,6 @@ const largeButtonBase = classNames(buttonBase, 'flex-[1.5] text-xs')
 const largeButtonStyle = classNames(largeButtonBase, 'bg-slate-200 flex-[1.5] text-xs')
 
 const knownMarkerStyle = 'absolute bottom-1.5 w-3 m-auto bg-black opacity-20 h-1 rounded-full'
-
-function markingStyle(isMarking: boolean): string {
-  return classNames(
-    largeButtonBase,
-    {
-      'bg-blue-100 shadow-inner': isMarking,
-      'bg-blue-100': !isMarking
-    }
-  )
-}
 
 function buttonStyle(key: string, notes: Notes | undefined): string {
   const letterNote = notes?.letters.get(key)

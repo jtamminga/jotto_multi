@@ -20,9 +20,9 @@ export class Connection {
 
   constructor(
     private _bus: EventBus,
-    private _serverUrl: string
+    serverUrl: string
   ) {
-    this._socket = jottoSocketDecorator(io(_serverUrl, socketOptions))
+    this._socket = jottoSocketDecorator(io(serverUrl, socketOptions))
 
     const sessionId = localStorage.getItem('session')
     if (sessionId) {
@@ -65,7 +65,6 @@ export class Connection {
     console.debug('[connection] onSession:', { sessionId })
 
     this._socket.updateAuth({ sessionId })
-    // this._socket.connect()
 
     localStorage.setItem('session', sessionId)
     console.debug('saved session id')

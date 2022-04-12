@@ -3,7 +3,7 @@ import { AppState } from 'src/core'
 import { PlayersStats } from './players/players_stats'
 import { useTransition, animated } from 'react-spring'
 import { Button } from './button'
-import { gameFlow } from 'src/core/di'
+import { menu } from 'src/core/di'
 
 type Props = {
   state: AppState
@@ -14,7 +14,7 @@ export function Menu({ state }: Props) {
   const showStats = state === 'playing' || state === 'observing'
 
   return (
-    <Screen title="Menu" showMenu>
+    <Screen title="Menu">
 
       <div className="grow">
         { showStats &&
@@ -22,15 +22,13 @@ export function Menu({ state }: Props) {
         }
       </div>
 
-      { showStats &&
-        <div className="pb-3 flex flex-col">
-          <Button
-            text="Leave"
-            type="secondary"
-            onClick={() => gameFlow.leave()}
-          />
-        </div>
-      }
+      <div className="pb-3 flex flex-col">
+        <Button
+          text="Back"
+          type="secondary"
+          onClick={() => menu.hide()}
+        />
+      </div>
 
     </Screen>
   )
@@ -49,7 +47,7 @@ export function FullScreenMenu({ visible, state }: FullScreenProps) {
     config: { mass: 1, tension: 300, friction: 30 }
   })
 
-  return transitions((styles, item) => item &&
+  return transitions((styles, visible) => visible &&
     <animated.div className="absolute inset-0 z-10 bg-white flex" style={styles}>
       <Menu state={state} />
     </animated.div>

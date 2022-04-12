@@ -11,6 +11,7 @@ import {
 } from 'src/core/events/players'
 import { GameEvent, isGameEvent } from 'src/core/events/game'
 import { Credentials, PlayerState, UserRestore, UserState } from 'jotto_core'
+import { ConnectionEvent, isConnectionEvent } from 'src/core/events'
 
 export class Players {
 
@@ -34,6 +35,10 @@ export class Players {
     this._bus.events$
       .pipe(filter(isGameEvent))
       .subscribe(this.onGameEvent)
+
+    this._bus.events$
+      .pipe(filter(isConnectionEvent))
+      .subscribe(this.onConnectionEvent)
   }
 
   private setupListeners() {
@@ -229,6 +234,13 @@ export class Players {
     }
   }
 
+  private onConnectionEvent = (event: ConnectionEvent) => {
+    if (event.state === 'disconnected') {
+      console.log('[players] disconnected: resetting players')
+      this.reset()
+    }
+  }
+
 
   //
   // private functions
@@ -237,5 +249,14 @@ export class Players {
 
   private find(userId: string): Player | undefined {
     return this._players.find(p => p.userId === userId)
+  }
+
+  private reset() {
+    this._userId = undefined
+    this._player?.dispose()
+    this._player = undefined
+
+    this._players.forEach(p => p.dispose())
+    this._players = []
   }
 }

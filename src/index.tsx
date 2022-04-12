@@ -4,6 +4,14 @@ import './index.css'
 import './core/di'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
+import consolere from 'console-remote-client'
+
+consolere.connect({
+  server: 'https://console.re', // optional, default: https://console.re
+  channel: 'jotto-vying-multi', // required
+  redirectDefaultConsoleToRemote: true, // optional, default: false
+  // disableDefaultConsoleOutput: true, // optional, default: false
+});
 
 ReactDOM.render(
   <React.StrictMode>

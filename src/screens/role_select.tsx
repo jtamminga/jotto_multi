@@ -3,7 +3,7 @@ import { gameFlow } from 'src/core/di'
 
 export function RoleSelect() {
   return (
-    <Screen title="Join game or host">
+    <Screen title="Join game or host" canLeave={false}>
       <div className="flex flex-col space-y-3">
 
         {/* join game */}

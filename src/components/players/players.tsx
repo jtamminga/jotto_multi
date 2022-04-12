@@ -24,8 +24,6 @@ export function Players({ show, className }: Props) {
     console.warn('players empty')
   }
 
-  console.log('[ui:Players] players', players.playing.length)
-
   // render
   return (
     <div className={className}>

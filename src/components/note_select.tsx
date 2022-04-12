@@ -1,7 +1,7 @@
 import classnames from 'classnames'
 import { MouseEvent, TouchEvent } from 'react'
-import { Button } from './button'
 import { Header } from './header'
+import { Modal } from './modal'
 
 type Props = {
   letter: string,
@@ -10,45 +10,36 @@ type Props = {
 
 export function NoteSelect({ letter, onClose }: Props) {
 
-  function onRelease(e: MouseEvent | TouchEvent, inWord: boolean | undefined) {
-    e.stopPropagation()
-    onClose(true, inWord)
-  }
-
   return (
-    <div
-      className="fixed inset-0 z-10 bg-slate-100/[.8] flex flex-col justify-center items-center p-3"
-      onClick={() => onClose(false)}
-    >
+    <Modal onClose={() => onClose(false)}>
+    
+      <Header>Is {letter} in the word?</Header>
 
-      <div className="max-w-screen-sm w-full bg-white p-3 rounded drop-shadow-2xl">
-        <Header>Is {letter} in the word?</Header>
+      <div className="flex space-x-3 mb-3">
 
-        <div className="flex space-x-3 mb-3">
-
-          <div
-            className={classnames(yesStyle, 'row-start-1')}
-            onClick={e => onRelease(e, true)}
-          >
-            Yes
-          </div>
-
-          <div
-            className={classnames(noStyle, 'row-start-1')}
-            onClick={e => onRelease(e, false)}
-          >
-            No
-          </div>
+        <div
+          className={classnames(yesStyle, 'row-start-1')}
+          onClick={e => onClose(true, true)}
+        >
+          Yes
         </div>
 
         <div
-            className={classnames(itemStyle, 'row-start-2 col-span-2')}
-            onClick={e => onRelease(e, undefined)}
-          >
-            Clear
+          className={classnames(noStyle, 'row-start-1')}
+          onClick={e => onClose(true, false)}
+        >
+          No
         </div>
       </div>
-    </div>
+
+      <div
+          className={classnames(itemStyle, 'row-start-2 col-span-2')}
+          onClick={e => onClose(true, undefined)}
+        >
+          Clear
+      </div>
+
+    </Modal>
   )
 }
 

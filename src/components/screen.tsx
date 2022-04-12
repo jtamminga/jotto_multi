@@ -1,28 +1,58 @@
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
+import { gameFlow } from 'src/core/di'
+import { Button } from './button'
 import { GameHeader, Header } from './header'
-import { menu } from 'src/core/di'
+import { Modal } from './modal'
 
 type Props = {
   children: ReactNode
   title: string
-  showMenu?: boolean
+  canLeave?: boolean
 }
 
-export function Screen({ title, children, showMenu = false }: Props) {
+export function Screen({ title, children, canLeave = true }: Props) {
+
+  const [isModalVisible, showModal] = useState(false)
+
   return (
     <div className="px-3 grow flex flex-col">
+
+      {/* confirm modal */}
+      { isModalVisible &&
+        <Modal onClose={() => showModal(false)}>
+          <div className="text-center mb-3">
+            Are you sure you want to leave?
+          </div>
+
+          <div className="flex space-x-3">
+            <Button
+              text="Yes"
+              type="secondary"
+              className="grow"
+              onClick={() => gameFlow.leave()}
+            />
+
+            <Button
+              text="No"
+              type="primary"
+              className="grow"
+              onClick={() => showModal(false)}
+            />
+          </div>
+        </Modal>
+      }
 
       {/* main jotto header */}
       <div className="mt-3 mb-8">
         <div className="relative">
           <GameHeader />
 
-          { showMenu &&
+          { canLeave &&
             <button
               className="absolute top-0 right-0 text-slate-400 underline z-10"
-              onClick={() => menu.toggle()}
+              onClick={() => showModal(true)}
             >
-              {menu.visible ? 'back' : 'menu'}
+              Leave
             </button>
           }
         </div>

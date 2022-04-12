@@ -166,6 +166,9 @@ export class GameFlow {
 
       case 'disconnected':
         this.updateState('role_select')
+        this._game?.dispose()
+        this._game = undefined
+        break
     }
   }
 
