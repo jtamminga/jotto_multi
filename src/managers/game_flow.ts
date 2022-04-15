@@ -4,16 +4,16 @@ import {
   GameConfig as SocketGameConfig,
   GameSummary,
   UserType,
-  HostConfig } from 'jotto_core'
+  HostConfig
+} from 'jotto_core'
 import { EventBus, AppState, JottoSocket, SocketGuessResult, IllegalStateException } from 'src/core'
 import { createGuessResult, createLeaveGame, createPlayAgain } from 'src/core/events/game'
 import { createPickedWord } from 'src/core/events/me'
-import { Game, JottoError } from 'src/models'
+import { Game } from 'src/models'
 import { Players } from './players'
 import * as AppEvents from 'src/core/events/app'
 import * as Transform from 'src/core/transforms'
-import { ConnectionEvent, createError, isConnectionEvent } from 'src/core/events'
-import { Socket } from 'socket.io-client'
+import { ConnectionEvent, isConnectionEvent } from 'src/core/events'
 
 /**
  * Handles game flow related functions.
@@ -24,6 +24,7 @@ export class GameFlow {
   private _state: AppState
   private _game: Game | undefined
   private _loading: boolean
+  private _pickWordTimer: ReturnType<typeof setTimeout> | undefined
 
 
   constructor(
@@ -117,6 +118,9 @@ export class GameFlow {
   }
 
   public pickWord(word: string) {
+    if (this._pickWordTimer) {
+      clearTimeout(this._pickWordTimer)
+    }
     this._socket.emit('submitWord', word)
     this.updateState('picked_word')
     this._bus.publish(createPickedWord(word))
@@ -172,24 +176,41 @@ export class GameFlow {
     }
   }
 
-  private onWorkPicking = () => {
-    this.updateStateIf({ player: 'picking_word', obs: 'picked_word'})
-  }
+  private onWorkPicking = (socketConfig: SocketGameConfig, restore?: SocketUserRestore) => {
+    console.log('[gameflow] on word picking')
 
-  private onStartPlaying = (gameConfig: SocketGameConfig, restore?: SocketUserRestore) => {
-    const config = Transform.gameConfig(gameConfig)
+    const config = Transform.gameConfig(socketConfig)
     const gameRestore = restore ? Transform.gameRestore(restore) : undefined
 
     this._game = new Game(this._players.playing, config, gameRestore)
-    
+
+    this.updateStateIf({ player: 'picking_word', obs: 'picked_word'})
+
+    if (this._players.me.isPlaying) {
+      this._pickWordTimer = setTimeout(() => {
+        // skip over picked_word
+        this.updateState('starting_game')
+      }, config.pickWordLength * 1_000)
+    }
+  }
+
+  private onStartPlaying = (restore?: SocketUserRestore) => {
+    console.log('[gameflow] on start playing')
+
+    if (!this._game) {
+      throw new IllegalStateException('game not created yet')
+    }
+
+    this._game.starting()
+
     if (restore) {
       this.updateStateIf({ player: 'playing', obs: 'observing' })
     } else {
       this.updateState('starting_game')
       setTimeout(() => {
-        this._game?.start()
+        this._game?.playing()
         this.updateStateIf({ player: 'playing', obs: 'observing' })
-      }, config.preGameLength * 1_000)
+      }, this._game.config.preGameLength * 1_000)
     }
   }
 
@@ -214,16 +235,18 @@ export class GameFlow {
         this.updateState('joined_room')
         break
       case 'picking_word':
-        this.updateState('picking_word')
+        this.onWorkPicking(restore.config!, restore)
         break
       case 'picked_word':
-        this.updateState('picked_word')
+        this.onWorkPicking(restore.config!, restore)
         break
       case 'playing':
-        this.onStartPlaying(restore.config!, restore)
+        this.onWorkPicking(restore.config!, restore)
+        this.onStartPlaying(restore)
         break
       case 'game_over':
-        this.onStartPlaying(restore.config!, restore)
+        this.onWorkPicking(restore.config!, restore)
+        this.onStartPlaying(restore)
         this.onGameOver(restore.gameSummary!)
         break
     }

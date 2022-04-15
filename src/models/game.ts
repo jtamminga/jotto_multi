@@ -18,7 +18,7 @@ export class Game implements Disposable {
     private _config: GameConfig,
     restore?: GameRestore
   ) {
-    this._state = 'starting'
+    this._state = 'picking_word'
 
     this.processConfig()
     this.processRestore(restore)
@@ -99,7 +99,11 @@ export class Game implements Disposable {
   // ================
 
 
-  public start() {
+  public starting() {
+    this._state = 'starting'
+  }
+
+  public playing() {
     this._state = 'playing'
 
     this._startedOn = new Date()

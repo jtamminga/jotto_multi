@@ -14,12 +14,19 @@ export function PickedWord() {
     'Starting game' : 'Waiting for other players'
 
   // time left
-  const timeLeft = { seconds: 10 - timer.seconds}
+  const timeLeft = { seconds: gameFlow.game.config.preGameLength - timer.seconds}
+
+  useEffect(() => {
+    if (gameFlow.state === 'starting_game') {
+      timer.start()
+      setGameStarting(true)
+    }
+  }, [])
  
   useEffect(() => {
     const subscription = gameFlow.state$
       .pipe(filter(e => e.state === 'starting_game'))
-      .subscribe(e => {
+      .subscribe(() => {
         timer.start()
         setGameStarting(true)
       })

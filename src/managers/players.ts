@@ -47,6 +47,7 @@ export class Players {
     this._socket.on('userConnect', this.onConnect)
     this._socket.on('userDisconnect', this.onDisconnect)
     this._socket.on('wordPicking', this.onWordPicking)
+    this._socket.on('assignedWord', this.onAssignedWord)
     this._socket.on('userReady', this.onReady)
     this._socket.on('restore', this.onRestore)
   }
@@ -182,6 +183,10 @@ export class Players {
   private onWordPicking = () => {
     // reset all players before start of game
     this._players.forEach(p => p.reset())
+  }
+
+  protected onAssignedWord = (word: string) => {
+    this.me.setWord(word)
   }
 
   private onReady = (userId: string) => {

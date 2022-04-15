@@ -5941,9 +5941,9 @@ jest@^27.4.3:
     jest-cli "^27.4.7"
 
 jotto_core@^1.27.0:
-  version "1.28.0"
-  resolved "https://registry.yarnpkg.com/jotto_core/-/jotto_core-1.28.0.tgz#35fe7be5c2b7ceb16c2a2c1dc9f3d34a29eab93e"
-  integrity sha512-QIHZkhQM7QNj7qg2jRTSsuKnn3rKmNqb/VInWXi4T9aEk+ayiuYq1uWwCMnBVnGceVL/5wyc91oUPc9FvvQSRw==
+  version "1.30.0"
+  resolved "https://registry.yarnpkg.com/jotto_core/-/jotto_core-1.30.0.tgz#5de8bad6ed113dd35705811767c13d9d06525257"
+  integrity sha512-VghRzk8wbNckWCab2fYEmZavd+onmq5UQEvQHOU0gFd/3O3aqSg5DnzbgKml6fZ7YZBFRr5iRMu7vyB4Onth7A==
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"

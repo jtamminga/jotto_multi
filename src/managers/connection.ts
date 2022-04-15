@@ -26,9 +26,11 @@ export class Connection {
 
     const sessionId = localStorage.getItem('session')
     if (sessionId) {
-      console.info('connecting with session id...')
+      console.info('[connection] connecting with session id...')
       this._socket.updateAuth({ sessionId })
       this._socket.connect()
+    } else {
+      console.info('[connection] no session id found')
     }
 
     this._socket.on('session', this.onSession)
@@ -67,7 +69,7 @@ export class Connection {
     this._socket.updateAuth({ sessionId })
 
     localStorage.setItem('session', sessionId)
-    console.debug('saved session id')
+    console.debug('[connection] saved session id')
   }
 
   private onLeaveGame = () => {
@@ -76,6 +78,7 @@ export class Connection {
   }
 
   private onConnect = () => {
+    console.info('[connection] connected')
     this._hasConnected = true
     this.updateState('connected')
   }

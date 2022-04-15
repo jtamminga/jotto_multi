@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Jotto",
+  "name": "A five letter word game that is played with a group",
   "icons": [
     {
       "src": "favicon.ico",

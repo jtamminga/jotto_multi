@@ -33,6 +33,7 @@ export type ConnectionState =
   | 'connecting'
 
 export type GameState =
+  | 'picking_word'
   | 'starting'
   | 'playing'
   | 'over'
@@ -49,6 +50,7 @@ export interface SocketGameConfig {
 }
 
 export interface GameConfig {
+  pickWordLength: Seconds
   preGameLength: Seconds
   gameLength: Minutes | undefined
   opponents: { player: Player, opponent: Player }[]
