@@ -31,7 +31,7 @@ export function history(guesses: SocketGuessResult[]): GuessResult[] {
   return guesses.map(guessResult)
 }
 
-export function gameRestore(restore: SocketUserRestore): GameRestore {
+export function userRestore(restore: SocketUserRestore): GameRestore {
   return {
     history: history(restore.history ?? []),
     startedOn: restore.startedOn ? new Date(restore.startedOn) : undefined
