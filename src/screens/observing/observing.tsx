@@ -1,7 +1,8 @@
-import { GameTime, GuessResultSummary, PlayersStats, Screen, SubHeader } from 'src/components'
+import { GameTime, GuessResultSummary, PlayersStats, Screen, SubHeader, Timer } from 'src/components'
 import { useObserver } from 'src/core/hooks'
 import { gameFlow } from 'src/core/di'
 import { GuessResult } from 'src/core'
+import { intervalToDuration } from 'date-fns'
 
 export function Observing() {
   useObserver()
@@ -51,9 +52,9 @@ function guessResults(guesses: ReadonlyArray<GuessResult>) {
   }
 
   return (
-    <ol className="list-decimal text-slate-300 pl-6" reversed>
+    <ol>
       { guesses.map(guess =>
-        <li key={guess.id} className="pl-3 mb-2">
+        <li key={guess.id} className="mb-2">
           {guessResultItem(guess)}
         </li>
       )}
@@ -62,8 +63,12 @@ function guessResults(guesses: ReadonlyArray<GuessResult>) {
 }
 
 function guessResultItem(result: GuessResult) {
+  const relative = intervalToDuration({ start: gameFlow.game.startedOn, end: result.date })
+  console.log('renderrr>>>>>')
+
   return (
-    <div className="bg-slate-100 p-2 px-3 rounded text-slate-800">
+    <div className="bg-slate-100 p-2 px-3 rounded text-slate-800 flex">
+      <Timer className="w-12 text-slate-400" duration={relative} />
       <GuessResultSummary result={result} />
     </div>
   )

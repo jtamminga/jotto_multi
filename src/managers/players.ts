@@ -12,6 +12,7 @@ import {
 import { GameEvent, isGameEvent } from 'src/core/events/game'
 import { Credentials, PlayerState, UserRestore, UserState } from 'jotto_core'
 import { ConnectionEvent, isConnectionEvent } from 'src/core/events'
+import { gameFlow } from 'src/core/di'
 
 export class Players {
 
@@ -172,7 +173,7 @@ export class Players {
     const player = this._players[index]
     player.connected = false
 
-    if (intended) {
+    if (intended && gameFlow.state === 'joined_room') {
       player.dispose()
       this._players.splice(index, 1)
     }

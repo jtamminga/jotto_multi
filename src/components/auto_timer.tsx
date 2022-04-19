@@ -1,22 +1,25 @@
-import { Seconds } from 'jotto_core'
+import { intervalToDuration } from 'date-fns'
 import { useEffect } from 'react'
 import { useTimer } from 'src/core/hooks'
 import { Timer } from './timer'
 
 type Props = {
-  length: Seconds
+  dueAt: Date
 }
 
-export function AutoTimer({ length }: Props) {
+export function AutoTimer({ dueAt }: Props) {
   const timer = useTimer()
 
   useEffect(() => {
     timer.start()
   }, [])
 
-  const timeLeft = { seconds: length - timer.seconds }
+  const duration = intervalToDuration({
+    start: Date.now(),
+    end: dueAt
+  })
 
   return (
-    <Timer duration={timeLeft} />
+    <Timer duration={duration} />
   )
 }

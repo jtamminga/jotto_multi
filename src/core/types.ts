@@ -77,6 +77,7 @@ export interface GuessResult extends Guess {
   won: boolean
   from: Player
   to: Player
+  date: number
 }
 
 export interface DetailedGuessResult extends GuessResult {
@@ -101,6 +102,7 @@ export type PlayerLobbyState =
   | 'game_over'
 
 export interface GameRestore {
+  pickingWordOn: Date | undefined
   startedOn: Date | undefined
   history: GuessResult[]
 }

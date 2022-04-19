@@ -9,6 +9,7 @@ export class Game implements Disposable {
   private _guesses: GuessResult[] = []
   private _summary: GameSummary | undefined
 
+  private _pickingWordOn: Date
   private _startedOn: Date | undefined
   private _endedOn: Date | undefined
   private _timeUpOn: Date | undefined
@@ -19,6 +20,7 @@ export class Game implements Disposable {
     restore?: GameRestore
   ) {
     this._state = 'picking_word'
+    this._pickingWordOn = new Date()
 
     this.processConfig()
     this.processRestore(restore)
@@ -55,6 +57,18 @@ export class Game implements Disposable {
   }
 
   // time related getters
+
+  public get wordDueOn(): Date {
+    return addSeconds(this._pickingWordOn, this._config.pickWordLength)
+  }
+
+  public get startedOn(): Date {
+    if (this._startedOn) {
+      return this._startedOn
+    }
+
+    return addSeconds(Date.now(), this.config.preGameLength)
+  }
 
   public get hasTimeLimit(): boolean {
     return !!this._config.gameLength
@@ -152,6 +166,11 @@ export class Game implements Disposable {
     this._players.forEach(player =>
       player.restoreGuesses(restore.history.filter(h => h.from === player)))
 
+    if (!restore.pickingWordOn) {
+      throw new IllegalStateException('game needs pickingWordOn')
+    }
+
+    this._pickingWordOn = restore.pickingWordOn
     this._startedOn = restore.startedOn
 
     if (this._startedOn !== undefined && this._config.gameLength) {

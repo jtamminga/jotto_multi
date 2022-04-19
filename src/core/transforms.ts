@@ -23,7 +23,8 @@ export function guessResult(guess: SocketGuessResult): GuessResult {
     common: guess.common,
     won: guess.won,
     from: players.get(guess.from),
-    to: players.get(guess.to)
+    to: players.get(guess.to),
+    date: guess.date
   }
 }
 
@@ -31,9 +32,10 @@ export function history(guesses: SocketGuessResult[]): GuessResult[] {
   return guesses.map(guessResult)
 }
 
-export function userRestore(restore: SocketUserRestore): GameRestore {
+export function gameRestore(restore: SocketUserRestore): GameRestore {
   return {
     history: history(restore.history ?? []),
+    pickingWordOn: restore.pickingWordOn ? new Date(restore.pickingWordOn) : undefined,
     startedOn: restore.startedOn ? new Date(restore.startedOn) : undefined
   }
 }

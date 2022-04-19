@@ -10,7 +10,7 @@ export function PickWord() {
     <Screen title="Pick a word">
 
       <div className="text-center mb-5">
-        <AutoTimer length={gameFlow.game.config.pickWordLength} />
+        <AutoTimer dueAt={gameFlow.game.wordDueOn} />
       </div>
 
       <div className="text-center mb-5">

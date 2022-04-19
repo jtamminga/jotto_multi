@@ -14,6 +14,7 @@ import { Players } from './players'
 import * as AppEvents from 'src/core/events/app'
 import * as Transform from 'src/core/transforms'
 import { ConnectionEvent, isConnectionEvent } from 'src/core/events'
+import { differenceInMilliseconds } from 'date-fns'
 
 /**
  * Handles game flow related functions.
@@ -180,17 +181,24 @@ export class GameFlow {
     console.log('[gameflow] on word picking')
 
     const config = Transform.gameConfig(socketConfig)
-    const restore = socketRestore ? Transform.userRestore(socketRestore) : undefined
+    const restore = socketRestore ? Transform.gameRestore(socketRestore) : undefined
+    const mePickedWord = socketRestore?.word !== undefined
 
     this._game = new Game(this._players.playing, config, restore)
 
-    this.updateStateIf({ player: 'picking_word', obs: 'picked_word'})
+    if (this._players.me.isObserving) {
+      this.updateState('picked_word')
+      return
+    }
 
-    if (!restore && this._players.me.isPlaying) {
+    if (mePickedWord) {
+      this.updateState('picked_word')
+    } else {
+      this.updateState('picking_word')
       this._pickWordTimer = setTimeout(() => {
         // skip over picked_word
         this.updateState('starting_game')
-      }, config.pickWordLength * 1_000)
+      }, differenceInMilliseconds(this._game.wordDueOn, Date.now()))
     }
   }
 
@@ -203,14 +211,16 @@ export class GameFlow {
 
     this._game.starting()
 
-    if (restore) {
+    const milliTillStart = differenceInMilliseconds(this._game.startedOn, Date.now())
+
+    if (restore && milliTillStart <= 0) {
       this.updateStateIf({ player: 'playing', obs: 'observing' })
     } else {
       this.updateState('starting_game')
       setTimeout(() => {
         this._game?.playing()
         this.updateStateIf({ player: 'playing', obs: 'observing' })
-      }, this._game.config.preGameLength * 1_000)
+      }, milliTillStart)
     }
   }
 
@@ -239,6 +249,7 @@ export class GameFlow {
         break
       case 'picked_word':
         this.onWorkPicking(restore.config!, restore)
+        this.updateState('picked_word')
         break
       case 'playing':
         this.onWorkPicking(restore.config!, restore)

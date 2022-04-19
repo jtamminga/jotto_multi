@@ -3,15 +3,10 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import './core/di'
 import App from './App'
-import consolere from 'console-remote-client'
+import LogRocket from 'logrocket'
 
 if (process.env.NODE_ENV === 'production') {
-  consolere.connect({
-    server: 'https://console.re', // optional, default: https://console.re
-    channel: 'jotto-vying-multi', // required
-    redirectDefaultConsoleToRemote: true, // optional, default: false
-    // disableDefaultConsoleOutput: true, // optional, default: false
-  })
+  LogRocket.init('21hhmv/jotto')
 }
 
 ReactDOM.render(

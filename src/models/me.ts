@@ -60,11 +60,6 @@ export class Me extends Player {
 
   override startPlaying() {
     super.startPlaying()
-
-    if (this._notes) {
-      throw new IllegalStateException('notes should not be defined')
-    }
-
     this._notes = new Notes()
   }
 
