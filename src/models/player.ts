@@ -15,8 +15,9 @@ export class Player implements Disposable {
   protected _ready: boolean
   protected _wonAt: number | undefined
   protected _opponent: Player | undefined
-  protected _subscription: Subscription
+  protected _subscriptions: Subscription[] = []
   protected _guesses: Guess[] = []
+  protected _guessedWord: string | undefined
 
   constructor(user: PlayerState) {
     this._userId = user.userId
@@ -28,12 +29,21 @@ export class Player implements Disposable {
     this._host = user.host
     this._lobbyCode = user.lobbyCode
 
-    this._subscription = bus.events$
+    this._subscriptions.push(bus.events$
       .pipe(
         filter(isGuessResultEvent),
         filter(this.isMyGuess)
       )
       .subscribe(e => this.onGuessResult(e.guessResult))
+    )
+
+    this._subscriptions.push(bus.events$
+      .pipe(
+        filter(isGuessResultEvent),
+        filter(this.isAgainstMe)
+      )
+      .subscribe(e => this.onGuessAgainstMe(e.guessResult))
+    )
   }
 
 
@@ -111,6 +121,17 @@ export class Player implements Disposable {
       result.common > max ? result.common : max, 0)
   }
 
+  /**
+   * Only known when guessed
+   */
+  public get word(): string | undefined {
+    return this._guessedWord
+  }
+
+  public get wordGuessed(): boolean {
+    return this._guessedWord !== undefined
+  }
+
   public get perf(): PlayerPerf {
     return {
       numGuesses: this._guesses.length,
@@ -143,8 +164,12 @@ export class Player implements Disposable {
     this._opponent = player
   }
 
-  public restoreGuesses(guesses: GuessResult[]) {
-    this._guesses = guesses
+  public restoreGuesses(history: GuessResult[]) {
+    this._guesses = history.filter(h => h.from === this)
+
+    history
+      .filter(h => h.to === this)
+      .forEach(h => this.onGuessAgainstMe(h))
   }
 
   public startPlaying() { }
@@ -159,7 +184,7 @@ export class Player implements Disposable {
   }
 
   public dispose(): void {
-    this._subscription.unsubscribe()
+    this._subscriptions.forEach(s => s.unsubscribe())
   }
 
 
@@ -185,6 +210,12 @@ export class Player implements Disposable {
     }
   }
 
+  protected onGuessAgainstMe(result: GuessResult) {
+    if (result.won) {
+      this._guessedWord = result.word
+    }
+  }
+
 
   //
   // private functions
@@ -193,6 +224,10 @@ export class Player implements Disposable {
 
   private isMyGuess = (event: GuessEvent): boolean => {
     return event.guessResult.from === this
+  }
+
+  private isAgainstMe = (event: GuessEvent): boolean => {
+    return event.guessResult.to === this
   }
 
   // guard

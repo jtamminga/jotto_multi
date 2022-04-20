@@ -164,7 +164,7 @@ export class Game implements Disposable {
 
     this._guesses = restore.history
     this._players.forEach(player =>
-      player.restoreGuesses(restore.history.filter(h => h.from === player)))
+      player.restoreGuesses(restore.history))
 
     if (!restore.pickingWordOn) {
       throw new IllegalStateException('game needs pickingWordOn')
