@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Input, Screen } from 'src/components'
+import { Button, ErrorToast, Input, Screen } from 'src/components'
 import { gameFlow } from 'src/core/di'
 import { useErrors } from 'src/core/hooks'
 
@@ -34,9 +34,7 @@ export function JoinLobby() {
       />
 
       { latestError && 
-        <div className="p-2 bg-red-400 text-white rounded text-center">
-          {latestError.message}
-        </div>
+        <ErrorToast message={latestError.message} />
       }
 
     </Screen>

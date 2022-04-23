@@ -3,11 +3,12 @@ import { GuessResults } from 'src/screens/game/components/guess_results'
 import { useEffect } from 'react'
 import { players } from 'src/core/di'
 import * as Text from 'src/components/typography'
+import { useNotes } from 'src/core/hooks'
 
 export function StepFour() {
 
+  const { notes } = useNotes()
   const [from, to] = players.all
-  const notes = players.me.notes!
 
   const guesses: GuessResult[] = [
     { id: '1', word: 'stack', common: 0, from, to, won: false, date: 0 },
@@ -16,8 +17,8 @@ export function StepFour() {
   ]
 
   useEffect(() => {
-    notes.restore(guesses)
-  })
+    if (notes) notes.restore(guesses)
+  }, [])
   
 
   return (

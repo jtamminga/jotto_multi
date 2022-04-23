@@ -100,13 +100,18 @@ export class Connection {
   }
 
   private onConnectError = (error: Error) => {
-    console.error('connect error:', error.message)
+    console.log('[connection] connect error:', error.message)
     
     this.fullDisconnect()
 
-    if (!this._hasConnected) {
+    if (error.message === 'websocket error') {
       this._bus.publish(createError(
-        new JottoError('lobby_closed', 'Lobby closed by server')))
+        new JottoError('lobby_closed', 'Connection closed by server')))
+    }
+
+    else if (!this._hasConnected) {
+      this._bus.publish(createError(
+        new JottoError('lobby_not_available', 'Lobby not available')))
     }
   }
 

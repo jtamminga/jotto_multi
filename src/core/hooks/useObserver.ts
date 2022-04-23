@@ -1,39 +1,33 @@
 import { useEffect, useState } from 'react'
-import { concat, filter, Observable, of, throttleTime } from 'rxjs'
+import { filter, throttleTime } from 'rxjs'
 import { gameFlow, observer, players } from 'src/core/di'
-import { createGuessResult, GuessEvent } from 'src/core/events'
 import { GuessResult } from '../types'
 
 export function useObserver() {
-  const [latestEvent, setLatestEvent] = useState<GuessEvent>()
+  const [latestResult, setLatestResult] = useState<GuessResult>()
 
   useEffect(() => {
 
-    const observables: Observable<GuessEvent>[] = []
     const latestGuess = getLatestGuess()
 
     // if there is a guess then push it on first
     if (latestGuess) {
-      observables.push(of(createGuessResult(latestGuess)))
+      setLatestResult(latestGuess)
     }
 
-    // then push the observable for upcoming guesses
-    observables.push(
-      observer.guessResult$
-        .pipe(
-          filter(e => e.player !== players.me),
-          throttleTime(500)
-        )
-    )
-
-    const subscription = concat(...observables)
-      .subscribe(e => setLatestEvent(e))
+    const subscription = observer.guessResult$
+      .pipe(
+        filter(e => e.player !== players.me),
+        throttleTime(500)
+      )
+      .subscribe(e => setLatestResult(e.guessResult))
 
     return () => subscription.unsubscribe()
   }, [])
 
-  return { latestEvent }
+  return { latestResult }
 }
+
 
 function getLatestGuess(): GuessResult | undefined {
   const otherGuesses = gameFlow.game.guesses

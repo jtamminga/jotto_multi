@@ -1,8 +1,11 @@
 import { filter } from 'rxjs'
 import { EventBus } from 'src/core'
 import { createClearError, ErrorEvent, isErrorEvent } from 'src/core/events'
+import { JottoError } from 'src/models'
 
 export class Errors {
+
+  private _latestError: JottoError | undefined
 
   constructor(
     private _bus: EventBus
@@ -27,6 +30,10 @@ export class Errors {
       .pipe(filter(isErrorEvent))
   }
 
+  public get latestError(): JottoError | undefined {
+    return this._latestError
+  }
+
 
   //
   // event handlers
@@ -34,9 +41,12 @@ export class Errors {
 
 
   private onError = (event: ErrorEvent) => {
+    this._latestError = event.error
+
     setTimeout(() => {
+      this._latestError = undefined
       this._bus.publish(createClearError(event.error))
-    }, 3000)
+    }, 2000)
   }
 
 }

@@ -16,9 +16,7 @@ export function GameHeader({ className }: ClassProps) {
   )
 
   return (
-    <div>
-      <h1 className={classes}>Jotto</h1>
-    </div>
+    <h1 className={classes}>Jotto</h1>
   )
 }
 

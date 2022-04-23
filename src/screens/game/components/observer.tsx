@@ -9,18 +9,18 @@ type Props = {
 }
 
 export function Observer({ className, onClick }: Props) {
-  const { latestEvent } = useObserver()
+  const { latestResult } = useObserver()
 
   let content: ReactNode
 
   // determine what to render
   // ========================
 
-  if (!latestEvent) {
+  if (!latestResult) {
     content = 'Nothing happened yet'
   }
   else {
-    content = <GuessResultSummary result={latestEvent.guessResult} />
+    content = <GuessResultSummary result={latestResult} />
   }
 
   // event handler
@@ -28,7 +28,7 @@ export function Observer({ className, onClick }: Props) {
 
   function handleOnClick() {
     if (onClick) {
-      onClick(latestEvent?.guessResult.word)
+      onClick(latestResult?.word)
     }
   }
 
@@ -38,8 +38,8 @@ export function Observer({ className, onClick }: Props) {
   const classes = classNames(
     'h-12 px-6 rounded flex items-center justify-center',
     {
-      [noEventStyle]: latestEvent === undefined,
-      [hasEventStyle]: latestEvent !== undefined
+      [noEventStyle]: latestResult === undefined,
+      [hasEventStyle]: latestResult !== undefined
     },
     className
   )

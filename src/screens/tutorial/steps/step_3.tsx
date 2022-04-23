@@ -27,7 +27,7 @@ export function StepThree() {
       </div>
 
       <p>
-        Since <Text.Em>A</Text.Em> is the only letter in common <Text.Em>1</Text.Em> would be returned to you.
+        Since <Text.Em>A</Text.Em> is the only letter in common, <Text.Em>1</Text.Em> would be returned to you.
       </p>
     </div>
   )

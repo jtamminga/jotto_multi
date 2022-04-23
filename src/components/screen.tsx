@@ -15,7 +15,7 @@ export function Screen({ title, children, canLeave = true }: Props) {
   const [isModalVisible, showModal] = useState(false)
 
   return (
-    <div className="px-3 grow flex flex-col">
+    <EmptyScreen>
 
       {/* confirm modal */}
       { isModalVisible &&
@@ -61,6 +61,16 @@ export function Screen({ title, children, canLeave = true }: Props) {
         <Header>{title}</Header>
       </div>
 
+      {children}
+    </EmptyScreen>
+  )
+}
+
+
+// basic empty screen
+export function EmptyScreen({ children }: Record<'children', ReactNode>) {
+  return (
+    <div className="px-3 grow flex flex-col">
       {children}
     </div>
   )

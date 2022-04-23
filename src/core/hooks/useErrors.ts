@@ -8,6 +8,10 @@ export function useErrors() {
 
   useEffect(() => {
 
+    if (errors.latestError) {
+      setLatestError(errors.latestError)
+    }
+
     const subscription = errors.change$
       .subscribe(event => {
         if (event.type === 'new_error') {
