@@ -28,7 +28,12 @@ export function RoleSelect() {
 
       <div className="mb-3 text-center text-slate-400">
         learn how to play
-        <Button text="tutorial" className="block w-full" type="link" onClick={() => {}} />
+        <Button
+          text="tutorial"
+          className="block w-full"
+          type="link"
+          onClick={() => gameFlow.startTutorial()}
+        />
       </div>
     </Screen>
   )

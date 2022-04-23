@@ -108,6 +108,15 @@ export class Players {
     return this.me === player
   }
 
+  public tutorialMode(): Player[] {
+    this.setupMockPlayers()
+    return this._players
+  }
+
+  public clearTutoralMode() {
+    this.reset()
+  }
+
 
   //
   // listeners
@@ -252,6 +261,36 @@ export class Players {
   // private functions
   // =================
 
+
+  private setupMockPlayers() {
+    const me = new Me({
+      userId: '1',
+      lobbyCode: '1',
+      username: 'John',
+      type: 'player',
+      host: false,
+      connected: false,
+      ready: true,
+      wonAt: undefined
+    })
+
+    const opponent = new Player({
+      userId: '2',
+      lobbyCode: '1',
+      username: 'Alex',
+      type: 'player',
+      host: false,
+      connected: false,
+      ready: true,
+      wonAt: undefined
+    })
+
+    me.startPlaying() // creates notes
+
+    this._players = [me, opponent]
+    this._player = me
+    this._userId = me.userId
+  }
 
   private find(userId: string): Player | undefined {
     return this._players.find(p => p.userId === userId)

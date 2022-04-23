@@ -93,6 +93,10 @@ export class GameFlow {
   // ================
 
 
+  public startTutorial() {
+    this.updateState('tutorial')
+  }
+
   public hostLobby() {
     this._socket.connect()
     this.updateState('joining_room')
@@ -141,7 +145,7 @@ export class GameFlow {
   }
 
   public leave() {
-    this.updateState('joining_room')
+    this.updateState('role_select')
     this._bus.publish(createLeaveGame())
 
     this._game?.dispose()

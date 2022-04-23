@@ -7,6 +7,7 @@ import { Observing } from './observing'
 import { PickedWord } from './picked_word'
 import { PickWord } from './pick_word'
 import { RoleSelect } from './role_select'
+import { Tutorial } from './tutorial'
 
 
 type Props = {
@@ -52,6 +53,10 @@ export function Navigation({ state }: Props): JSX.Element {
 
     case 'game_summary':
       screen = <GameSummary />
+      break
+
+    case 'tutorial':
+      screen = <Tutorial />
       break
   }
 
