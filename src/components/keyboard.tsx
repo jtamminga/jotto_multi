@@ -135,25 +135,23 @@ export function Keyboard() {
 
   return (
     <div className="w-full pt-1 px-1 pb-2">
-      { notes?.isMarking &&
-        <div className="text-slate-400 text-sm text-center py-1">
-          tap on letters to note for yourself if in word or not
-        </div>
-      }
 
       {firstRow()}
       {secondRow()}
       {thirdRow()}
 
-      { heldLetter &&
-        <NoteSelect
-          letter={heldLetter}
-          onClose={(isMarking, inWord) => {
-            if (isMarking) notes?.maybe(heldLetter, inWord)
-            setHeldLetter(undefined)
-          }}
-        />
-      }
+      {/*
+        careful that NoteSelect has special behaviour to support animations
+        i don't like it but whateva, i guess the animation is worth it
+      */}
+      <NoteSelect
+        visible={!!heldLetter}
+        letter={heldLetter}
+        onClose={(isMarking, inWord) => {
+          if (isMarking && heldLetter) notes?.maybe(heldLetter, inWord)
+          setHeldLetter(undefined)
+        }}
+      />
     </div>
   )
 }

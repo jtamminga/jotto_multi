@@ -18,29 +18,27 @@ export function Screen({ title, children, canLeave = true }: Props) {
     <EmptyScreen>
 
       {/* confirm modal */}
-      { isModalVisible &&
-        <Modal onClose={() => showModal(false)}>
-          <div className="text-center mb-3">
-            Are you sure you want to leave?
-          </div>
+      <Modal visible={isModalVisible} onClose={() => showModal(false)}>
+        <div className="text-center mb-3">
+          Are you sure you want to leave?
+        </div>
 
-          <div className="flex space-x-3">
-            <Button
-              text="Yes"
-              type="secondary"
-              className="grow"
-              onClick={() => gameFlow.leave()}
-            />
+        <div className="flex space-x-3">
+          <Button
+            text="Yes"
+            type="secondary"
+            className="grow"
+            onClick={() => gameFlow.leave()}
+          />
 
-            <Button
-              text="No"
-              type="primary"
-              className="grow"
-              onClick={() => showModal(false)}
-            />
-          </div>
-        </Modal>
-      }
+          <Button
+            text="No"
+            type="primary"
+            className="grow"
+            onClick={() => showModal(false)}
+          />
+        </div>
+      </Modal>
 
       {/* main jotto header */}
       <div className="mt-3 mb-8">

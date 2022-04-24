@@ -1,19 +1,31 @@
 import classnames from 'classnames'
-import { MouseEvent, TouchEvent } from 'react'
+import { useRef } from 'react'
 import { Header } from './header'
 import { Modal } from './modal'
 
+// letter should be required but needed to allow undefined for animations
 type Props = {
-  letter: string,
+  visible: boolean,
+  letter: string | undefined,
   onClose: (isMarking: boolean, inWord?: boolean) => void
 }
 
-export function NoteSelect({ letter, onClose }: Props) {
+export function NoteSelect({ visible, letter, onClose }: Props) {
+
+  // This is used to "save" the value of letter.
+  // When the select closes the letter becomes undefined
+  // but we want to still see the letter for a split second.
+  const letterRef = useRef(letter)
+  if (letter) {
+    letterRef.current = letter
+  }
 
   return (
-    <Modal onClose={() => onClose(false)}>
+    <Modal visible={visible} onClose={() => onClose(false)}>
     
-      <Header>Is {letter} in the word?</Header>
+      <Header className="mb-3">
+        Is <span className="uppercase p-2 bg-slate-200 rounded">{letterRef.current}</span> in the word?
+      </Header>
 
       <div className="flex space-x-3 mb-3">
 
