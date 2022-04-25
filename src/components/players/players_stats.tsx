@@ -4,6 +4,7 @@ import { useGuessResult, usePlayers } from 'src/core/hooks'
 import { Player } from 'src/models'
 import { PlayersHeader } from './players_header'
 import { PlayerContainer } from './player_container'
+import { Em } from 'src/components/typography'
 
 export function PlayersStats() {
 
@@ -39,7 +40,7 @@ export function PlayersStats() {
       </ol>
 
       <div className="my-5 text-center">
-        <span className="text-emerald-500">{players.me.opponent.username}</span> is your opponent
+        <Em>{players.me.opponent.username}</Em> is your opponent
       </div>
     </div>
   )

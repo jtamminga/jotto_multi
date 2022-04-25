@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Button, ErrorToast, Input, Screen } from 'src/components'
+import { Em } from 'src/components/typography'
 import { gameFlow } from 'src/core/di'
 import { useErrors } from 'src/core/hooks'
 
@@ -13,7 +14,7 @@ export function JoinLobby() {
     <Screen title="Enter the lobby">
 
       <div className="text-center mb-5">
-        Ask the host for the <span className="text-emerald-500">lobby code</span>
+        Ask the host for the <Em>lobby code</Em>
       </div>
 
       <Input

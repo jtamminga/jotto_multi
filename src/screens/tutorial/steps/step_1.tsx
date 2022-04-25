@@ -4,7 +4,7 @@ export function StepOne() {
   return (
     <div>
       <p className="mb-5">
-        Jotto is a five letter word <Text.Em>deduction game</Text.Em> played with two or more players.
+        Vying is a five letter word <Text.Em>deduction game</Text.Em> played with two or more players.
       </p>
 
       <p>

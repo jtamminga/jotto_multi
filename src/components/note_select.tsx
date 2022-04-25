@@ -6,25 +6,16 @@ import { Modal } from './modal'
 // letter should be required but needed to allow undefined for animations
 type Props = {
   visible: boolean,
-  letter: string | undefined,
+  letter: string,
   onClose: (isMarking: boolean, inWord?: boolean) => void
 }
 
 export function NoteSelect({ visible, letter, onClose }: Props) {
-
-  // This is used to "save" the value of letter.
-  // When the select closes the letter becomes undefined
-  // but we want to still see the letter for a split second.
-  const letterRef = useRef(letter)
-  if (letter) {
-    letterRef.current = letter
-  }
-
   return (
     <Modal visible={visible} onClose={() => onClose(false)}>
     
       <Header className="mb-3">
-        Is <span className="uppercase p-2 bg-slate-200 rounded">{letterRef.current}</span> in the word?
+        Is <span className="uppercase p-2 bg-slate-200 rounded">{letter}</span> in the word?
       </Header>
 
       <div className="flex space-x-3 mb-3">

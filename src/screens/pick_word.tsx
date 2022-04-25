@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Button, Screen, FiveWordInput, AutoTimer } from 'src/components'
+import { Em } from 'src/components/typography'
 import { gameFlow } from 'src/core/di'
 
 export function PickWord() {
@@ -14,7 +15,7 @@ export function PickWord() {
       </div>
 
       <div className="text-center mb-5">
-        Pick a <span className="text-emerald-500">5 letter</span> word with <span className="text-emerald-500">no duplicate</span> letters
+        Pick a <Em>5 letter</Em> word with <Em>no duplicate</Em> letters
       </div>
 
       <div className="flex justify-center mb-5">

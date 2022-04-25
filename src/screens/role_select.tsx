@@ -1,4 +1,5 @@
 import { Button, EmptyScreen, ErrorToast, GameHeader } from 'src/components'
+import { Em } from 'src/components/typography'
 import { gameFlow } from 'src/core/di'
 import { useErrors } from 'src/core/hooks'
 
@@ -15,7 +16,7 @@ export function RoleSelect() {
 
         {/* quick description */}
         <div className="my-10 text-center">
-          a simple <span className="text-emerald-500">five letter</span> word game that is played with a group
+          a simple <Em>five letter</Em> word game that is played with a group
         </div>
 
         {/* call to action */}

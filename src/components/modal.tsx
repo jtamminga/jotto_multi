@@ -18,12 +18,12 @@ export function Modal({ visible, children, onClose }: Props) {
 
   return transitions((styles, visible) => visible &&
     <animated.div
-      className="fixed inset-0 z-10 bg-slate-100/[.8] flex flex-col justify-center items-center p-3"
+      className="fixed inset-0 z-10 bg-slate-200/[.9] flex flex-col justify-center items-center p-3"
       onClick={() => onClose()}
       style={{ opacity: styles.opacity }}
     >
 
-      <animated.div className="max-w-screen-sm w-full bg-white p-3 rounded drop-shadow-2xl" style={{ transform: styles.transform }}>
+      <animated.div className="max-w-screen-sm w-full bg-white p-3 rounded shadow-[5px_5px_0_0_rgba(0,0,0,0.05)]" style={{ transform: styles.transform }}>
         {children}
       </animated.div>
 

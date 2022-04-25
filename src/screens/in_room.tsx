@@ -1,6 +1,7 @@
 import { gameFlow } from 'src/core/di'
 import { Button, Players, Screen } from 'src/components'
 import { usePlayers } from 'src/core/hooks'
+import { Em } from 'src/components/typography'
 
 export function InRoom() {
 
@@ -12,7 +13,7 @@ export function InRoom() {
 
       { players.ready && players.me.host &&
         <div className="text-center mb-5">
-          Lobby code is <span className="text-emerald-500">{players.me.lobbyCode}</span>
+          Lobby code is <Em>{players.me.lobbyCode}</Em>
         </div>
       }
 

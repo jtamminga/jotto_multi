@@ -11,6 +11,7 @@ export function Keyboard() {
   const { notes } = useNotes()
   const timerRef = useRef<number>()
   const [heldLetter, setHeldLetter] = useState<string>()
+  const [notesVisible, setNotesVisible] = useState(false)
   useKeyboard()
 
   useEffect(() => {
@@ -120,6 +121,7 @@ export function Keyboard() {
 
     timerRef.current = window.setTimeout(() => {
       setHeldLetter(key)
+      setNotesVisible(true)
     }, 500)
   }
 
@@ -140,18 +142,16 @@ export function Keyboard() {
       {secondRow()}
       {thirdRow()}
 
-      {/*
-        careful that NoteSelect has special behaviour to support animations
-        i don't like it but whateva, i guess the animation is worth it
-      */}
-      <NoteSelect
-        visible={!!heldLetter}
-        letter={heldLetter}
-        onClose={(isMarking, inWord) => {
-          if (isMarking && heldLetter) notes?.maybe(heldLetter, inWord)
-          setHeldLetter(undefined)
-        }}
-      />
+      { heldLetter &&
+        <NoteSelect
+          visible={notesVisible}
+          letter={heldLetter}
+          onClose={(isMarking, inWord) => {
+            if (isMarking) notes?.maybe(heldLetter, inWord)
+            setNotesVisible(false)
+          }}
+        />
+      }
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import classNames from 'classnames'
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
+import { useSpring, animated } from 'react-spring'
 import { GuessResultSummary } from 'src/components'
 import { useObserver } from 'src/core/hooks'
 
@@ -10,6 +11,14 @@ type Props = {
 
 export function Observer({ className, onClick }: Props) {
   const { latestResult } = useObserver()
+  const [styles, animate] = useSpring(() => ({ transform: 'scale(1)' }))
+
+  // animate only when there is a new guess result
+  useEffect(() => {
+    animate({ transform: 'scale(1.1)'})
+    animate({ transform: 'scale(1)', delay: 100 })
+  }, [latestResult])
+
 
   let content: ReactNode
 
@@ -42,12 +51,12 @@ export function Observer({ className, onClick }: Props) {
       [hasEventStyle]: latestResult !== undefined
     },
     className
-  )
+  ) 
 
   return (
-    <div className={classes} onClick={handleOnClick}>
+    <animated.div style={styles} className={classes} onClick={handleOnClick}>
       {content}
-    </div>
+    </animated.div>
   )
 }
 
