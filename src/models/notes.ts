@@ -60,6 +60,7 @@ export class Notes implements Disposable {
 
     bus.publish(createNotesEvent(this))
     this.serialize()
+    console.debug(`[notes] '${letters}' marked as inWord: ${inWord}`)
   }
 
   public addGuess(guess: GuessResult) {
@@ -162,6 +163,7 @@ export class Notes implements Disposable {
 
     const serialized = JSON.stringify(condensed)
     sessionStorage.setItem(STORE_KEY, serialized)
+    console.debug('[notes] serialized')
   }
 
   private deserialize() {
@@ -176,6 +178,8 @@ export class Notes implements Disposable {
     condensed.forEach(info =>
       this._letterNotes.set(info.key, { confidence: 'maybe', inWord: info.in })
     )
+
+    console.debug('[notes] deserialized')
   }
 
 }

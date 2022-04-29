@@ -17,6 +17,7 @@ export class Connection {
   private _socket: JottoSocket
   private _state: ConnectionState = 'disconnected'
   private _hasConnected: boolean = false
+  private _coldRestart = false
 
   constructor(
     private _bus: EventBus,
@@ -27,6 +28,7 @@ export class Connection {
     const sessionId = localStorage.getItem('session')
     if (sessionId) {
       console.info('[connection] connecting with session id...')
+      this._coldRestart = true
       this._socket.updateAuth({ sessionId })
       this._socket.connect()
     } else {
@@ -55,6 +57,10 @@ export class Connection {
 
   get state(): ConnectionState {
     return this._state
+  }
+
+  get coldRestart(): boolean {
+    return this._coldRestart
   }
 
 
@@ -124,6 +130,7 @@ export class Connection {
   private fullDisconnect() {
     console.info('[connection] full disconnect')
     localStorage.removeItem('session')
+    this._coldRestart = false
     this._hasConnected = false
     this._socket.disconnect()
     this._socket.updateAuth({})

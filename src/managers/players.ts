@@ -149,14 +149,6 @@ export class Players {
 
     this._bus.publish(createAllPlayersCreated(this._players))
     this._bus.publish(createLoading(false))
-
-    if (this._player === undefined) {
-      console.warn('player.me not defined but should be')
-      console.group('debugging player.me issue')
-      console.log('this._userId', this._userId)
-      console.log('this._player', this._player)
-      console.groupEnd()
-    }
   }
 
   private onConnect = (user: UserState, reconnected: boolean) => {
@@ -218,11 +210,6 @@ export class Players {
 
     // reset players
     this._userId = restore.userId
-    this._player?.dispose()
-    this._player = undefined
-    this._players.forEach(p => p.dispose())
-    this._players = []
-
     this.onUsers(restore.users)
     
     if (restore.word) {

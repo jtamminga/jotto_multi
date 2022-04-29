@@ -158,7 +158,8 @@ export class Player implements Disposable {
 
   public setOpponent(player: Player) {
     if (this._opponent) {
-      throw new IllegalStateException('player already has an opponent')
+      console.warn('[player] opponent already set')
+      return
     }
 
     this._opponent = player
