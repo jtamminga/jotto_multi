@@ -64,7 +64,6 @@ function guessResults(guesses: ReadonlyArray<GuessResult>) {
 
 function guessResultItem(result: GuessResult) {
   const relative = intervalToDuration({ start: gameFlow.game.startedOn, end: result.date })
-  console.log('renderrr>>>>>')
 
   return (
     <div className="bg-slate-100 p-2 px-3 rounded text-slate-800 flex">

@@ -11,7 +11,7 @@ import {
 } from 'src/core/events/players'
 import { GameEvent, isGameEvent } from 'src/core/events/game'
 import { Credentials, PlayerState, UserRestore, UserState } from 'jotto_core'
-import { ConnectionEvent, isConnectionEvent } from 'src/core/events'
+import { ConnectionEvent, createLoading, isConnectionEvent } from 'src/core/events'
 import { gameFlow } from 'src/core/di'
 
 export class Players {
@@ -133,6 +133,7 @@ export class Players {
 
     for(const user of users) {
       if (this.find(user.userId)) {
+        console.debug(`[player] ${user.userId} already exists`)
         continue
       }
 
@@ -147,6 +148,7 @@ export class Players {
     }
 
     this._bus.publish(createAllPlayersCreated(this._players))
+    this._bus.publish(createLoading(false))
 
     if (this._player === undefined) {
       console.warn('player.me not defined but should be')
@@ -157,18 +159,22 @@ export class Players {
     }
   }
 
-  private onConnect = (user: UserState) => {
+  private onConnect = (user: UserState, reconnected: boolean) => {
     console.debug('[players] onConnect', user)
     let player = this._players.find(p => p.userId === user.userId)
 
     if (player) {
       player.connected = true
-    } else {
+    }
+    // reconnects don't count as a user joining
+    else if (!reconnected) {
       player = new Player(user as PlayerState)
       this._players.push(player)
     }
 
-    this._bus.publish(createPlayerConnected(player))
+    if (player) {
+      this._bus.publish(createPlayerConnected(player))
+    }
   }
 
   private onDisconnect = (userId: string, intended: boolean) => {
@@ -210,7 +216,13 @@ export class Players {
   private onRestore = (restore: UserRestore) => {
     console.debug('[players] onRestore', restore)
 
+    // reset players
     this._userId = restore.userId
+    this._player?.dispose()
+    this._player = undefined
+    this._players.forEach(p => p.dispose())
+    this._players = []
+
     this.onUsers(restore.users)
     
     if (restore.word) {

@@ -34,6 +34,11 @@ export interface MenuEvent extends AppEvent {
   type: 'menu_visibility_change'
 }
 
+export interface LoadingEvent extends AppEvent {
+  type: 'loading_state_change'
+  loading: boolean
+}
+
 
 //
 // factories
@@ -48,10 +53,11 @@ function create(type: AppEventType): AppEvent {
   }
 }
 
-export function createLoadingChange(): AppEvent {
+export function createLoading(loading: boolean): LoadingEvent {
   return {
     ...create('loading_state_change'),
-    type: 'loading_state_change'
+    type: 'loading_state_change',
+    loading
   }
 }
 
@@ -81,7 +87,7 @@ export function isStateChangeEvent(event: Event): event is AppStateChangeEvent {
   return event.domain === 'app' && event.type === 'state_change'
 }
 
-export function isLoadingStateChangeEvent(event: Event): event is AppEvent {
+export function isLoadingEvent(event: Event): event is LoadingEvent {
   return event.domain === 'app' && event.type === 'loading_state_change'
 }
 

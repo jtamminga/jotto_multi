@@ -13,7 +13,7 @@ import { Game } from 'src/models'
 import { Players } from './players'
 import * as AppEvents from 'src/core/events/app'
 import * as Transform from 'src/core/transforms'
-import { ConnectionEvent, isConnectionEvent } from 'src/core/events'
+import { ConnectionEvent, createLoading, isConnectionEvent } from 'src/core/events'
 import { differenceInMilliseconds } from 'date-fns'
 
 /**
@@ -24,7 +24,6 @@ export class GameFlow {
 
   private _state: AppState
   private _game: Game | undefined
-  private _loading: boolean
   private _pickWordTimer: ReturnType<typeof setTimeout> | undefined
 
 
@@ -33,7 +32,6 @@ export class GameFlow {
     private _bus: EventBus,
     private _players: Players
   ) {
-    this._loading = false
     this._state = 'role_select'
 
     this.setupListeners()
@@ -64,19 +62,8 @@ export class GameFlow {
       )
   }
 
-  public get loading$() {
-    return this._bus.events$
-      .pipe(
-        filter(AppEvents.isLoadingStateChangeEvent)
-      )
-  }
-
   public get state(): AppState {
     return this._state
-  }
-
-  public get loading(): boolean {
-    return this._loading
   }
 
   public get game(): Game {
@@ -109,11 +96,11 @@ export class GameFlow {
   public joinLobby(code: string) {
     this._socket.updateAuth({ lobbyCode: code })
     this._socket.connect()
-    this.updateLoading(true)
     // switch to 'joining_room' on connect success
   }
 
   public joinRoom(username: string, type: UserType) {
+    this._bus.publish(createLoading(true))
     this._socket.emit('joinRoom', username, type)
     this.updateState('joined_room')
   }
@@ -170,7 +157,6 @@ export class GameFlow {
         }
 
         this.updateState('joining_room')
-        this.updateLoading(false)
         break
 
       case 'disconnected':
@@ -279,13 +265,6 @@ export class GameFlow {
 
     if (preState !== state) {
       this._bus.publish(AppEvents.createStateChange(this._state, preState))
-    }
-  }
-
-  private updateLoading(loading: boolean) {
-    if (this._loading !== loading) {
-      this._loading = loading
-      this._bus.publish(AppEvents.createLoadingChange())
     }
   }
 
