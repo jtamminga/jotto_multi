@@ -226,7 +226,10 @@ export class GameFlow {
 
   private onGameOver = (summary: GameSummary) => {
     this._game!.gameOver(summary)
-    this.updateState('game_summary')
+
+    if (this._state !== 'observing') {
+      this.updateState('game_summary')
+    }
   }
 
   private onRestore = (restore: SocketUserRestore) => {
