@@ -200,12 +200,20 @@ export class GameFlow {
     }
 
     this._game.starting()
-
     const milliTillStart = differenceInMilliseconds(this._game.startedOn, Date.now())
 
+    // if restoring and game has started (playing)
+    // then either in playing or observing state
     if (restore && milliTillStart <= 0) {
-      this.updateStateIf({ player: 'playing', obs: 'observing' })
-    } else {
+      if (this._players.me.isObserving || this._state === 'observing') {
+        this.updateState('observing')
+      } else {
+        this.updateState('playing')
+      }
+    }
+
+    // otherwise the game is still starting
+    else {
       this.updateState('starting_game')
       setTimeout(() => {
         this._game?.playing()
@@ -226,10 +234,7 @@ export class GameFlow {
 
   private onGameOver = (summary: GameSummary) => {
     this._game!.gameOver(summary)
-
-    if (this._state !== 'observing') {
-      this.updateState('game_summary')
-    }
+    this.updateState('game_summary')
   }
 
   private onRestore = (restore: SocketUserRestore) => {
