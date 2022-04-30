@@ -1,4 +1,4 @@
-import { PlayerPerf, PlayerState, UserType } from 'jotto_core'
+import { PlayerPerf, PlayerState, UserState, UserType } from 'jotto_core'
 import { filter, Subscription } from 'rxjs'
 import { Disposable, Guess, GuessResult, IllegalStateException } from 'src/core'
 import { eventBus as bus } from 'src/core/di'
@@ -176,6 +176,14 @@ export class Player implements Disposable {
   public startPlaying() { }
 
   public finishPlaying() { }
+
+  public update(state: UserState) {
+    this._lobbyCode = state.lobbyCode
+    this._username = state.username
+    this._type = state.type
+    this._host = state.host
+    this._connected = state.connected
+  }
 
   public reset() {
     this._ready = false

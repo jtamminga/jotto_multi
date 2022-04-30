@@ -131,18 +131,21 @@ export class Players {
   private onUsers = (users: UserState[]) => {
     console.debug('[players] onUsers', users)
 
-    for(const user of users) {
-      if (this.find(user.userId)) {
-        console.debug(`[player] ${user.userId} already exists`)
+    for(const userState of users) {
+      const user = this.find(userState.userId)
+
+      // if user already exists then update
+      if (user) {
+        user.update(userState)
         continue
       }
 
-      if (user.userId === this._userId) {
-        const me = new Me(user as PlayerState)
+      if (userState.userId === this._userId) {
+        const me = new Me(userState as PlayerState)
         this._player = me
         this._players.push(me)
       } else {
-        const player = new Player(user as PlayerState)
+        const player = new Player(userState as PlayerState)
         this._players.push(player)
       }
     }
@@ -189,11 +192,13 @@ export class Players {
   }
 
   private onWordPicking = () => {
+    console.debug('[players] on word picking')
     // reset all players before start of game
     this._players.forEach(p => p.reset())
   }
 
   protected onAssignedWord = (word: string) => {
+    console.debug('[players] assigned word:', word)
     this.me.setWord(word)
   }
 

@@ -29,17 +29,17 @@ export function InRoom() {
           />
 
           <Button
+            text="5 min"
+            className="grow"
+            disabled={!valid}
+            onClick={() => gameFlow.start({ gameLength: 5 })}
+          />
+
+          <Button
             text="10 min"
             className="grow"
             disabled={!valid}
             onClick={() => gameFlow.start({ gameLength: 10 })}
-          />
-
-          <Button
-            text="15 min"
-            className="grow"
-            disabled={!valid}
-            onClick={() => gameFlow.start({ gameLength: 15 })}
           />
         </div>
       }

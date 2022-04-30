@@ -23,7 +23,10 @@ export class Game implements Disposable {
     this._pickingWordOn = new Date()
 
     this.processConfig()
-    this.processRestore(restore)
+
+    if (restore) {
+      this.processRestore(restore)
+    }
   }
 
 
@@ -157,11 +160,7 @@ export class Game implements Disposable {
     }
   }
 
-  private processRestore(restore: GameRestore | undefined) {
-    if (!restore) {
-      return
-    }
-
+  private processRestore(restore: GameRestore) {
     this._guesses = restore.history
     this._players.forEach(player =>
       player.restoreGuesses(restore.history))
