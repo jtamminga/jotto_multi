@@ -1,11 +1,8 @@
-import { Button, EmptyScreen, ErrorToast, GameHeader } from 'src/components'
+import { Button, EmptyScreen, Errors, GameHeader } from 'src/components'
 import { Em } from 'src/components/typography'
 import { gameFlow } from 'src/core/di'
-import { useErrors } from 'src/core/hooks'
 
 export function RoleSelect() {
-
-  const { latestError } = useErrors()
 
   return (
     <EmptyScreen>
@@ -37,9 +34,7 @@ export function RoleSelect() {
 
         </div>
 
-        { latestError &&
-          <ErrorToast message={latestError.message} />
-        }
+        <Errors />
       </div>
       
       {/* tutorial */}

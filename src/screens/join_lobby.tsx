@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { Button, ErrorToast, Input, Screen } from 'src/components'
+import { Button, Errors, Input, Screen } from 'src/components'
 import { Em } from 'src/components/typography'
 import { gameFlow } from 'src/core/di'
-import { useErrors } from 'src/core/hooks'
+import { useLoading } from 'src/core/hooks'
 
 export function JoinLobby() {
   
-  const { latestError } = useErrors()
+  const { loading } = useLoading()
   const [code, setCode] = useState('')
   const isValid = code.length === 4
 
@@ -31,12 +31,11 @@ export function JoinLobby() {
         text="Join Lobby"
         className="w-full mb-5"
         disabled={!isValid}
+        loading={loading}
         onClick={() => gameFlow.joinLobby(code)}
       />
 
-      { latestError && 
-        <ErrorToast message={latestError.message} />
-      }
+      <Errors />
 
     </Screen>
   )

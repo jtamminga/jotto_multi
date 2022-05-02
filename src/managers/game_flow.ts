@@ -94,9 +94,12 @@ export class GameFlow {
   }
 
   public joinLobby(code: string) {
+    this._bus.publish(createLoading(true))
     this._socket.updateAuth({ lobbyCode: code })
     this._socket.connect()
     // switch to 'joining_room' on connect success
+    // aren't optimistic in this case (just switch to the next state)
+    // because we don't want to go back if lobby code is wrong
   }
 
   public joinRoom(username: string, type: UserType) {

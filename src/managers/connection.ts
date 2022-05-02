@@ -2,7 +2,7 @@ import { Credentials } from 'jotto_core'
 import { filter } from 'rxjs'
 import { io, Socket } from 'socket.io-client'
 import { ConnectionState, EventBus, JottoSocket, jottoSocketDecorator } from 'src/core'
-import { createConnectionStateChange, createError, isLeaveGame } from 'src/core/events'
+import { createConnectionStateChange, createError, createLoading, isLeaveGame } from 'src/core/events'
 import { JottoError } from 'src/models'
 
 
@@ -80,17 +80,20 @@ export class Connection {
 
   private onLeaveGame = () => {
     console.info('[connection] leaving the game')
+    this._bus.publish(createLoading(false))
     this.fullDisconnect()
   }
 
   private onConnect = () => {
     console.info('[connection] connected')
+    this._bus.publish(createLoading(false))
     this._hasConnected = true
     this.updateState('connected')
   }
 
   private onDisconnect = (reason: Socket.DisconnectReason) => {
     console.log('[connection] onDisconnect reason:', reason)
+    this._bus.publish(createLoading(false))
 
     switch (reason) {
       case 'io server disconnect': // on server socket.disconnect
@@ -108,6 +111,7 @@ export class Connection {
   private onConnectError = (error: Error) => {
     console.log('[connection] connect error:', error.message)
     
+    this._bus.publish(createLoading(false))
     this.fullDisconnect()
 
     if (error.message === 'websocket error') {
