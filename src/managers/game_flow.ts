@@ -195,7 +195,7 @@ export class GameFlow {
     }
   }
 
-  private onStartPlaying = (restore?: SocketUserRestore) => {
+  private onStartPlaying = (restore?: SocketUserRestoreExt) => {
     console.log('[gameflow] on start playing')
 
     if (!this._game) {
@@ -208,7 +208,7 @@ export class GameFlow {
     // if restoring and game has started (playing)
     // then either in playing or observing state
     if (restore && milliTillStart <= 0) {
-      if (this._players.me.isObserving || this._state === 'observing') {
+      if (this._players.me.isObserving || restore.preRestoreState === 'observing') {
         this.updateState('observing')
       } else {
         this.updateState('playing')
@@ -240,7 +240,12 @@ export class GameFlow {
     this.updateState('game_summary')
   }
 
-  private onRestore = (restore: SocketUserRestore) => {
+  private onRestore = (userRestore: SocketUserRestore) => {
+    const restore: SocketUserRestoreExt = {
+      ...userRestore,
+      preRestoreState: this._state
+    }
+
     switch (restore.state) {
       case 'in_room':
         this.updateState('joined_room')
@@ -287,4 +292,9 @@ export class GameFlow {
     }
   }
 
+}
+
+//
+interface SocketUserRestoreExt extends SocketUserRestore {
+  preRestoreState: AppState
 }

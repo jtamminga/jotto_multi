@@ -30,7 +30,7 @@ export function StepFour() {
       <div className="mb-5">
         <div className="text-center mb-3">
           Example words guessed
-          <div className="text-sm text-slate-400">latest guess is at the top</div>
+          <div className="text-sm text-slate-400">Latest guess is at the top</div>
         </div>
         <GuessResults guesses={guesses} notes={notes} />
       </div>

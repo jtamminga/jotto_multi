@@ -13,6 +13,8 @@ export function StepFive() {
         To mark your own letter, just <Text.Em>hold a key</Text.Em> and select whether you think it is in the word or not.
       </p>
 
+      <div className="text-center mb-3 text-sm text-slate-400">Try holding a letter!</div>
+
       <Keyboard />
     </div>
   )

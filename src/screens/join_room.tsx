@@ -4,11 +4,16 @@ import { gameFlow } from 'src/core/di'
 
 export function JoinRoom() {
   
+  const maxLength = 8
   const [username, setUsername] = useState('')
-  const isValid = username.length > 0 && username.length <= 8
+  const isValid = username.length > 0 && username.length <= maxLength
 
   return (
     <Screen title="Join the game">
+
+      <div className="flex justify-end mb-1">
+        <span className="text-slate-400">{username.length}/{maxLength}</span>
+      </div>
 
       <Input
         autoFocus
