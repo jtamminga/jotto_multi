@@ -1,6 +1,6 @@
 import { filter, Observable } from 'rxjs'
 import { EventBus } from 'src/core'
-import { gameFlow } from 'src/core/di'
+import { gameFlow, players } from 'src/core/di'
 import {
   AppStateChangeEvent,
   createKeyboardVisibilityChange,
@@ -81,9 +81,13 @@ export class Keyboard {
 
   private onAppStateChange(e: AppStateChangeEvent) {
     switch (e.state) {
-      case 'playing':
       case 'picking_word':
         this.show()
+        break
+      case 'playing':
+        if (!players.me.won) {
+          this.show()
+        }
         break
       default:
         this.hide()

@@ -1,7 +1,6 @@
 import { addMinutes, addSeconds, intervalToDuration } from 'date-fns'
 import { Player } from './player'
-import { Disposable, GameConfig, GameRestore, GameState, GuessResult, IllegalStateException } from 'src/core'
-import { GameSummary } from 'jotto_core'
+import { Disposable, GameConfig, GameRestore, GameState, GameSummary, GuessResult, IllegalStateException } from 'src/core'
 
 export class Game implements Disposable {
 

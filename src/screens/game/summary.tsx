@@ -1,8 +1,11 @@
-import { PlayerSummary } from 'jotto_core'
+import classNames from 'classnames'
 import { Button, PlayerContainer, PlayersHeader, Screen, Timer } from 'src/components'
+import { PlayerSummary } from 'src/core'
 import { gameFlow, players } from 'src/core/di'
+import { usePlayers } from 'src/core/hooks'
 
 export function GameSummary() {
+  usePlayers()
   const { game } = gameFlow
   const { summary, finalTime } = game
 
@@ -22,7 +25,7 @@ export function GameSummary() {
           {summary.playerSummaries.map((summary, i) =>
             <li key={i} className="mb-2">
               <PlayerContainer
-                isMe={players.me.userId === summary.userId}
+                isMe={players.isMe(summary.player)}
                 style={summary.place === 1 ? 'grand' : 'primary'}
                 num={i+1}
               >
@@ -66,12 +69,21 @@ export function GameSummary() {
 function playerSummary(summary: PlayerSummary) {
   return (
     <>
-      <div className="w-24 text-center">{summary.username}</div>
+      <div className="w-24 text-center">{name(summary)}</div>
       <div className="w-16 text-center">{summary.wonAt ? '⭐' : summary.bestGuess}</div>
       <div className="w-16 text-center">{summary.word}</div>
       <div className="w-16 text-center">{summary.numGuesses}</div>
     </>
   )
+}
+
+function name({ player }: PlayerSummary) {
+  const style = classNames({
+    'bg-emerald-400 px-2 py-1 rounded text-white': player.playingAgain,
+    'bg-red-400 px-2 py-1 rounded text-white': player.leftLobby
+  })
+
+  return <span className={style}>{player.username}</span>
 }
 
 const headerColumns =

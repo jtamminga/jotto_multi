@@ -1,6 +1,6 @@
 import { PlayerPerf, PlayerState, UserState, UserType } from 'jotto_core'
 import { filter, Subscription } from 'rxjs'
-import { Disposable, Guess, GuessResult, IllegalStateException } from 'src/core'
+import { Disposable, Guess, GuessResult } from 'src/core'
 import { eventBus as bus } from 'src/core/di'
 import { createPlayerChange, createPlayerWon, GuessEvent, isGuessResultEvent, isPlayerEvent } from 'src/core/events'
 
@@ -18,6 +18,9 @@ export class Player implements Disposable {
   protected _subscriptions: Subscription[] = []
   protected _guesses: Guess[] = []
   protected _guessedWord: string | undefined
+
+  private _playingAgain = false
+  private _leftLobby = false
 
   constructor(user: PlayerState) {
     this._userId = user.userId
@@ -140,6 +143,14 @@ export class Player implements Disposable {
     }
   }
 
+  public get playingAgain(): boolean {
+    return this._playingAgain
+  }
+
+  public get leftLobby(): boolean {
+    return this._leftLobby
+  }
+
   // setters
 
   set connected(value: boolean) {
@@ -148,6 +159,14 @@ export class Player implements Disposable {
 
   set ready(value: boolean) {
     this._ready = value
+  }
+
+  set playingAgain(value: boolean) {
+    this._playingAgain = value
+  }
+
+  set leftLobby(value: boolean) {
+    this._leftLobby = value
   }
 
 
@@ -190,6 +209,9 @@ export class Player implements Disposable {
     this._wonAt = undefined
     this._opponent = undefined
     this._guesses = []
+
+    this._playingAgain = false
+    this._leftLobby = false
   }
 
   public dispose(): void {

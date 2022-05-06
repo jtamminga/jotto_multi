@@ -160,6 +160,7 @@ export class Players {
 
     if (player) {
       player.connected = true
+      player.playingAgain = gameFlow.state === 'game_summary' && !reconnected
     }
     // reconnects don't count as a user joining
     else if (!reconnected) {
@@ -168,7 +169,7 @@ export class Players {
     }
 
     if (player) {
-      this._bus.publish(createPlayerConnected(player))
+      this._bus.publish(createPlayerConnected(player, reconnected))
     }
   }
 
@@ -183,12 +184,15 @@ export class Players {
     const player = this._players[index]
     player.connected = false
 
-    if (intended && gameFlow.state === 'joined_room') {
-      player.dispose()
-      this._players.splice(index, 1)
+    if (intended) {
+      player.leftLobby = true
+      if (gameFlow.state === 'joined_room') {
+        player.dispose()
+        this._players.splice(index, 1)
+      }
     }
 
-    this._bus.publish(createPlayerDisconnected(player))
+    this._bus.publish(createPlayerDisconnected(player, intended))
   }
 
   private onWordPicking = () => {

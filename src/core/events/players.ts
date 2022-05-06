@@ -34,6 +34,14 @@ export interface PlayersEvent extends Event {
   player: Player
 }
 
+export interface PlayersConnectEvent extends PlayersEvent {
+  reconnected: boolean
+}
+
+export interface PlayersDisconnectEvent extends PlayersEvent {
+  intended: boolean
+}
+
 export interface PlayersCollectionEvent extends Event {
   domain: 'players'
   type: PlayersEventType
@@ -59,12 +67,18 @@ export function createPlayerCreated(player: Player) {
   return create(player, 'created')
 }
 
-export function createPlayerConnected(player: Player): PlayersEvent {
-  return create(player, 'connected')
+export function createPlayerConnected(player: Player, reconnected: boolean): PlayersConnectEvent {
+  return {
+    ...create(player, 'connected'),
+    reconnected
+  }
 }
 
-export function createPlayerDisconnected(player: Player): PlayersEvent {
-  return create(player, 'disconnected')
+export function createPlayerDisconnected(player: Player, intended: boolean): PlayersDisconnectEvent {
+  return {
+    ...create(player, 'disconnected'),
+    intended
+  }
 }
 
 export function createPlayerReady(player: Player): PlayersEvent {
@@ -92,4 +106,12 @@ export function createAllPlayersCreated(players: Player[]): PlayersCollectionEve
 
 export function isPlayersEvent(event: Event): event is PlayersEvent {
   return event.domain === 'players'
+}
+
+export function isPlayerConnectEvent(event: Event): event is PlayersConnectEvent {
+  return isPlayersEvent(event) && event.type === 'connected'
+}
+
+export function isPlayerDisconnectEvent(event: Event): event is PlayersDisconnectEvent {
+  return isPlayersEvent(event) && event.type === 'disconnected'
 }

@@ -2,7 +2,7 @@ import { filter } from 'rxjs'
 import {
   UserRestore as SocketUserRestore,
   GameConfig as SocketGameConfig,
-  GameSummary,
+  GameSummary as SocketGameSummary,
   UserType,
   HostConfig
 } from 'jotto_core'
@@ -235,8 +235,8 @@ export class GameFlow {
     this._bus.publish(createGuessResult(result))
   }
 
-  private onGameOver = (summary: GameSummary) => {
-    this._game!.gameOver(summary)
+  private onGameOver = (summary: SocketGameSummary) => {
+    this._game!.gameOver(Transform.gameSummary(summary))
     this.updateState('game_summary')
   }
 
