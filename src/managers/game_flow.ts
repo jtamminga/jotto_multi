@@ -173,20 +173,23 @@ export class GameFlow {
   private onWorkPicking = (socketConfig: SocketGameConfig, socketRestore?: SocketUserRestore) => {
     console.log('[gameflow] on word picking')
 
-    const config = Transform.gameConfig(socketConfig)
-    const restore = socketRestore ? Transform.gameRestore(socketRestore) : undefined
-    const mePickedWord = socketRestore?.word !== undefined
-
-    this._game = new Game(this._players.playing, config, restore)
+    this._game = new Game(
+      this._players.playing,
+      Transform.gameConfig(socketConfig),
+      socketRestore && Transform.gameRestore(socketRestore)
+    )
 
     if (this._players.me.isObserving) {
       this.updateState('picked_word')
       return
     }
 
-    if (mePickedWord) {
+    // if me picked a word
+    if (socketRestore?.word !== undefined) {
       this.updateState('picked_word')
-    } else {
+    }
+    // if me didn't pick a word
+    else {
       this.updateState('picking_word')
       this._pickWordTimer = setTimeout(() => {
         // skip over picked_word

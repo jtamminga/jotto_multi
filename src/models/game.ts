@@ -1,6 +1,7 @@
 import { addMinutes, addSeconds, intervalToDuration } from 'date-fns'
 import { Player } from './player'
 import { Disposable, GameConfig, GameRestore, GameState, GameSummary, GuessResult, IllegalStateException } from 'src/core'
+import { Minutes } from 'jotto_core'
 
 export class Game implements Disposable {
 
@@ -21,7 +22,10 @@ export class Game implements Disposable {
     this._state = 'picking_word'
     this._pickingWordOn = new Date()
 
-    this.processConfig()
+    // set opponents
+    for (let o of this._config.opponents) {
+      o.player.setOpponent(o.opponent)
+    }
 
     if (restore) {
       this.processRestore(restore)
@@ -36,10 +40,6 @@ export class Game implements Disposable {
 
   public get state(): GameState {
     return this._state
-  }
-
-  public get config(): GameConfig {
-    return this._config
   }
 
   public get guesses(): ReadonlyArray<GuessResult> {
@@ -60,6 +60,10 @@ export class Game implements Disposable {
 
   // time related getters
 
+  public get gameLength(): Minutes | undefined {
+    return this._config.gameLength
+  }
+
   public get wordDueOn(): Date {
     return addSeconds(this._pickingWordOn, this._config.pickWordLength)
   }
@@ -69,7 +73,7 @@ export class Game implements Disposable {
       return this._startedOn
     }
 
-    return addSeconds(Date.now(), this.config.preGameLength)
+    return addSeconds(Date.now(), this._config.preGameLength)
   }
 
   public get hasTimeLimit(): boolean {
@@ -151,13 +155,6 @@ export class Game implements Disposable {
   // private functions
   // =================
 
-
-  private processConfig() {
-    // set opponents
-    for (let o of this._config.opponents) {
-      o.player.setOpponent(o.opponent)
-    }
-  }
 
   private processRestore(restore: GameRestore) {
     this._guesses = restore.history

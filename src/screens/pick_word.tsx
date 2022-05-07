@@ -26,11 +26,22 @@ export function PickWord() {
 
       <Button
         text="Submit"
-        className="w-full"
+        className="w-full mb-5"
         disabled={word === undefined}
         onClick={() => gameFlow.pickWord(word!)}
       ></Button>
+
+      <div className="text-center mb-5">
+        playing a {gameLength()} game
+      </div>
       
     </Screen>
   )
+}
+
+// game length
+function gameLength() {
+  const { gameLength } = gameFlow.game
+  const content = gameLength ? `${gameLength} min` : 'relaxed'
+  return <span className="bg-slate-100 px-2 py-1 rounded">{content}</span>
 }
