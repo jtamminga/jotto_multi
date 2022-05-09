@@ -39,7 +39,7 @@ export default function App() {
 function containerStyle(state: AppState): string {
   const wide = state === 'observing'
 
-  return "container mx-auto h-full flex flex-col relative " +
+  return "container mx-auto h-full flex flex-col relative select-none " +
     (wide ? 'max-w-screen-lg' : 'max-w-screen-sm')
 }
 
