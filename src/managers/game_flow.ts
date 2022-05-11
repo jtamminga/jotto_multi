@@ -244,6 +244,17 @@ export class GameFlow {
   }
 
   private onRestore = (userRestore: SocketUserRestore) => {
+    console.log('[gameflow] on restore')
+
+    // optimization
+    // this restores only missing guesses rather than doing a full restore
+    if (this.tryHistoryRestore(userRestore)) {
+      console.log('[gameflow] restored history')
+      return
+    }
+
+    console.log('[gameflow] full restore')
+
     const restore: SocketUserRestoreExt = {
       ...userRestore,
       preRestoreState: this._state
@@ -277,6 +288,27 @@ export class GameFlow {
   // private functions
   // =================
 
+
+  private tryHistoryRestore(restore: SocketUserRestore): boolean {
+    if (this._game
+      && this._game.id === restore.config?.gameId
+      && (this._state === 'playing' || this._state === 'observing')
+      && restore.state === 'playing'
+      && restore.history
+    ) {
+      const { history } = restore
+      const numMissed = history.length - this._game.guesses.length
+      console.log(`[gameflow] restoring ${numMissed} guess(es)`)
+
+      for (let i = history.length - numMissed; i < history.length; i++) {
+        this.onGuessResult(history[i])
+      }
+
+      return true
+    }
+
+    return false
+  }
 
   private updateState(state: AppState) {
     const preState = this._state

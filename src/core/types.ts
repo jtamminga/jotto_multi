@@ -51,6 +51,7 @@ export interface SocketGameConfig {
 }
 
 export interface GameConfig {
+  gameId: string
   pickWordLength: Seconds
   preGameLength: Seconds
   gameLength: Minutes | undefined

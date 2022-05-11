@@ -5,6 +5,7 @@ import { Minutes } from 'jotto_core'
 
 export class Game implements Disposable {
 
+  private _id: string
   private _state: GameState
   private _guesses: GuessResult[] = []
   private _summary: GameSummary | undefined
@@ -19,6 +20,7 @@ export class Game implements Disposable {
     private _config: GameConfig,
     restore?: GameRestore
   ) {
+    this._id = _config.gameId
     this._state = 'picking_word'
     this._pickingWordOn = new Date()
 
@@ -37,6 +39,10 @@ export class Game implements Disposable {
   // getters & setters
   // =================
 
+
+  public get id(): string {
+    return this._id
+  }
 
   public get state(): GameState {
     return this._state

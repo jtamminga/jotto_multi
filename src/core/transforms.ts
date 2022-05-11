@@ -12,9 +12,7 @@ export function gameConfig(config: SocketGameConfig): GameConfig {
     opponent: players.get(o.opponentId)
   }))
 
-  const { pickWordLength, preGameLength, gameLength } = config
-
-  return { opponents, pickWordLength, preGameLength, gameLength }
+  return { ...config, opponents }
 }
 
 export function guessResult(guess: SocketGuessResult): GuessResult {
