@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useRef, useState } from 'react'
 import { Button, FiveWordChangeEvent, FiveWordInput } from 'src/components'
 import { gameFlow } from 'src/core/di'
 import { useMe, useNotes } from 'src/core/hooks'
@@ -9,6 +9,7 @@ import { Observer } from './components/observer'
 export function Game() {
   const [value, setValue] = useState<string>()
   const [isValid, setIsValid] = useState(false)
+  const guessListRef = useRef<HTMLDivElement>(null)
 
   const { me } = useMe()
   const { notes } = useNotes()
@@ -21,6 +22,7 @@ export function Game() {
   function onGuess() {
     me.guess(value!)
     setValue(undefined)
+    guessListRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   let content: ReactNode = null
@@ -37,9 +39,7 @@ export function Game() {
         />
       </div>
     )
-  }
-
-  else if (notes?.isMarking === false) {
+  } else {
     content = (
       <>
         <div className="flex justify-center mb-5">
@@ -73,7 +73,7 @@ export function Game() {
         {content}
       </div>
 
-      <div className="px-3 grow overflow-y-auto">
+      <div className="px-3 grow overflow-y-auto" ref={guessListRef}>
         <div className="text-center mb-3">
           Guesses
         </div>
