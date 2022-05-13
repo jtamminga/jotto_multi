@@ -1,5 +1,6 @@
 import classNames from 'classnames'
-import { GuessResult } from 'src/core'
+import { Loader } from 'src/components'
+import { Guess } from 'src/core'
 import { Notes } from 'src/models'
 
 
@@ -9,7 +10,7 @@ import { Notes } from 'src/models'
 
 
 type CollectionProps = {
-  guesses: GuessResult[],
+  guesses: Guess[],
   notes: Notes | undefined
 }
 
@@ -39,7 +40,7 @@ export function GuessResults({ guesses, notes }: CollectionProps) {
 // ==========
 
 
-function guessResultItem(guess: GuessResult, notes: Notes | undefined) {
+function guessResultItem(guess: Guess, notes: Notes | undefined) {
   const letters = Array.from(guess.word)
 
   const charBlocks = letters.map((char, i) =>
@@ -52,7 +53,7 @@ function guessResultItem(guess: GuessResult, notes: Notes | undefined) {
     <div className={containerClasses}>
       {charBlocks}
       <div className={commonBlockClasses(guess)}>
-        {guess.common}
+        {guess.common === undefined ? <Loader /> : guess.common}
       </div>
     </div>
   )
@@ -79,13 +80,12 @@ function charBlockClasses(index: number, inWord: boolean | undefined): string {
   )
 }
 
-function commonBlockClasses({ common }: GuessResult): string {
-  if (common === undefined) return ''
-
+function commonBlockClasses({ common }: Guess): string {
   return classNames(
     baseCharBlockClasses,
     'w-14 rounded text-slate-600',
     {
+      'bg-slate-200 flex justify-center items-center': common === undefined,
       'bg-red-200': common === 0 || common === 1,
       'bg-amber-200': common === 2 || common === 3,
       'bg-emerald-200': common === 4 || common === 5,

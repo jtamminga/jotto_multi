@@ -1,4 +1,5 @@
 export * from './button'
+export * from './loader'
 export * from './input'
 export * from './five_word_input'
 
