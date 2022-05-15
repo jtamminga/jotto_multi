@@ -23,7 +23,7 @@ export function Button({
 }: Params) {
 
   const classes = classNames(
-    'h-12 px-6 flex justify-center items-center',
+    'h-12 px-6 flex justify-center items-center transition-colors',
 
     {
       // loading state
