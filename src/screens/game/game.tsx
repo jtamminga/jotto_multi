@@ -79,7 +79,7 @@ export function Game() {
         </div>
 
         <GuessResults
-          guesses={me.guesses}
+          guesses={me.guessResults}
           notes={notes}
         />
       </div>

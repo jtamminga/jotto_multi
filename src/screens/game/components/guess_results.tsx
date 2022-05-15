@@ -1,5 +1,4 @@
 import classNames from 'classnames'
-import { Loader } from 'src/components'
 import { Guess } from 'src/core'
 import { Notes } from 'src/models'
 
@@ -53,7 +52,7 @@ function guessResultItem(guess: Guess, notes: Notes | undefined) {
     <div className={containerClasses}>
       {charBlocks}
       <div className={commonBlockClasses(guess)}>
-        {guess.common === undefined ? <Loader /> : guess.common}
+        {guess.common}
       </div>
     </div>
   )
@@ -85,7 +84,7 @@ function commonBlockClasses({ common }: Guess): string {
     baseCharBlockClasses,
     'w-14 rounded text-slate-600',
     {
-      'bg-slate-200 flex justify-center items-center': common === undefined,
+      'bg-slate-200': common === undefined,
       'bg-red-200': common === 0 || common === 1,
       'bg-amber-200': common === 2 || common === 3,
       'bg-emerald-200': common === 4 || common === 5,

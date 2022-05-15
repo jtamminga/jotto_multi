@@ -23,20 +23,24 @@ export function Button({
 }: Params) {
 
   const classes = classNames(
-    'h-12 px-6 flex justify-center items-center transition-colors',
+    'h-12 px-6 flex justify-center items-center',
 
-    // primary style
-    { 'text-white font-semibold rounded': type === 'primary' },
-    { [primaryStyle]: type === 'primary' },
-    { 'text-emerald-500': loading },
+    {
+      // loading state
+      'animate-pulse': loading,
 
-    // secondary style
-    { 'border-2 rounded': type === 'secondary' },
-    { [secondaryStyle]: type === 'secondary' },
+      // primary style
+      'text-white font-semibold rounded': type === 'primary',
+      [primaryStyle]: type === 'primary',
 
-    // link style
-    { 'underline': type === 'link' },
-    { [linkStyle]: type === 'link' },
+      // secondary style
+      'border-2 rounded': type === 'secondary',
+      [secondaryStyle]: type === 'secondary',
+
+       // link style
+      'underline': type === 'link',
+      [linkStyle]: type === 'link',
+    }, 
 
     // inherited
     className
@@ -49,11 +53,7 @@ export function Button({
       className={classes}
       onClick={onClick}
     >
-      {loading ?
-        <><Loader className="text-emerald-500 mr-2" /> <span>Loading</span></>
-        :
-        <span>{text}</span>
-      }
+      {text}
     </button>
   )
 }
