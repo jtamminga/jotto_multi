@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import { players, gameFlow, menu } from 'src/core/di'
 import { GameTime } from 'src/components'
+import { Word } from 'src/components/typography'
 
 type Props = {
   className?: string
@@ -12,7 +13,7 @@ export function Hud({ className }: Props) {
   const { game } = gameFlow
 
   const classes = classNames(
-    'flex bg-slate-100 rounded p-2',
+    'flex',
     className
   )
 
@@ -22,12 +23,12 @@ export function Hud({ className }: Props) {
 
         {/* users word */}
         <div>
-          <span className="text-slate-400">word:</span> {me.word}
+          <span className="text-slate-400">word</span> {me.word}
         </div>
 
         {/* opponent */}
         <div>
-          <span className="text-slate-400">against:</span> {me.opponent.username}
+          <span className="text-slate-400">against</span> {me.opponent.username}
         </div>
       </div>
 

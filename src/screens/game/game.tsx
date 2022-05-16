@@ -63,7 +63,7 @@ export function Game() {
   return (
     <>
       <div className="px-3">
-        <Hud className="my-2" />
+        <Hud className="my-3" />
 
         <Observer
           className="mb-5"
