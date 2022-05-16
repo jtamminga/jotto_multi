@@ -24,7 +24,9 @@ export class GameFlow {
 
   private _state: AppState
   private _game: Game | undefined
+
   private _pickWordTimer: ReturnType<typeof setTimeout> | undefined
+  private _startingTimer: ReturnType<typeof setTimeout> | undefined
 
 
   constructor(
@@ -191,6 +193,8 @@ export class GameFlow {
     // if me didn't pick a word
     else {
       this.updateState('picking_word')
+
+      if (this._pickWordTimer) clearTimeout(this._pickWordTimer)
       this._pickWordTimer = setTimeout(() => {
         // skip over picked_word
         this.updateState('starting_game')
@@ -221,7 +225,9 @@ export class GameFlow {
     // otherwise the game is still starting
     else {
       this.updateState('starting_game')
-      setTimeout(() => {
+      
+      if (this._startingTimer) clearTimeout(this._startingTimer)
+      this._startingTimer = setTimeout(() => {
         this._game?.playing()
         this.updateStateIf({ player: 'playing', obs: 'observing' })
       }, milliTillStart)
