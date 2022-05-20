@@ -1,7 +1,6 @@
 import classNames from 'classnames'
 import { players, gameFlow, menu } from 'src/core/di'
 import { GameTime } from 'src/components'
-import { Word } from 'src/components/typography'
 
 type Props = {
   className?: string
