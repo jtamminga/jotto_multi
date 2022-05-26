@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import { useTransition, animated } from 'react-spring'
+import { movementConfig } from 'src/core'
 
 type Props = {
   visible: boolean,
@@ -13,7 +14,7 @@ export function Modal({ visible, children, onClose }: Props) {
     from: { opacity: 0, transform: 'translateY(-40px)' },
     enter: { opacity: 1, transform: 'translateY(0px)' },
     leave: { opacity: 0, transform: 'translateY(-40px)' },
-    config: { mass: 1, tension: 600, friction: 30 }
+    config: movementConfig
   })
 
   return transitions((styles, visible) => visible &&

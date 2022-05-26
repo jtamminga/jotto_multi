@@ -1,8 +1,8 @@
 import { Credentials } from 'jotto_core'
-import { filter } from 'rxjs'
+import { filter, Observable } from 'rxjs'
 import { io, Socket } from 'socket.io-client'
 import { ConnectionState, EventBus, JottoSocket, jottoSocketDecorator } from 'src/core'
-import { createConnectionStateChange, createError, createLoading, isLeaveGame } from 'src/core/events'
+import { ConnectionEvent, createConnectionStateChange, createError, createLoading, isConnectionEvent, isLeaveGame } from 'src/core/events'
 import { JottoError } from 'src/models'
 
 
@@ -50,6 +50,11 @@ export class Connection {
   // getters & setters
   // =================
 
+
+  get state$(): Observable<ConnectionEvent> {
+    return this._bus.events$
+      .pipe(filter(isConnectionEvent))
+  }
 
   get socket(): JottoSocket {
     return this._socket
@@ -109,17 +114,21 @@ export class Connection {
   }
 
   private onConnectError = (error: Error) => {
-    console.log('[connection] connect error:', error.message)
-    
+    console.warn('[connection] connect error:', error.message)
+
     this._bus.publish(createLoading(false))
+
+    // this can happen if the internet cuts out
+    // so we don't want to kick them out of the game yet
+    if (error.message === 'websocket error') {
+      this.updateState('connecting')
+      return
+    }
+    
+    // at this point do a full disconnect
     this.fullDisconnect()
 
-    if (error.message === 'websocket error') {
-      this._bus.publish(createError(
-        new JottoError('lobby_closed', 'Connection closed by server')))
-    }
-
-    else if (!this._hasConnected) {
+    if (error.message === 'lobby not available') {
       this._bus.publish(createError(
         new JottoError('lobby_not_available', 'Lobby not available')))
     }

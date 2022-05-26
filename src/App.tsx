@@ -1,5 +1,5 @@
 import { useGameFlow, useKeyboard, useMenu } from './core/hooks'
-import { FullScreenMenu, Keyboard } from './components'
+import { ConnectionStatus, FullScreenMenu, Keyboard } from './components'
 import { AppState } from './core'
 import { Navigation } from './screens'
 
@@ -26,6 +26,9 @@ export default function App() {
       { keyboard.visible &&
         <Keyboard />
       }
+      
+      {/* connecting feedback */}
+      <ConnectionStatus />
     </div>
   )
 }
