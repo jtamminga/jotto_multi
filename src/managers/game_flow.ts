@@ -227,6 +227,8 @@ export class GameFlow {
       this.updateState('starting_game')
       
       if (this._startingTimer) clearTimeout(this._startingTimer)
+      if (this._pickWordTimer) clearTimeout(this._pickWordTimer)
+      
       this._startingTimer = setTimeout(() => {
         this._game?.playing()
         this.updateStateIf({ player: 'playing', obs: 'observing' })
