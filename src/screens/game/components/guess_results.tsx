@@ -65,7 +65,7 @@ function guessResultItem(guess: Guess, notes: Notes | undefined) {
 
 
 const containerClasses = 'inline-flex rounded space-x-1'
-const baseCharBlockClasses = 'py-2 uppercase text-center'
+const baseCharBlockClasses = 'py-2 uppercase text-center transition-colors delay-300'
 
 
 function charBlockClasses(index: number, inWord: boolean | undefined): string {
@@ -84,7 +84,7 @@ function commonBlockClasses({ common }: Guess): string {
     baseCharBlockClasses,
     'w-14 rounded text-slate-600',
     {
-      'bg-slate-200': common === undefined,
+      'bg-slate-200 animate-pulse': common === undefined,
       'bg-red-200': common === 0 || common === 1,
       'bg-amber-200': common === 2 || common === 3,
       'bg-emerald-200': common === 4 || common === 5,
