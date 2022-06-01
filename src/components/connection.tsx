@@ -16,8 +16,8 @@ export function ConnectionStatus() {
 
 function Reconnecting() {
   return (
-    <div className="p-2 bg-orange-400 text-white rounded text-center animate-pulse">
-      <span>trying to reconnect</span>
+    <div className="p-2 bg-orange-400 text-white rounded text-center">
+      <span className="animate-pulse">trying to reconnect</span>
     </div>
   )
 }

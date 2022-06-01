@@ -22,13 +22,16 @@ export default function App() {
       {/* render screen based on app state */}
       <Navigation state={gameFlow.state} />
 
+      {/* connecting feedback */}
+      <div className="relative">
+        <ConnectionStatus />
+      </div>
+
       {/* keyboard */}
       { keyboard.visible &&
         <Keyboard />
       }
-      
-      {/* connecting feedback */}
-      <ConnectionStatus />
+
     </div>
   )
 }
