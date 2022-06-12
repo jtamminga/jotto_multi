@@ -35,15 +35,13 @@ export class Notes implements Disposable {
   // ================
 
 
+  /**
+   * Check if the letter is in the word
+   * @param letter The letter to check
+   * @returns true/false if in/not-in word, or undefined if not marked 
+   */
   public inWord(letter: string): boolean | undefined {
     return this._letterNotes.get(letter)?.inWord
-  }
-
-  public setMarking(isMarking: boolean) {
-    if (this._isMarking !== isMarking) {
-      this._isMarking = isMarking
-      bus.publish(createNotesEvent(this))
-    }
   }
 
   /**
@@ -105,6 +103,11 @@ export class Notes implements Disposable {
   // =================
 
 
+  /**
+   * process the guess
+   * @param guess The guess to process
+   * @returns true if notes changed
+   */
   private processResult(guess: GuessResult): boolean {
     if (guess.common === 0) {
       this.set(guess.word, { confidence: 'known', inWord: false })

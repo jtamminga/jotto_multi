@@ -45,7 +45,7 @@ function guessResultItem(guess: Guess, notes: Notes | undefined) {
   const charBlocks = letters.map((char, i) =>
     <div key={i} className={charBlockClasses(i, notes?.inWord(char))}>
       {char}
-    </div>  
+    </div>
   )
 
   return (
