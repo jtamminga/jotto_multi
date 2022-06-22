@@ -4,7 +4,7 @@ import { Loader } from './loader'
 
 type Type = 'primary' | 'secondary' | 'link'
 
-type Params = {
+type Props = {
   onClick: MouseEventHandler<HTMLButtonElement>
   text: string
   type?: Type,
@@ -20,7 +20,7 @@ export function Button({
   loading,
   className,
   onClick
-}: Params) {
+}: Props) {
 
   const classes = classNames(
     'h-12 px-6 flex justify-center items-center transition-colors',

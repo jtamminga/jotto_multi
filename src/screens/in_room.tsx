@@ -1,7 +1,8 @@
 import { gameFlow } from 'src/core/di'
-import { Button, Players, Screen } from 'src/components'
+import { Button, Clickable, Players, Screen } from 'src/components'
 import { usePlayers } from 'src/core/hooks'
 import { Em } from 'src/components/typography'
+import { share } from 'src/core/share'
 
 export function InRoom() {
 
@@ -11,9 +12,11 @@ export function InRoom() {
   return (
     <Screen title="Waiting for players">
 
-      { players.ready && players.me.host &&
-        <div className="text-center mb-5">
-          Lobby code is <Em>{players.me.lobbyCode}</Em>
+      { players.ready &&
+        <div className="flex justify-center mb-5">
+          <Clickable onClick={() => share(players.me.lobbyCode)}>
+            Lobby code is <Em>{players.me.lobbyCode}</Em>
+          </Clickable>
         </div>
       }
 

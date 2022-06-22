@@ -2,21 +2,27 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import './core/di'
+import { gameFlow } from './core/di'
 import App from './App'
 import LogRocket from 'logrocket'
+import { onLobbyRedirect } from './core/url'
 
+// start log rocket if in production
 if (process.env.NODE_ENV === 'production') {
   LogRocket.init('21hhmv/jotto')
 }
 
+// redirect to lobby if there is a join url
+onLobbyRedirect(code => {
+  console.log(`[index] connecting to lobby ${code}`)
+  gameFlow.joiningLobby()
+  gameFlow.joinLobby(code)
+})
+
+// render
 ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
   document.getElementById('root')
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals(console.log);
+)
