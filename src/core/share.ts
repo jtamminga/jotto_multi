@@ -5,7 +5,7 @@ export function share(lobbyCode: string): void {
 
   if (isMobile) {
     window.navigator.share({
-      text: 'Join Vying Lobby',
+      title: 'Join Vying Lobby',
       url: joinUrl
     })
   } else {
