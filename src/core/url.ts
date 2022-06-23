@@ -6,16 +6,11 @@ const isCode = /^\d{4}$/
  * @returns the lobby code
  */
 function getLobbyCodeFromUrl(): string | undefined {
-  const segments = window.location.pathname
-    .split('/')
-    .filter(p => p !== '')
+  const params = new URLSearchParams(window.location.search)
+  const code = params.get('join')
 
-  if (
-    segments.length === 2
-    && segments[0] === 'join'
-    && isCode.test(segments[1])
-  ) {
-    return segments[1]
+  if (code && isCode.test(code)) {
+    return code
   }
 }
 
