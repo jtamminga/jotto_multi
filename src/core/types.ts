@@ -6,6 +6,11 @@ import {
   Seconds
 } from 'jotto_core'
 
+export interface AppConfig {
+  serverUrl: string
+  logRocketAppId: string
+}
+
 export interface User {
   userId: string;
   sessionId: string;

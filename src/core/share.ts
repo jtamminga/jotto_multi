@@ -10,5 +10,7 @@ export function share(lobbyCode: string): void {
     })
   } else {
     window.navigator.clipboard.writeText(joinUrl)
+    // TODO: change to notification
+    alert(`copied lobby url to clipboard`)
   }
 }
