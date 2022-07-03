@@ -65,9 +65,11 @@ const primaryStyle =
 
 const secondaryStyle =
   'border-emerald-300 hover:border-emerald-400 text-emerald-500 ' +
+  'dark:text-white ' +
   'hover:text-emerald-600 focus:ring focus:ring-emerald-100 focus:outline-none ' +
   'disabled:border-slate-100 disabled:text-slate-300'  
 
 const linkStyle =
   'text-slate-600 hover:text-slate-700 ' +
+  'dark:text-white hover:dark:text-slate-400 ' +
   'disabled:text-slate-300'

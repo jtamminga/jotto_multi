@@ -1,5 +1,5 @@
 import { Button, EmptyScreen, Errors, GameHeader } from 'src/components'
-import { Em } from 'src/components/typography'
+import { Em, Muted, Text } from 'src/components/typography'
 import { gameFlow } from 'src/core/di'
 
 export function RoleSelect() {
@@ -14,7 +14,7 @@ export function RoleSelect() {
 
           {/* quick description */}
           <div className="my-10 text-center">
-            a simple <Em>five letter</Em> word game that is played with a group
+            <Text>a simple <Em>five letter</Em> word game that is played with a group</Text>
           </div>
 
           {/* call to action */}
@@ -44,8 +44,8 @@ export function RoleSelect() {
       </div>
       
       {/* tutorial */}
-      <div className="mb-3 text-center text-slate-400">
-        learn how to play
+      <div className="mb-3 text-center">
+        <Muted>learn how to play</Muted>
         <Button
           text="start tutorial"
           className="block w-full"

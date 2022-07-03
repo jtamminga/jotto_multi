@@ -11,7 +11,7 @@ type ClassProps = { className?: string }
 
 export function GameHeader({ className }: ClassProps) {
   const classes = classNames(
-    'text-2xl text-center font-black uppercase',
+    'text-2xl text-center font-black text-slate-900 dark:text-white uppercase',
     className
   )
 
@@ -30,7 +30,7 @@ type HeaderProps = { children: ReactNode } & ClassProps
 
 export function Header({ children, className }: HeaderProps) {
   const classes = classNames(
-    'text-lg text-center',
+    'text-lg text-center text-slate-900 dark:text-white',
     className
   )
 
@@ -45,6 +45,9 @@ export function Header({ children, className }: HeaderProps) {
 // ==========
 
 
+/**
+ * @deprecated
+ */
 export function SubHeader({ children, className }: HeaderProps) {
   const classes = classNames(
     'text-center',
