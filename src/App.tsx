@@ -1,4 +1,4 @@
-import { useGameFlow, useKeyboard, useMenu } from './core/hooks'
+import { useAppFlow, useKeyboard, useMenu } from './core/hooks'
 import { ConnectionStatus, FullScreenMenu, Keyboard } from './components'
 import { AppState } from './core'
 import { Navigation } from './screens'
@@ -6,21 +6,21 @@ import { Navigation } from './screens'
 
 export default function App() {
 
-  const { gameFlow } = useGameFlow()
+  const { appFlow } = useAppFlow()
   const { keyboard } = useKeyboard()
   const { menu } = useMenu()
 
   return (
-    <div className={containerStyle(gameFlow.state)}>
+    <div className={containerStyle(appFlow.state)}>
 
       {/* menu */}
       <FullScreenMenu
         visible={menu.visible}
-        state={gameFlow.state}
+        state={appFlow.state}
       />
 
       {/* render screen based on app state */}
-      <Navigation state={gameFlow.state} />
+      <Navigation state={appFlow.state} />
 
       {/* connecting feedback */}
       <div className="relative">

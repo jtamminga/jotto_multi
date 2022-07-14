@@ -1,7 +1,7 @@
 import { filter, Observable } from 'rxjs'
 import { EventBus } from 'src/core'
 import { createMenuVisibilityChange, isMenuVisibilityChangeEvent, MenuEvent } from 'src/core/events'
-import { GameFlow } from './game_flow'
+import { AppFlow } from './app_flow'
 
 export class Menu {
 
@@ -9,11 +9,11 @@ export class Menu {
 
   constructor(
     private _bus: EventBus,
-    _gameFlow: GameFlow
+    _appFlow: AppFlow
   ) {
 
     // hide menu on screen change
-    _gameFlow.state$
+    _appFlow.state$
       .subscribe(() => this.hide())
 
   }

@@ -1,5 +1,5 @@
 import {
-  GameFlow,
+  AppFlow,
   Players,
   Connection,
   Observer,
@@ -28,9 +28,9 @@ export const eventBus = new EventBus()
 export const errors = new Errors(eventBus)
 export const connection = new Connection(eventBus, config.serverUrl)
 export const players = new Players(connection.socket, eventBus)
-export const gameFlow = new GameFlow(connection.socket, eventBus, players)
+export const appFlow = new AppFlow(connection.socket, eventBus, players)
 export const observer = new Observer(eventBus)
 export const keyboard = new Keyboard(eventBus)
-export const menu = new Menu(eventBus, gameFlow)
+export const menu = new Menu(eventBus, appFlow)
 
 console.debug('dependences setup')

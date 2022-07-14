@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button, Screen } from 'src/components'
-import { gameFlow, players } from 'src/core/di'
+import { appFlow, players } from 'src/core/di'
 import { StepOne, StepTwo, StepThree, StepFour, StepFive } from './steps'
 
 export function Tutorial() {
@@ -45,7 +45,7 @@ export function Tutorial() {
           type="primary"
           className="w-full"
           onClick={() =>
-            lastStep ? gameFlow.leave() : setStep(step + 1)
+            lastStep ? appFlow.leave() : setStep(step + 1)
           }
         />
       </div>

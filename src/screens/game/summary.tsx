@@ -1,12 +1,12 @@
 import classNames from 'classnames'
 import { Button, PlayerContainer, PlayersHeader, Screen, Timer } from 'src/components'
 import { PlayerSummary } from 'src/core'
-import { gameFlow, players } from 'src/core/di'
+import { appFlow, players } from 'src/core/di'
 import { usePlayers } from 'src/core/hooks'
 
 export function GameSummary() {
   usePlayers()
-  const { game } = gameFlow
+  const { game } = appFlow
   const { summary, finalTime } = game
 
   return (
@@ -46,14 +46,14 @@ export function GameSummary() {
         { players.me.isPlaying &&
           <Button
             text="Play again"
-            onClick={() => gameFlow.backToRoom()}
+            onClick={() => appFlow.backToRoom()}
           />
         }
 
         <Button
           text="Finished"
           type="secondary"
-          onClick={() => gameFlow.leave()}
+          onClick={() => appFlow.leave()}
         />
       </div>
     </Screen>

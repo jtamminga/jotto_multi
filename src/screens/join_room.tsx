@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button, Input, Screen } from 'src/components'
-import { gameFlow } from 'src/core/di'
+import { appFlow } from 'src/core/di'
 
 export function JoinRoom() {
   
@@ -27,14 +27,14 @@ export function JoinRoom() {
         <Button
           text="Join Game"
           disabled={!isValid}
-          onClick={() => gameFlow.joinRoom(username, 'player')}
+          onClick={() => appFlow.joinRoom(username, 'player')}
         />
 
         <Button
           text="Join as Observer"
           disabled={!isValid}
           type="link"
-          onClick={() => gameFlow.joinRoom(username, 'observer')}
+          onClick={() => appFlow.joinRoom(username, 'observer')}
         />
       </div>
       

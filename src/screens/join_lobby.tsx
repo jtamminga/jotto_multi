@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Button, Errors, Input, Screen } from 'src/components'
 import { Em } from 'src/components/typography'
-import { gameFlow } from 'src/core/di'
+import { appFlow } from 'src/core/di'
 import { useLoading } from 'src/core/hooks'
 
 export function JoinLobby() {
@@ -32,7 +32,7 @@ export function JoinLobby() {
         className="w-full mb-5"
         disabled={!isValid}
         loading={loading}
-        onClick={() => gameFlow.joinLobby(code)}
+        onClick={() => appFlow.joinLobby(code)}
       />
 
       <Errors />

@@ -1,6 +1,6 @@
 import { Button, EmptyScreen, Errors, GameHeader } from 'src/components'
 import { Em, Muted, Text } from 'src/components/typography'
-import { gameFlow } from 'src/core/di'
+import { appFlow } from 'src/core/di'
 
 export function RoleSelect() {
 
@@ -23,14 +23,14 @@ export function RoleSelect() {
             {/* join game */}
             <Button
               text="Join Game"
-              onClick={() => gameFlow.joiningLobby()}
+              onClick={() => appFlow.joiningLobby()}
             />
 
             {/* host lobby */}
             <Button
               text="Host"
               type="link"
-              onClick={() => gameFlow.hostLobby()}
+              onClick={() => appFlow.hostLobby()}
             />
 
           </div>
@@ -50,7 +50,7 @@ export function RoleSelect() {
           text="start tutorial"
           className="block w-full"
           type="link"
-          onClick={() => gameFlow.startTutorial()}
+          onClick={() => appFlow.startTutorial()}
         />
       </div>
 

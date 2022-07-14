@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react'
-import { gameFlow } from 'src/core/di'
+import { appFlow } from 'src/core/di'
 import { Button } from './button'
 import { GameHeader, Header } from './header'
 import { Modal } from './modal'
@@ -28,7 +28,7 @@ export function Screen({ title, children, canLeave = true }: Props) {
             text="Yes"
             type="secondary"
             className="grow"
-            onClick={() => gameFlow.leave()}
+            onClick={() => appFlow.leave()}
           />
 
           <Button

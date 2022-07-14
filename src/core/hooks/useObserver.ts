@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { filter, throttleTime } from 'rxjs'
-import { gameFlow, observer, players } from 'src/core/di'
+import { appFlow, observer, players } from 'src/core/di'
 import { GuessResult } from '../types'
 
 export function useObserver() {
@@ -30,7 +30,7 @@ export function useObserver() {
 
 
 function getLatestGuess(): GuessResult | undefined {
-  const otherGuesses = gameFlow.game.guesses
+  const otherGuesses = appFlow.game.guesses
       .filter(e => e.from !== players.me)
 
   return otherGuesses[otherGuesses.length - 1]

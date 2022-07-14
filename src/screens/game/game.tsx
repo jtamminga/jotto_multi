@@ -1,6 +1,6 @@
 import { ReactNode, useRef, useState } from 'react'
 import { Button, FiveWordChangeEvent, FiveWordInput } from 'src/components'
-import { gameFlow } from 'src/core/di'
+import { appFlow } from 'src/core/di'
 import { useMe, useNotes } from 'src/core/hooks'
 import { GuessResults } from './components/guess_results'
 import { Hud } from './components/hud'
@@ -35,7 +35,7 @@ export function Game() {
         <Button
           text="Observe"
           className="mt-3 w-full"
-          onClick={() => gameFlow.observe()}
+          onClick={() => appFlow.observe()}
         />
       </div>
     )

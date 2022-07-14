@@ -1,4 +1,4 @@
-import { gameFlow } from 'src/core/di'
+import { appFlow } from 'src/core/di'
 import { Button, Clickable, Players, Screen } from 'src/components'
 import { usePlayers } from 'src/core/hooks'
 import { Em } from 'src/components/typography'
@@ -28,21 +28,21 @@ export function InRoom() {
             text="Relaxed"
             className="grow"
             disabled={!valid}
-            onClick={() => gameFlow.start({ gameLength: undefined })}
+            onClick={() => appFlow.start({ gameLength: undefined })}
           />
 
           <Button
             text="5 min"
             className="grow"
             disabled={!valid}
-            onClick={() => gameFlow.start({ gameLength: 5 })}
+            onClick={() => appFlow.start({ gameLength: 5 })}
           />
 
           <Button
             text="10 min"
             className="grow"
             disabled={!valid}
-            onClick={() => gameFlow.start({ gameLength: 10 })}
+            onClick={() => appFlow.start({ gameLength: 10 })}
           />
         </div>
       }

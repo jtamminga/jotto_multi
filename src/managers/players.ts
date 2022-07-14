@@ -12,7 +12,7 @@ import {
 import { GameEvent, isGameEvent } from 'src/core/events/game'
 import { Credentials, PlayerState, UserRestore, UserState } from 'jotto_core'
 import { ConnectionEvent, createLoading, isConnectionEvent } from 'src/core/events'
-import { gameFlow } from 'src/core/di'
+import { appFlow } from 'src/core/di'
 
 export class Players {
 
@@ -160,7 +160,7 @@ export class Players {
 
     if (player) {
       player.connected = true
-      player.playingAgain = gameFlow.state === 'game_summary' && !reconnected
+      player.playingAgain = appFlow.state === 'game_summary' && !reconnected
     }
     // reconnects don't count as a user joining
     else if (!reconnected) {
@@ -186,7 +186,7 @@ export class Players {
 
     if (intended) {
       player.leftLobby = true
-      if (gameFlow.state === 'joined_room') {
+      if (appFlow.state === 'joined_room') {
         player.dispose()
         this._players.splice(index, 1)
       }

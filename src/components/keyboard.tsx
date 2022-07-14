@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { ReactNode, useEffect, useRef, useState } from 'react'
-import { eventBus, menu, gameFlow } from 'src/core/di'
+import { eventBus, menu, appFlow } from 'src/core/di'
 import { createKeypress } from 'src/core/events'
 import { useKeyboard, useNotes } from 'src/core/hooks'
 import { Notes } from 'src/models'
@@ -57,7 +57,7 @@ export function Keyboard() {
     const row = Array.from('zxcvbnm')
 
     let button: ReactNode
-    if (gameFlow.state === 'playing') {
+    if (appFlow.state === 'playing') {
       button = (
         <button
           className={classNames(largeButtonBase, "bg-blue-100")}

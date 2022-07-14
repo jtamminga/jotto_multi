@@ -1,4 +1,4 @@
-import { gameFlow } from 'src/core/di'
+import { appFlow } from 'src/core/di'
 import { createHook } from './factory'
 
-export const useGameFlow = createHook(gameFlow.state$, { gameFlow })
+export const useAppFlow = createHook(appFlow.state$, { appFlow })

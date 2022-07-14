@@ -1,13 +1,13 @@
 import { GameTime, GuessResultSummary, PlayersStats, Screen, SubHeader, Timer } from 'src/components'
 import { useObserver } from 'src/core/hooks'
-import { gameFlow } from 'src/core/di'
+import { appFlow } from 'src/core/di'
 import { GuessResult } from 'src/core'
 import { intervalToDuration } from 'date-fns'
 
 export function Observing() {
   useObserver()
 
-  const { game } = gameFlow
+  const { game } = appFlow
   const guesses = [...game.guesses].reverse()
 
   return (
@@ -63,7 +63,7 @@ function guessResults(guesses: ReadonlyArray<GuessResult>) {
 }
 
 function guessResultItem(result: GuessResult) {
-  const relative = intervalToDuration({ start: gameFlow.game.startedOn, end: result.date })
+  const relative = intervalToDuration({ start: appFlow.game.startedOn, end: result.date })
 
   return (
     <div className="bg-slate-100 p-2 px-3 rounded text-slate-800 flex">

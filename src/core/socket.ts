@@ -4,7 +4,6 @@ import { ClientToServerEvents, ServerToClientEvents } from 'jotto_core'
 type Auth = {
   sessionId?: string
   lobbyCode?: string
-  type?: 'player' | 'observer'
 }
 
 export abstract class JottoSocket extends Socket<ServerToClientEvents, ClientToServerEvents> {

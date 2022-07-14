@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import './core/di'
-import { config, gameFlow } from './core/di'
+import { config, appFlow } from './core/di'
 import App from './App'
 import LogRocket from 'logrocket'
 import { onLobbyRedirect } from './core/url'
@@ -15,8 +15,8 @@ if (process.env.NODE_ENV === 'production') {
 // redirect to lobby if there is a join url
 onLobbyRedirect(code => {
   console.log(`[index] connecting to lobby ${code}`)
-  gameFlow.joiningLobby()
-  gameFlow.joinLobby(code)
+  appFlow.joiningLobby()
+  appFlow.joinLobby(code)
 })
 
 // render

@@ -20,7 +20,7 @@ import { differenceInMilliseconds } from 'date-fns'
  * Handles game flow related functions.
  * If it effects the flow of the game it should be here.
  */
-export class GameFlow {
+export class AppFlow {
 
   private _state: AppState
   private _game: Game | undefined
@@ -151,7 +151,7 @@ export class GameFlow {
 
 
   private onConnectionEvent = (event: ConnectionEvent) => {
-    console.log('[gameflow] onConnectionEvent state:', event.state)
+    console.log('[appFlow] onConnectionEvent state:', event.state)
 
     switch (event.state) {
       case 'connected':
@@ -173,7 +173,7 @@ export class GameFlow {
   }
 
   private onWorkPicking = (socketConfig: SocketGameConfig, socketRestore?: SocketUserRestore) => {
-    console.log('[gameflow] on word picking')
+    console.log('[appFlow] on word picking')
 
     this._game = new Game(
       this._players.playing,
@@ -203,7 +203,7 @@ export class GameFlow {
   }
 
   private onStartPlaying = (restore?: SocketUserRestoreExt) => {
-    console.log('[gameflow] on start playing')
+    console.log('[appFlow] on start playing')
 
     if (!this._game) {
       throw new IllegalStateException('game not created yet')
@@ -252,16 +252,16 @@ export class GameFlow {
   }
 
   private onRestore = (userRestore: SocketUserRestore) => {
-    console.log('[gameflow] on restore')
+    console.log('[appFlow] on restore')
 
     // optimization
     // this restores only missing guesses rather than doing a full restore
     if (this.tryHistoryRestore(userRestore)) {
-      console.log('[gameflow] restored history')
+      console.log('[appFlow] restored history')
       return
     }
 
-    console.log('[gameflow] full restore')
+    console.log('[appFlow] full restore')
 
     const restore: SocketUserRestoreExt = {
       ...userRestore,
@@ -306,7 +306,7 @@ export class GameFlow {
     ) {
       const { history } = restore
       const numMissed = history.length - this._game.guesses.length
-      console.log(`[gameflow] restoring ${numMissed} guess(es)`)
+      console.log(`[appFlow] restoring ${numMissed} guess(es)`)
 
       for (let i = history.length - numMissed; i < history.length; i++) {
         this.onGuessResult(history[i])

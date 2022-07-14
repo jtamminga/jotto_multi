@@ -1,30 +1,30 @@
 import { AutoTimer, Players, Screen } from 'src/components'
-import { useGameFlow } from 'src/core/hooks'
+import { useAppFlow } from 'src/core/hooks'
 
 export function PickedWord() {
 
-  const { gameFlow } = useGameFlow()
+  const { appFlow } = useAppFlow()
 
   // title based on state
-  const title = gameFlow.state === 'starting_game' ?
+  const title = appFlow.state === 'starting_game' ?
     'Starting game' : 'Waiting for other players'
 
   return (
     <Screen title={title}>
 
-      { gameFlow.state === 'picked_word' &&
+      { appFlow.state === 'picked_word' &&
         <div className="text-center mb-5">
-          <AutoTimer dueAt={gameFlow.game.wordDueOn} />
+          <AutoTimer dueAt={appFlow.game.wordDueOn} />
         </div>
       }
 
-      { gameFlow.state === 'starting_game' &&
+      { appFlow.state === 'starting_game' &&
         <div className="text-center mb-5">
-          Starting in <AutoTimer dueAt={gameFlow.game.startedOn} />
+          Starting in <AutoTimer dueAt={appFlow.game.startedOn} />
         </div>
       }
 
-      <Players show={gameFlow.state === 'starting_game' ? 'opponents' : 'readyState'} />
+      <Players show={appFlow.state === 'starting_game' ? 'opponents' : 'readyState'} />
 
     </Screen>
   )

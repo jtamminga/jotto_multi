@@ -1,6 +1,6 @@
 import { filter, Observable } from 'rxjs'
 import { EventBus } from 'src/core'
-import { gameFlow, players } from 'src/core/di'
+import { appFlow, players } from 'src/core/di'
 import {
   AppStateChangeEvent,
   createKeyboardVisibilityChange,
@@ -23,7 +23,7 @@ export class Keyboard {
       .pipe(filter(isMeWon))
       .subscribe(() => this.hide())
 
-    gameFlow.state$
+    appFlow.state$
       .subscribe(e => this.onAppStateChange(e))
   }
 

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Button, Screen, FiveWordInput, AutoTimer } from 'src/components'
 import { Em } from 'src/components/typography'
-import { gameFlow } from 'src/core/di'
+import { appFlow } from 'src/core/di'
 
 export function PickWord() {
   
@@ -11,7 +11,7 @@ export function PickWord() {
     <Screen title="Pick a word">
 
       <div className="text-center mb-5">
-        <AutoTimer dueAt={gameFlow.game.wordDueOn} />
+        <AutoTimer dueAt={appFlow.game.wordDueOn} />
       </div>
 
       <div className="text-center mb-5">
@@ -28,7 +28,7 @@ export function PickWord() {
         text="Submit"
         className="w-full mb-5"
         disabled={word === undefined}
-        onClick={() => gameFlow.pickWord(word!)}
+        onClick={() => appFlow.pickWord(word!)}
       ></Button>
 
       <div className="text-center mb-5">
@@ -41,7 +41,7 @@ export function PickWord() {
 
 // game length
 function gameLength() {
-  const { gameLength } = gameFlow.game
+  const { gameLength } = appFlow.game
   const content = gameLength ? `${gameLength} min` : 'relaxed'
   return <span className="bg-slate-100 px-2 py-1 rounded">{content}</span>
 }

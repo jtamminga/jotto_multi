@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { players, gameFlow, menu } from 'src/core/di'
+import { players, appFlow, menu } from 'src/core/di'
 import { GameTime } from 'src/components'
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 export function Hud({ className }: Props) {
 
   const { me } = players
-  const { game } = gameFlow
+  const { game } = appFlow
 
   const classes = classNames(
     'flex',
