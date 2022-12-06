@@ -18,6 +18,7 @@ export class Player implements Disposable {
   protected _subscriptions: Subscription[] = []
   protected _guesses: Guess[] = []
   protected _guessedWord: string | undefined
+  protected _rank: number | undefined
 
   private _playingAgain = false
   private _leftLobby = false
@@ -31,14 +32,6 @@ export class Player implements Disposable {
     this._wonAt = user.wonAt
     this._host = user.host
     this._lobbyCode = user.lobbyCode
-
-    this._subscriptions.push(bus.events$
-      .pipe(
-        filter(isGuessResultEvent),
-        filter(this.isMyGuess)
-      )
-      .subscribe(e => this.onGuessResult(e.guessResult))
-    )
 
     this._subscriptions.push(bus.events$
       .pipe(
@@ -151,6 +144,14 @@ export class Player implements Disposable {
     return this._leftLobby
   }
 
+  public get firstRank(): boolean {
+    return this.rank === 1
+  }
+
+  public get rank(): number | undefined {
+    return this._rank
+  }
+
   // setters
 
   set connected(value: boolean) {
@@ -204,6 +205,32 @@ export class Player implements Disposable {
     this._connected = state.connected
   }
 
+  public addGuess(result: GuessResult) {
+    const i = this._guesses.findIndex(g => g.id === result.id)
+
+    if (i === -1) {
+      this._guesses.push(result)
+    } else {
+      this._guesses[i] = result
+    }
+
+    bus.publish(createPlayerChange(this, 'guesses'))
+
+    if (result.won) {
+      this._wonAt = Date.now()
+      bus.publish(createPlayerWon(this))
+    }
+  }
+
+  public updateRank(rank: number) {
+    const originalRank = this._rank
+    this._rank = rank
+
+    if (this._rank !== originalRank) {
+      bus.publish(createPlayerChange(this, 'rank'))
+    }
+  }
+
   public reset() {
     this._ready = false
     this._wonAt = undefined
@@ -223,23 +250,6 @@ export class Player implements Disposable {
   // handlers
   // ========
 
-
-  protected onGuessResult(result: GuessResult) {
-    const i = this._guesses.findIndex(g => g.id === result.id)
-
-    if (i === -1) {
-      this._guesses.push(result)
-    } else {
-      this._guesses[i] = result
-    }
-
-    bus.publish(createPlayerChange(this, 'guesses'))
-
-    if (result.won) {
-      this._wonAt = Date.now()
-      bus.publish(createPlayerWon(this))
-    }
-  }
 
   protected onGuessAgainstMe(result: GuessResult) {
     if (result.won) {

@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import { Button, PlayerContainer, PlayersHeader, Screen, Timer } from 'src/components'
+import { Muted } from 'src/components/typography'
 import { PlayerSummary } from 'src/core'
 import { gameFlow, players } from 'src/core/di'
 import { usePlayers } from 'src/core/hooks'
@@ -26,7 +27,7 @@ export function GameSummary() {
             <li key={i} className="mb-2">
               <PlayerContainer
                 isMe={players.isMe(summary.player)}
-                style={summary.place === 1 ? 'grand' : 'primary'}
+                style={i === 0 ? 'grand' : 'primary'}
                 num={i+1}
               >
                 {playerSummary(summary)}
@@ -55,6 +56,12 @@ export function GameSummary() {
           type="secondary"
           onClick={() => gameFlow.leave()}
         />
+
+        { players.me.isObserving &&
+          <div className="text-center">
+            <Muted>no action required to observe the next game</Muted>
+          </div>
+        }
       </div>
     </Screen>
   )

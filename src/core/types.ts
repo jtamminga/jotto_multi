@@ -63,16 +63,6 @@ export interface GameConfig {
   opponents: { player: Player, opponent: Player }[]
 }
 
-export interface SocketGuessResult {
-  id: string
-  word: string
-  date: number
-  common: number
-  won: boolean
-  from: string
-  to: string
-}
-
 export interface Guess {
   id: string
   word: string

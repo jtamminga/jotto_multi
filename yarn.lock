@@ -5529,10 +5529,10 @@ jest@^27.4.3:
     import-local "^3.0.2"
     jest-cli "^27.4.7"
 
-jotto_core@^1.27.0:
-  version "1.32.1"
-  resolved "https://registry.yarnpkg.com/jotto_core/-/jotto_core-1.32.1.tgz#3c83fada932229a72bff61350806ad1635158cab"
-  integrity sha512-EUA9Fhj31HJTgxPaCB5pNOR3AUb9CpJL/Gj2CTBPRQzNVWzWb3TIVssSuyC87T+0FPM1odfd71b4DLDP/kbXUw==
+jotto_core@^1.32.3:
+  version "1.32.3"
+  resolved "https://registry.yarnpkg.com/jotto_core/-/jotto_core-1.32.3.tgz#c5e6801ec6714e6862d9fbaa0bd5474deacfab6c"
+  integrity sha512-Gq7XdHH2+uYO+41E9USwVM0KW0zKq/LF6xUqLRW1ZQCGDEjE/rqGUSgMrmMtOqsb8qaBJ5iPI0uRhkdQkgEakA==
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"

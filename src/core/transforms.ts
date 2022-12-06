@@ -2,9 +2,10 @@ import { players } from 'src/core/di'
 import {
   GameConfig as SocketGameConfig,
   UserRestore as SocketUserRestore,
-  GameSummary as SocketGameSummary
+  GameSummary as SocketGameSummary,
+  GuessResult as SocketGuessResult
 } from 'jotto_core'
-import { GameRestore, GuessResult, SocketGuessResult, GameConfig, GameSummary } from './types'
+import { GameRestore, GuessResult, GameConfig, GameSummary } from './types'
 
 export function gameConfig(config: SocketGameConfig): GameConfig {
   const opponents = config.opponents.map(o => ({

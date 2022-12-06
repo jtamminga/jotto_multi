@@ -3,10 +3,11 @@ import {
   UserRestore as SocketUserRestore,
   GameConfig as SocketGameConfig,
   GameSummary as SocketGameSummary,
+  GuessResult as SocketGuessResult,
   UserType,
   HostConfig
 } from 'jotto_core'
-import { EventBus, AppState, JottoSocket, SocketGuessResult, IllegalStateException } from 'src/core'
+import { EventBus, AppState, JottoSocket, IllegalStateException } from 'src/core'
 import { createGuessResult, createLeaveGame, createPlayAgain } from 'src/core/events/game'
 import { createPickedWord } from 'src/core/events/me'
 import { Game } from 'src/models'
@@ -234,6 +235,8 @@ export class GameFlow {
         this.updateStateIf({ player: 'playing', obs: 'observing' })
       }, milliTillStart)
     }
+
+    this._players.updateRanks()
   }
 
   private onGuessResult = (guessResult: SocketGuessResult) => {

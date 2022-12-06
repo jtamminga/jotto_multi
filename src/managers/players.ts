@@ -10,7 +10,7 @@ import {
   createAllPlayersCreated
 } from 'src/core/events/players'
 import { GameEvent, isGameEvent } from 'src/core/events/game'
-import { Credentials, PlayerState, UserRestore, UserState } from 'jotto_core'
+import { comparePlayers, Credentials, PlayerState, UserRestore, UserState } from 'jotto_core'
 import { ConnectionEvent, createLoading, isConnectionEvent } from 'src/core/events'
 import { gameFlow } from 'src/core/di'
 
@@ -22,6 +22,7 @@ export class Players {
 
   // collection of all players
   private _players: Player[] = []
+  private _playersByRank: Player[] | undefined
   
   constructor(
     private _socket: JottoSocket,
@@ -80,6 +81,10 @@ export class Players {
     return this._players.filter(p => p.isPlaying)
   }
 
+  get byRank(): Player[] {
+    return this._playersByRank ?? this.playing
+  }
+
   get observing(): Player[] {
     return this._players.filter(p => p.isObserving)
   }
@@ -115,6 +120,18 @@ export class Players {
 
   public clearTutoralMode() {
     this.reset()
+  }
+
+  public updateRanks() {
+    // sort players by rank and save results
+    this._playersByRank = this.playing.sort((a, b) =>
+      comparePlayers(a.perf, b.perf))
+
+    // update each player with new rank
+    this._playersByRank.forEach((player, i) =>
+      player.updateRank(i + 1))
+
+    return this._playersByRank
   }
 
 
@@ -254,6 +271,9 @@ export class Players {
         this._players.forEach(p => p.dispose())
         this._players = []
         break
+      case 'guess_result':
+        this.updateRanks()
+        break
     }
   }
 
@@ -311,5 +331,6 @@ export class Players {
 
     this._players.forEach(p => p.dispose())
     this._players = []
+    this._playersByRank = undefined
   }
 }

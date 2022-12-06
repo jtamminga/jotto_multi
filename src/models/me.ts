@@ -53,8 +53,8 @@ export class Me extends Player {
   // =========
 
 
-  override onGuessResult(result: GuessResult) {
-    super.onGuessResult(result)
+  override addGuess(result: GuessResult) {
+    super.addGuess(result)
     this._notes?.addGuess(result)
   }
 

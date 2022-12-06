@@ -1,4 +1,3 @@
-import { comparePlayers } from 'jotto_core'
 import { useState } from 'react'
 import { useGuessResult, usePlayers } from 'src/core/hooks'
 import { Player } from 'src/models'
@@ -12,12 +11,6 @@ export function PlayersStats() {
   const { players } = usePlayers()
   useGuessResult()
 
-  const sortedPlayers = players.playing
-    .slice()
-    .sort((a, b) =>
-      comparePlayers(a.perf, b.perf)
-    )
-
   return (
     <div
       onTouchStart={() => setShowOpponents(true)}
@@ -30,18 +23,20 @@ export function PlayersStats() {
         </PlayersHeader>
 
         {/* players */}
-        {sortedPlayers.map((player, i) =>
+        {players.byRank.map((player, i) =>
           <li key={player.userId} className="mb-2">
-            <PlayerContainer isMe={players.isMe(player)} num={i+1}>
+            <PlayerContainer isMe={players.isMe(player)} num={player.rank}>
               {renderPlayerStats(player, showOpponents)}
             </PlayerContainer>
           </li>
         )}
       </ol>
 
-      <div className="my-5 text-center">
-        <Em>{players.me.opponent.username}</Em> is your opponent
-      </div>
+      {players.me.isPlaying &&
+        <div className="my-5 text-center">
+          <Em>{players.me.opponent.username}</Em> is your opponent
+        </div>
+      }
     </div>
   )
 }

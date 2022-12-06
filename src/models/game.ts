@@ -140,8 +140,9 @@ export class Game implements Disposable {
     this._players.forEach(player => player.startPlaying())
   }
 
-  public addGuess(history: GuessResult) {
-    this._guesses.push(history)
+  public addGuess(result: GuessResult) {
+    this._guesses.push(result)
+    result.from.addGuess(result)
   }
 
   public gameOver(gameSummary: GameSummary) {

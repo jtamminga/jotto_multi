@@ -25,6 +25,7 @@ export type PlayerEventType =
 
 export type PlayerProperty =
   | 'guesses'
+  | 'rank'
 
 
 //
