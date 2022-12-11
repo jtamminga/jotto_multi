@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { useTransition, animated } from 'react-spring'
+import { useTransition, animated } from '@react-spring/web'
 import { movementConfig } from 'src/core'
 
 type Props = {

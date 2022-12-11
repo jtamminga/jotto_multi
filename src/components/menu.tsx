@@ -1,7 +1,7 @@
 import { Screen } from './screen'
 import { AppState } from 'src/core'
 import { PlayersStats } from './players/players_stats'
-import { useTransition, animated } from 'react-spring'
+import { useTransition, animated } from '@react-spring/web'
 import { Button } from './button'
 import { menu } from 'src/core/di'
 

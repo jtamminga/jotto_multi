@@ -1,4 +1,4 @@
-import { animated, useTransition } from 'react-spring'
+import { animated, useTransition } from '@react-spring/web'
 import { toastAnimation } from 'src/core'
 import { useConnection } from 'src/core/hooks'
 

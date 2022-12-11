@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { ReactNode, useEffect } from 'react'
-import { useSpring, animated } from 'react-spring'
+import { useSpring, animated } from '@react-spring/web'
 import { GuessResultSummary } from 'src/components'
 import { useObserver } from 'src/core/hooks'
 
