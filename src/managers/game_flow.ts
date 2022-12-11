@@ -211,6 +211,7 @@ export class GameFlow {
     }
 
     this._game.starting()
+    this._players.updateRanks()
     const milliTillStart = differenceInMilliseconds(this._game.startedOn, Date.now())
 
     // if restoring and game has started (playing)
