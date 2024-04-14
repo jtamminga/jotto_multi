@@ -1,0 +1,18 @@
+name: Build and Run Docker Image
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: build web docker image
+        run:  sudo docker build ./ -t local/jotto-multi
