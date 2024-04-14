@@ -1,5 +1,7 @@
 FROM node:lts-bullseye-slim
 
+ARG REACT_APP_SERVER_URL=http://192.168.0.100:4001
+
 WORKDIR /usr/src/app
 
 COPY . .
