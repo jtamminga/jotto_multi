@@ -267,6 +267,7 @@ export class Players {
         this._userId = undefined
         this._player?.dispose()
         this._player = undefined
+      // eslint-disable-next-line no-fallthrough
       case 'playAgain':
         this._players.forEach(p => p.dispose())
         this._players = []

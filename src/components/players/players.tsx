@@ -28,7 +28,7 @@ export function Players({ show, className }: Props) {
   return (
     <div className={className}>
       <ul>
-        { players.playing.map(player =>
+        {players.playing.map(player =>
           <li key={player.username} className="mb-2">
             <PlayerContainer isMe={players.isMe(player)}>
               {playerContent(player, show)}
