@@ -136,7 +136,7 @@ export function Keyboard() {
 
 
   return (
-    <div className="w-full pt-1 px-1 pb-2">
+    <div className="w-full px-1 pb-2">
 
       {firstRow()}
       {secondRow()}
@@ -184,11 +184,11 @@ function buttonStyle(key: string, notes: Notes | undefined): string {
   const known = letterNote?.confidence === 'known'
   
   return classNames(
-    buttonBase, 'flex-1',
+    buttonBase, 'flex-1 transition-colors duration-300',
     {
-      'bg-slate-200 text-slate-600': inWord === undefined,
-      'bg-emerald-400 text-white': inWord === true,
-      'bg-slate-400 text-white': inWord === false,
+      'bg-slate-200 text-slate-600 active:bg-slate-300': inWord === undefined,
+      'bg-emerald-400 text-white active:bg-emerald-500': inWord === true,
+      'bg-slate-400 text-white active:bg-slate-500': inWord === false,
       'opacity-50': known && isMarking
     }
   )

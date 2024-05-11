@@ -29,7 +29,7 @@ export function Game() {
 
   if (me.won) {
     content = (
-      <div className="bg-emerald-100 p-5 rounded text-center mb-5">
+      <div className="bg-emerald-100 p-5 rounded text-center mb-3">
         You guessed right! 🥳
 
         <Button
@@ -42,7 +42,7 @@ export function Game() {
   } else {
     content = (
       <>
-        <div className="flex justify-center mb-5">
+        <div className="flex justify-center my-3">
           <FiveWordInput
             value={value}
             guesses={me.guesses}
@@ -52,7 +52,7 @@ export function Game() {
 
         <Button
           text="Guess"
-          className="w-full mb-5"
+          className="w-full mb-3"
           disabled={!isValid}
           onClick={onGuess}
         />
@@ -66,11 +66,9 @@ export function Game() {
         <Hud className="my-3" />
 
         <Observer
-          className="mb-5"
+          className="mb-3"
           onClick={word => word && setValue(word)}
         />
-
-        {content}
       </div>
 
       <div className="px-3 grow overflow-y-auto" ref={guessListRef}>
@@ -82,6 +80,10 @@ export function Game() {
           guesses={me.guesses}
           notes={notes}
         />
+      </div>
+
+      <div className="px-3">
+        {content}
       </div>
     </>
   )
