@@ -8806,7 +8806,6 @@ __metadata:
     classnames: "npm:^2.3.1"
     date-fns: "npm:^2.28.0"
     jotto_core: "npm:1.33.0"
-    logrocket: "npm:^2.2.1"
     postcss: "npm:^8.4.5"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
@@ -9218,13 +9217,6 @@ __metadata:
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: 10c0/d8cbea072bb08655bb4c989da418994b073a608dffa608b09ac04b43a791b12aeae7cd7ad919aa4c925f33b48490b5cfe6c1f71d827956071dae2e7bb3a6b74c
-  languageName: node
-  linkType: hard
-
-"logrocket@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "logrocket@npm:2.2.1"
-  checksum: 10c0/20c9230c16ed329f92f74212d3e17194a28e8fe6ef7a03e27435f41557a4edabeed901bece719983e835e0b150f39350a73efa4b8e971be04a828e1f46354fa9
   languageName: node
   linkType: hard
 

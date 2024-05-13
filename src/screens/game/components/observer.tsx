@@ -3,6 +3,8 @@ import { ReactNode, useEffect } from 'react'
 import { useSpring, animated } from '@react-spring/web'
 import { GuessResultSummary } from 'src/components'
 import { useObserver } from 'src/core/hooks'
+import { eventBus } from 'src/core/di'
+import { createSetWord } from 'src/core/events'
 
 type Props = {
   className?: string
@@ -17,6 +19,7 @@ export function Observer({ className, onClick }: Props) {
   useEffect(() => {
     animate({ transform: 'scale(1.1)'})
     animate({ transform: 'scale(1)', delay: 100 })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [latestResult])
 
 
@@ -36,8 +39,13 @@ export function Observer({ className, onClick }: Props) {
   // =============
 
   function handleOnClick() {
+    if (latestResult === undefined) {
+      return
+    }
+
+    eventBus.publish(createSetWord(latestResult.word))
     if (onClick) {
-      onClick(latestResult?.word)
+      onClick(latestResult.word)
     }
   }
 

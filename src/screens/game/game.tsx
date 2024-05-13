@@ -1,5 +1,5 @@
-import { ReactNode, useRef, useState } from 'react'
-import { Button, FiveWordChangeEvent, FiveWordInput } from 'src/components'
+import { ReactNode, useRef } from 'react'
+import { Button, FiveWordInput } from 'src/components'
 import { gameFlow } from 'src/core/di'
 import { useMe, useNotes } from 'src/core/hooks'
 import { GuessResults } from './components/guess_results'
@@ -7,21 +7,12 @@ import { Hud } from './components/hud'
 import { Observer } from './components/observer'
 
 export function Game() {
-  const [value, setValue] = useState<string>()
-  const [isValid, setIsValid] = useState(false)
   const guessListRef = useRef<HTMLDivElement>(null)
-
   const { me } = useMe()
   const { notes } = useNotes()
 
-  function onChange(e: FiveWordChangeEvent) {
-    setIsValid(e.isValid)
-    setValue(e.value)
-  }
-
-  function onGuess() {
-    me.guess(value!)
-    setValue(undefined)
+  function onGuess(word: string) {
+    me.guess(word)
     guessListRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -41,22 +32,11 @@ export function Game() {
     )
   } else {
     content = (
-      <>
-        <div className="flex justify-center my-3">
-          <FiveWordInput
-            value={value}
-            guesses={me.guesses}
-            onChange={onChange}
-          />
-        </div>
-
-        <Button
-          text="Guess"
-          className="w-full mb-3"
-          disabled={!isValid}
-          onClick={onGuess}
-        />
-      </>
+      <FiveWordInput
+        className="my-3"
+        buttonLabel="Guess"
+        onSubmit={onGuess}
+      />
     )
   }
 
@@ -64,11 +44,7 @@ export function Game() {
     <>
       <div className="px-3">
         <Hud className="my-3" />
-
-        <Observer
-          className="mb-3"
-          onClick={word => word && setValue(word)}
-        />
+        <Observer className="mb-3" />
       </div>
 
       <div className="px-3 grow overflow-y-auto" ref={guessListRef}>

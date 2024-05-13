@@ -77,7 +77,7 @@ function playerSummary(summary: PlayerSummary) {
   return (
     <>
       <div className="w-24 text-center">{name(summary)}</div>
-      <div className="w-16 text-center">{summary.wonAt ? '⭐' : summary.bestGuess}</div>
+      <div className="w-16 text-center">{summary.totalWins}</div>
       <div className="w-16 text-center">{summary.word}</div>
       <div className="w-16 text-center">{summary.numGuesses}</div>
     </>
@@ -97,7 +97,7 @@ const headerColumns =
   (
     <>
       <div className="w-24 flex justify-center items-end text-center">Player</div>
-      <div className="w-16 flex justify-center items-end text-center">Best</div>
+      <div className="w-16 flex justify-center items-end text-center">Wins</div>
       <div className="w-16 flex justify-center items-end text-center">Word</div>
       <div className="w-16 flex justify-center items-end text-center">Guesses</div>
     </>

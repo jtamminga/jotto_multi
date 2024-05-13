@@ -2,9 +2,8 @@ import { Event } from './event'
 
 
 export type KeyboardEventType =
-
   | 'keypress'
-
+  | 'set_word'
   | 'visibility_change'
 
 
@@ -19,8 +18,14 @@ export interface KeyboardEvent extends Event {
 }
 
 export interface KeyPressEvent extends KeyboardEvent {
+  type: 'keypress'
   key: string
   isMarking: boolean
+}
+
+export interface SetWordEvent extends KeyboardEvent {
+  type: 'set_word'
+  word: string
 }
 
 
@@ -47,6 +52,15 @@ export function createKeypress(key: string, isMarking: boolean): KeyPressEvent {
   }
 }
 
+export function createSetWord(word: string): SetWordEvent {
+  return {
+    domain: 'keyboard',
+    type: 'set_word',
+    timestamp: Date.now(),
+    word
+  }
+}
+
 export function createKeyboardVisibilityChange(): KeyboardEvent {
   return create('visibility_change')
 }
@@ -63,4 +77,8 @@ export function isKeyboardEvent(event: Event): event is KeyboardEvent {
 
 export function isKeyPressEvent(event: Event): event is KeyPressEvent {
   return isKeyboardEvent(event) && event.type === 'keypress'
+}
+
+export function isSetWordEvent(event: Event): event is SetWordEvent {
+  return isKeyboardEvent(event) && event.type === 'set_word'
 }

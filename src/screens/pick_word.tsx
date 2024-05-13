@@ -1,12 +1,8 @@
-import { useState } from 'react'
-import { Button, Screen, FiveWordInput, AutoTimer } from 'src/components'
+import { Screen, FiveWordInput, AutoTimer } from 'src/components'
 import { Em } from 'src/components/typography'
 import { gameFlow } from 'src/core/di'
 
 export function PickWord() {
-  
-  const [word, setWord] = useState<string>()
-
   return (
     <Screen title="Pick a word">
 
@@ -18,23 +14,17 @@ export function PickWord() {
         Pick a <Em>5 letter</Em> word with <Em>no duplicate</Em> letters
       </div>
 
-      <div className="flex justify-center mb-5">
-        <FiveWordInput
-          onChange={e => setWord(e.word)}
-        />
-      </div>
-
-      <Button
-        text="Submit"
-        className="w-full mb-5"
-        disabled={word === undefined}
-        onClick={() => gameFlow.pickWord(word!)}
-      ></Button>
-
-      <div className="text-center mb-5">
+      <div className="text-center mb-5 grow">
         playing a {gameLength()} game
       </div>
+
       
+      <FiveWordInput
+        className="my-3"
+        buttonLabel="Submit"
+        onSubmit={word => gameFlow.pickWord(word)}
+      />
+
     </Screen>
   )
 }

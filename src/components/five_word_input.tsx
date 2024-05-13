@@ -3,46 +3,49 @@ import { duplicateChars } from 'jotto_core'
 import { useState } from 'react'
 import ValidWordList from 'jotto_core/words.json'
 import { Guess } from 'src/core'
+import { Button } from './button'
+import { useMe } from 'src/core/hooks'
+import classNames from 'classnames'
 
 type Props = {
-  value?: string,
-  guesses?: Guess[],
-  onChange?: (event: FiveWordChangeEvent) => void
+  className?: string
+  buttonLabel: string
+  onSubmit: (word: string) => void
 }
 
-export function FiveWordInput(props: Props) {
+export function FiveWordInput({ className, buttonLabel, onSubmit }: Props) {
   const [error, setError] = useState<string>()
+  const [value, setValue] = useState<string>()
+  const { me } = useMe()
 
   // handle pin input change
   function onChange(value: string) {
-    
-    const error = valid(value, props.guesses)
-    const isValid = !error && value.length === 5
-    const word = isValid ? value : undefined
-    
-    setError(error)
-
-    if (props.onChange) {
-      props.onChange({
-        value,
-        word,
-        isValid,
-        error
-      })
-    }
+    setValue(value)
+    setError(valid(value, me.guesses))
   }
 
   // render
   return (
-    <div>
-      <PinInput
-        numFields={5}
-        value={props.value}
-        onChange={onChange}
-      />
-      { error &&
-        <div className="text-red-800 pt-3">{error}</div>
+    <div className={classNames('flex flex-col gap-3', className)}>
+      {error &&
+        <div className="text-red-800 text-center">{error}</div>
       }
+      <div className="flex justify-center">
+        <PinInput
+          numFields={5}
+          value={value}
+          onChange={onChange}
+        />
+      </div>
+      <Button
+        text={buttonLabel}
+        className="w-full"
+        disabled={error !== undefined}
+        onClick={() => {
+          onSubmit(value!)
+          setValue(undefined)
+        }}
+      ></Button>
     </div>
   )
 }

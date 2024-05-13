@@ -7,8 +7,10 @@ import {
   isKeyboardEvent,
   isKeyPressEvent,
   isMeWon,
+  isSetWordEvent,
   KeyboardEvent,
-  KeyPressEvent
+  KeyPressEvent,
+  SetWordEvent
 } from 'src/core/events'
 
 export class Keyboard {
@@ -36,6 +38,11 @@ export class Keyboard {
   public get keyPress$(): Observable<KeyPressEvent> {
     return this._bus.events$
       .pipe(filter(isKeyPressEvent))
+  }
+
+  public get setWord$(): Observable<SetWordEvent> {
+    return this._bus.events$
+      .pipe(filter(isSetWordEvent))
   }
 
   public get change$(): Observable<KeyboardEvent> {

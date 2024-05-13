@@ -14,11 +14,19 @@ export function PinInput({ numFields, value, className, onChange }: Props) {
 
   const [word, setWord] = useState('')
  
-  // mount
+  // handle keypress events
   useEffect(() => {
     const subscription = keyboard.keyPress$
       .pipe(filter(e => !e.isMarking))
       .subscribe(e => onKeyPress(e.key))
+
+    return () => subscription.unsubscribe()
+  }, [word])
+
+  // handle set word events
+  useEffect(() => {
+    const subscription = keyboard.setWord$
+      .subscribe(e => onValueChange(e.word))
 
     return () => subscription.unsubscribe()
   }, [word])

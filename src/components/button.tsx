@@ -1,6 +1,5 @@
 import { MouseEventHandler } from 'react'
 import classNames from 'classnames'
-import { Loader } from './loader'
 
 type Type = 'primary' | 'secondary' | 'link'
 
