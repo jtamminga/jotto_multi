@@ -15,8 +15,10 @@ type Props = {
 
 export function FiveWordInput({ className, buttonLabel, onSubmit }: Props) {
   const [error, setError] = useState<string>()
-  const [value, setValue] = useState<string>()
+  const [value, setValue] = useState<string>('')
   const { me } = useMe()
+  // determine if the value is valid
+  const isValid = !error && value.length === 5
 
   // handle pin input change
   function onChange(value: string) {
@@ -40,10 +42,10 @@ export function FiveWordInput({ className, buttonLabel, onSubmit }: Props) {
       <Button
         text={buttonLabel}
         className="w-full"
-        disabled={error !== undefined}
+        disabled={!isValid}
         onClick={() => {
-          onSubmit(value!)
-          setValue(undefined)
+          onSubmit(value)
+          setValue('')
         }}
       ></Button>
     </div>

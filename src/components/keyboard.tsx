@@ -11,7 +11,6 @@ export function Keyboard() {
   const { notes } = useNotes()
   const timerRef = useRef<number>()
   const [heldLetter, setHeldLetter] = useState<string>()
-  const [notesVisible, setNotesVisible] = useState(false)
   useKeyboard()
 
   useEffect(() => {
@@ -101,10 +100,15 @@ export function Keyboard() {
             onClick={() => onClick(key)}
             onMouseDown={() => onLongPress(key)}
             onTouchStart={() => onLongPress(key)}
+            // testing this out, see if keyboard feels better
+            onTouchEnd={(e) => {
+              e.preventDefault()
+              onClick(key)
+            }}
           >
             {key}
 
-            { notes?.letters.get(key)?.confidence === 'known' &&
+            {notes?.letters.get(key)?.confidence === 'known' &&
               <div className={knownMarkerStyle}></div>
             }
           </button>
@@ -121,7 +125,6 @@ export function Keyboard() {
 
     timerRef.current = window.setTimeout(() => {
       setHeldLetter(key)
-      setNotesVisible(true)
     }, 500)
   }
 
@@ -144,11 +147,11 @@ export function Keyboard() {
 
       { heldLetter &&
         <NoteSelect
-          visible={notesVisible}
+          visible={heldLetter !== undefined}
           letter={heldLetter}
           onClose={(isMarking, inWord) => {
             if (isMarking) notes?.maybe(heldLetter, inWord)
-            setNotesVisible(false)
+            setHeldLetter(undefined)
           }}
         />
       }
