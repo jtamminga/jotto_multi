@@ -20,7 +20,6 @@ export interface KeyboardEvent extends Event {
 export interface KeyPressEvent extends KeyboardEvent {
   type: 'keypress'
   key: string
-  isMarking: boolean
 }
 
 export interface SetWordEvent extends KeyboardEvent {
@@ -42,13 +41,12 @@ function create(type: KeyboardEventType): KeyboardEvent {
   }
 }
 
-export function createKeypress(key: string, isMarking: boolean): KeyPressEvent {
+export function createKeypress(key: string): KeyPressEvent {
   return {
     domain: 'keyboard',
     type: 'keypress',
     timestamp: Date.now(),
-    key,
-    isMarking
+    key
   }
 }
 

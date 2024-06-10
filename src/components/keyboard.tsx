@@ -1,10 +1,11 @@
 import classNames from 'classnames'
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactNode, useRef, useState } from 'react'
 import { eventBus, menu, gameFlow } from 'src/core/di'
 import { createKeypress } from 'src/core/events'
 import { useKeyboard, useNotes } from 'src/core/hooks'
 import { Notes } from 'src/models'
 import { NoteSelect } from './note_select'
+
 
 export function Keyboard() {
 
@@ -12,20 +13,6 @@ export function Keyboard() {
   const timerRef = useRef<number>()
   const [heldLetter, setHeldLetter] = useState<string>()
   useKeyboard()
-
-  useEffect(() => {
-    const listener = () => {
-      clearTimeout(timerRef.current)
-    }
-
-    window.addEventListener('mouseup', listener)
-    window.addEventListener('touchend', listener)
-
-    return () => {
-      window.removeEventListener('mouseup', listener)
-      window.removeEventListener('touchend', listener)
-    }
-  })
   
   // first
   function firstRow() {
@@ -67,7 +54,7 @@ export function Keyboard() {
       button = (
         <button
           className={largeButtonStyle}
-          onClick={() => onClick('clear')}
+          onClick={() => publishKeyEvent('clear')}
         >clear</button>
       )
     }
@@ -78,7 +65,7 @@ export function Keyboard() {
         {renderKeys(row)}
         <button
           className={largeButtonStyle}
-          onClick={() => onClick('backspace')}
+          onClick={() => publishKeyEvent('backspace')}
         >del</button>
       </div>
     )
@@ -90,34 +77,38 @@ export function Keyboard() {
   // =======
 
 
-  function renderKeys(keys: string[]) {
-    return (
-      <>
-        {keys.map(key =>
-          <button
-            key={`key-${key}`}
-            className={buttonStyle(key, notes)}
-            onClick={() => onClick(key)}
-            onMouseDown={() => onLongPress(key)}
-            onTouchStart={() => onLongPress(key)}
-            // testing this out, see if keyboard feels better
-            onTouchEnd={(e) => {
-              e.preventDefault()
-              onClick(key)
-            }}
-          >
-            {key}
+  function renderKey(key: string) {
+    const letterCount = getLetterCount(key)
 
-            {notes?.letters.get(key)?.confidence === 'known' &&
-              <div className={knownMarkerStyle}></div>
-            }
-          </button>
-        )}
-      </>
+    return (
+      <button
+        key={`key-${key}`}
+        className={buttonStyle(key, notes)}
+        onTouchStart={() => { onKeyDown(key) }}
+        onTouchEnd={() => { onKeyUp(key) }}
+      >
+        {letterCount &&
+          <div className="absolute left-1 top-1 text-xs opacity-50">
+            {letterCount}
+          </div>
+        }
+
+        {key}
+
+        {notes?.letters.get(key)?.confidence === 'known' &&
+          <div className={knownMarkerStyle}></div>
+        }
+      </button>
     )
   }
 
-  function onLongPress(key: string) {
+  function renderKeys(keys: string[]) {
+    return keys.map(key => renderKey(key))
+  }
+
+  function onKeyDown(key: string) {
+    console.debug(`[keyboard] onKeyDown: ${key} (heldLetter: ${heldLetter})`)
+
     // only if able to take notes
     if (!notes) {
       return
@@ -128,8 +119,30 @@ export function Keyboard() {
     }, 500)
   }
 
-  function onClick(key: string) {
-    eventBus.publish(createKeypress(key, notes?.isMarking ?? false))
+  function onKeyUp(key: string) {
+    console.debug(`[keyboard] onKeyUp: ${key} (heldLetter: ${heldLetter})`)
+    clearTimeout(timerRef.current)
+
+    if (heldLetter === undefined) {
+      publishKeyEvent(key)
+    }
+  }
+
+  function publishKeyEvent(key: string) {
+    console.debug(`[keypress] ${key}`)
+    eventBus.publish(createKeypress(key))
+  }
+
+  function getLetterCount(key: string): number | undefined {
+    if (!notes) {
+      return undefined
+    }
+
+    if (notes.hasZeroGuess) {
+      return undefined
+    }
+
+    return notes.letterCounts.get(key)
   }
 
 
@@ -183,16 +196,13 @@ const knownMarkerStyle = 'absolute bottom-1.5 w-3 m-auto bg-black opacity-20 h-1
 function buttonStyle(key: string, notes: Notes | undefined): string {
   const letterNote = notes?.letters.get(key)
   const inWord = letterNote?.inWord
-  const isMarking = notes?.isMarking ?? false
-  const known = letterNote?.confidence === 'known'
   
   return classNames(
     buttonBase, 'flex-1 transition-colors duration-300',
     {
       'bg-slate-200 text-slate-600 active:bg-slate-300': inWord === undefined,
       'bg-emerald-400 text-white active:bg-emerald-500': inWord === true,
-      'bg-slate-400 text-white active:bg-slate-500': inWord === false,
-      'opacity-50': known && isMarking
+      'bg-slate-400 text-white active:bg-slate-500': inWord === false
     }
   )
 }

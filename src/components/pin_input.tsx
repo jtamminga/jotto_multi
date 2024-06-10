@@ -1,6 +1,5 @@
 import classNames from 'classnames'
 import { ReactNode, useEffect, useState } from 'react'
-import { filter } from 'rxjs'
 import { keyboard } from 'src/core/di'
 
 type Props = {
@@ -17,7 +16,6 @@ export function PinInput({ numFields, value, className, onChange }: Props) {
   // handle keypress events
   useEffect(() => {
     const subscription = keyboard.keyPress$
-      .pipe(filter(e => !e.isMarking))
       .subscribe(e => onKeyPress(e.key))
 
     return () => subscription.unsubscribe()

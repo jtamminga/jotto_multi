@@ -1,19 +1,13 @@
-import { filter, Subscription } from 'rxjs'
-import { keyboard, eventBus as bus } from 'src/core/di'
-import { createNotesEvent, KeyPressEvent } from 'src/core/events'
-import { Disposable, GuessResult, LetterNote, LetterNotes } from 'src/core'
+import { eventBus as bus } from 'src/core/di'
+import { createNotesEvent } from 'src/core/events'
+import { Disposable, GuessResult, LetterNote } from 'src/core'
+
 
 export class Notes implements Disposable {
 
-  private _subscription: Subscription
-  private _isMarking: boolean = false
+  private _hasZeroGuess: boolean = false
   private readonly _letterNotes = new Map<string, LetterNote>()
-
-  constructor() {
-    this._subscription = keyboard.keyPress$
-      .pipe(filter(e => e.isMarking))
-      .subscribe(this.onKeyPress)
-  }
+  private readonly _letterCounts = new Map<string, number>()
 
 
   //
@@ -21,12 +15,16 @@ export class Notes implements Disposable {
   // =================
 
 
-  public get isMarking(): boolean {
-    return this._isMarking
+  public get hasZeroGuess(): boolean {
+    return this._hasZeroGuess
   }
 
-  public get letters(): LetterNotes {
+  public get letters(): ReadonlyMap<string, LetterNote> {
     return this._letterNotes
+  }
+
+  public get letterCounts(): ReadonlyMap<string, number> {
+    return this._letterCounts
   }
 
 
@@ -80,21 +78,7 @@ export class Notes implements Disposable {
   }
 
   public dispose() {
-    this._subscription.unsubscribe()
     sessionStorage.removeItem(STORE_KEY)
-  }
-
-
-  //
-  // event handlers
-  // ==============
-
-
-  private onKeyPress = (e: KeyPressEvent) => {
-    if (this.toggle(e.key)) {
-      bus.publish(createNotesEvent(this))
-      this.serialize()
-    }
   }
 
 
@@ -109,18 +93,23 @@ export class Notes implements Disposable {
    * @returns true if notes changed
    */
   private processResult(guess: GuessResult): boolean {
+    Array.from(guess.word).forEach(letter => {
+      const currentCount = this._letterCounts.get(letter) ?? 0
+      this._letterCounts.set(letter, currentCount + 1)
+    })
+
     if (guess.common === 0) {
+      this._hasZeroGuess = true
       this.set(guess.word, { confidence: 'known', inWord: false })
-      return true
     }
-    
-    if (guess.common === 5) {
+    else if (guess.common === 5) {
       this.set(LETTERS, { confidence: 'known', inWord: false })
       this.set(guess.word, { confidence: 'known', inWord: true })
-      return true
     }
 
-    return false
+    // TODO: maybe rethink notes change event, with the addition of letter counts
+    //  this isn't as straight forward.
+    return true
   }
 
   private set(letters: string, note: LetterNote) {
@@ -131,32 +120,6 @@ export class Notes implements Disposable {
   private clear(letters: string) {
     Array.from(letters).forEach(letter =>
       this._letterNotes.delete(letter))
-  }
-
-  // nothing --> maybe(inword) --> maybe(!inWord) --> nothing
-  private toggle(key: string): boolean {
-    let info = this._letterNotes.get(key)
-
-    if (!info) {
-      this._letterNotes.set(key,
-        { confidence: 'maybe', inWord: true })
-      return true
-    }
-
-    if (info.confidence === 'known') {
-      return false
-    }
-
-    // confidence == maybe
-    if (info.inWord) {
-      this._letterNotes.set(key,
-        { confidence: 'maybe', inWord: false })
-      return true
-    }
-
-    // confidence == maybe && inWord == false
-    this._letterNotes.delete(key)
-    return true
   }
 
   private serialize() {
